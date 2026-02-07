@@ -1,0 +1,54 @@
+<section class="container mx-auto max-w-3xl px-4 py-8">
+  <!-- Top row: Title + kebab (left) • Edit (right) -->
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center">
+      <h1 class="text-2xl md:text-3xl font-bold tracking-wider truncate"><%= @recipe.name %></h1>
+      <div class="ml-2">
+        <%= render "shared/kebab_menu", items: [
+          { label: "删除", url: recipe_path(@recipe), data: { turbo_method: :delete, turbo_confirm: "确定要删除这个菜谱吗？" }, class: "text-red-600" }
+        ] %>
+      </div>
+    </div>
+
+    <%= link_to "编辑", edit_recipe_path(@recipe), class: "btn-secondary" %>
+  </div>
+
+  <!-- Category badge -->
+  <div class="flex justify-start mb-4">
+    <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700">
+      <%= Recipe::CATEGORIES[@recipe.category] %>
+    </span>
+  </div>
+
+  <!-- Description -->
+  <% if @recipe.description.present? %>
+    <div class="mt-16">
+      <%= render "shared/section_card", title: "描述", text: @recipe.description %>
+    </div>
+  <% end %>
+
+  <!-- Ingredients -->
+  <div class="mt-16">
+    <% ingredients_kv = @recipe.recipe_ingredients.map { |ri|
+      label = ri.ingredient.name
+      value = [ri.quantity, ri.unit].compact_blank.join(" ")
+      [label, value]
+    } %>
+    <%= render "shared/section_card", title: "食材", items_kv: ingredients_kv %>
+  </div>
+
+  <!-- Instructions -->
+  <div class="mt-16">
+    <%= render "shared/section_card", title: "制作步骤", html: simple_format(@recipe.instructions) %>
+  </div>
+
+  <!-- Source footnote -->
+  <div class="mt-4 text-left text-xs text-gray-400">
+    <% if @recipe.source %>
+      来源：<%= @recipe.source.name %>
+      <% if @recipe.source.url.present? %>
+        · <%= link_to "链接", @recipe.source.url, class: "underline hover:no-underline", target: "_blank", rel: "noopener" %>
+      <% end %>
+    <% end %>
+  </div>
+</section>

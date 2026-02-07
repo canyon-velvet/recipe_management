@@ -5,7 +5,7 @@ class Recipe < ApplicationRecord
     "poultry" => "禽肉",
     "seafood" => "海鲜",
     "vegan" => "素食",
-    "chinese_carbs" => "中式主食",
+    "rice-noodles" => "中式主食",
     "soup" => "汤",
     "bakery" => "烘焙",
     "dessert" => "甜点",

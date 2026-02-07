@@ -1,0 +1,36 @@
+<%# locals: (recipe:) %>
+<div class="relative group rounded-xl bg-white shadow-lg">
+  <%= link_to "", recipe_path(recipe), class: "absolute inset-0 block z-0", "aria-label": recipe.name %>
+
+  <div class="relative z-10 grid grid-cols-4 gap-0 pointer-events-none">
+    <!-- Left 3/4 -->
+    <div class="col-span-3 p-4">
+      <div class="flex items-center gap-1">
+        <h3 class="flex-1 min-w-0 text-base md:text-lg font-semibold leading-tight truncate">
+          <%= recipe.name %>
+        </h3>
+        <div class="flex-none pointer-events-auto relative z-20">
+          <%= render "shared/kebab_menu", items: [
+            { label: "编辑", url: edit_recipe_path(recipe) },
+            { label: "删除", url: recipe_path(recipe), data: { turbo_method: :delete, turbo_confirm: "确定要删除这个菜谱吗？" }, class: "text-red-600" }
+          ] %>
+        </div>
+      </div>
+
+      <span class="inline-flex mt-1 items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700">
+        <%= Recipe::CATEGORIES[recipe.category] %>
+      </span>
+
+      <% if recipe.source %>
+        <p class="mt-2 text-xs text-gray-500 truncate"><%= recipe.source.name %></p>
+      <% end %>
+    </div>
+
+    <!-- Right 1/4 icon -->
+    <div class="col-span-1 flex items-center justify-center bg-gray-50 rounded-tr-xl rounded-br-xl">
+      <%= image_tag "icons/#{recipe.category}.svg", alt: "", class: "w-12 h-12 object-contain", loading: "lazy" %>
+    </div>
+  </div>
+
+  <div class="absolute inset-0 rounded-xl ring-0 group-hover:ring-1 group-hover:ring-gray-800 transition pointer-events-none"></div>
+</div>

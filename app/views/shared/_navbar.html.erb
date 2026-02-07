@@ -1,17 +1,32 @@
-<nav class="bg-white border-b border-gray-200">
-  <div class="container mx-auto px-5 py-3 flex items-center justify-between">
-    <div class="flex items-center space-x-6">
-      <%= link_to "食谱管理", root_path, class: "text-lg font-bold text-gray-900" %>
-      <% if logged_in? %>
-        <%= link_to "食谱", recipes_path, class: "text-gray-600 hover:text-gray-900" %>
-        <%= link_to "餐计划", meal_plans_path, class: "text-gray-600 hover:text-gray-900" %>
-      <% end %>
-    </div>
-    <div class="flex items-center space-x-4">
-      <% if logged_in? %>
-        <span class="text-sm text-gray-500"><%= current_user.username %></span>
-        <%= link_to "退出", logout_path, data: { turbo_method: :delete }, class: "text-sm text-red-600 hover:text-red-800" %>
-      <% end %>
-    </div>
+<header>
+  <div class="flex items-center px-6">
+    <span class="logo-text">食谱管理</span>
   </div>
-</nav>
+
+  <nav class="relative">
+    <div class="flex flex-grow">
+      <div class="topnav-item-container">
+        <div class="topnav-item">
+          <%= link_to "首页", root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
+        </div>
+        <% if logged_in? %>
+          <div class="topnav-item">
+            <%= link_to "所有菜谱", recipes_path, class: "nav-link #{'active' if current_page?(recipes_path)}" %>
+          </div>
+          <div class="topnav-item">
+            <%= link_to "餐计划", meal_plans_path, class: "nav-link #{'active' if current_page?(meal_plans_path)}" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </nav>
+
+  <div class="flex items-center px-6 ml-auto">
+    <% if logged_in? %>
+      <span class="text-white text-sm opacity-70 mr-4"><%= current_user.username %></span>
+      <%= link_to "退出", logout_path, data: { turbo_method: :delete }, class: "nav-link" %>
+    <% else %>
+      <%= link_to "登录", login_path, class: "nav-link" %>
+    <% end %>
+  </div>
+</header>
