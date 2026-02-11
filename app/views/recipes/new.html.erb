@@ -1,0 +1,6 @@
+<section class="container mx-auto max-w-3xl px-4 py-8">
+  <h1 class="text-2xl font-bold mb-6">新建菜谱</h1>
+  <%= render "form", recipe: @recipe,
+        ingredient_categories: @ingredient_categories,
+        grocery_store_types: @grocery_store_types %>
+</section>

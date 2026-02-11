@@ -1,0 +1,16 @@
+<%# locals: (form:, field:, label:, rows: 6, min_height: "156px", help: nil, class: nil) %>
+<div class="field <%= binding.local_variable_get(:class) %>" data-controller="markdown-preview">
+  <%= form.label field, label, class: "form-label" %>
+  <div class="md-tab-bar">
+    <button type="button" class="md-tab tab-active" data-markdown-preview-target="writeTab" data-action="markdown-preview#showWrite">编辑</button>
+    <button type="button" class="md-tab" data-markdown-preview-target="previewTab" data-action="markdown-preview#showPreview">预览</button>
+  </div>
+  <%= form.text_area field, rows: rows, class: "form-textarea rounded-t-none",
+        data: { markdown_preview_target: "input" } %>
+  <div data-markdown-preview-target="preview"
+       class="hidden prose prose-sm max-w-none rounded-lg rounded-t-none border border-gray-300 bg-white p-3 overflow-auto"
+       style="min-height: <%= min_height %>;"></div>
+  <% if help.present? %>
+    <p class="help-text"><%= help %></p>
+  <% end %>
+</div>

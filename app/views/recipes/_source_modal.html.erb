@@ -1,0 +1,15 @@
+<%= render layout: "shared/inline_create_modal", locals: { title: "创建来源" } do %>
+  <div class="field">
+    <label class="form-label">名称</label>
+    <input type="text" name="source[name]"
+           data-inline-create-target="prefill"
+           class="form-input">
+  </div>
+
+  <div class="field">
+    <label class="form-label">链接</label>
+    <input type="url" name="source[url]"
+           class="form-input"
+           placeholder="https://...">
+  </div>
+<% end %>

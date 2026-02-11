@@ -1,0 +1,18 @@
+<section class="container mx-auto max-w-4xl px-4 py-8">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">餐计划</h1>
+    <%= link_to "新建餐计划", new_meal_plan_path, class: "btn-primary" %>
+  </div>
+
+  <% if @meal_plans.any? %>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <% @meal_plans.each do |meal_plan| %>
+        <%= render "meal_plan_card", meal_plan: meal_plan %>
+      <% end %>
+    </div>
+
+    <%= render "shared/pagination", pagy: @pagy %>
+  <% else %>
+    <p class="text-center text-gray-500 py-12">还没有餐计划</p>
+  <% end %>
+</section>

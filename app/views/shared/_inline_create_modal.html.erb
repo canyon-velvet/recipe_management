@@ -1,0 +1,18 @@
+<%# locals: (title:) %>
+<dialog data-inline-create-target="dialog"
+        data-action="click->inline-create#backdropClose"
+        class="rounded-xl p-0 backdrop:bg-black/40">
+  <div class="modal-panel">
+    <h3 class="modal-title"><%= title %></h3>
+    <div data-inline-create-target="errors" class="error-text mb-3"></div>
+
+    <div class="space-y-4">
+      <%= yield %>
+
+      <div class="flex justify-end gap-3 pt-2">
+        <button type="button" data-action="inline-create#closeModal" class="btn-cancel">取消</button>
+        <button type="button" data-action="inline-create#save" class="btn-primary">保存</button>
+      </div>
+    </div>
+  </div>
+</dialog>

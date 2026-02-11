@@ -1,0 +1,125 @@
+<%# locals: (recipe:, ingredient_categories:, grocery_store_types:) %>
+
+<%= form_with model: recipe, class: "space-y-6" do |f| %>
+  <% if recipe.errors.any? %>
+    <div class="bg-red-50 border border-red-300 text-red-700 rounded-md p-3">
+      <ul class="list-disc list-inside text-sm">
+        <% recipe.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- Name + Category -->
+  <div class="field-row">
+    <div class="field">
+      <%= f.label :name, "菜名", class: "form-label" %>
+      <%= f.text_field :name, class: "form-input", autofocus: true %>
+    </div>
+
+    <div class="field">
+      <%= f.label :category, "分类", class: "form-label" %>
+      <%= f.select :category,
+            options_for_select(Recipe::CATEGORIES.map { |k, v| [v, k] }, recipe.category),
+            { include_blank: "请选择分类" },
+            class: "form-select" %>
+    </div>
+  </div>
+
+  <!-- Description (markdown) -->
+  <%= render "shared/markdown_editor", form: f, field: :description, label: "描述",
+        rows: 6, min_height: "156px" %>
+
+  <!-- Ingredients -->
+  <div class="field"
+       data-controller="nested-form inline-create"
+       data-inline-create-create-url-value="<%= ingredients_path %>">
+    <label class="form-label">食材</label>
+
+    <div data-nested-form-target="container" class="space-y-3">
+      <% ingredients = recipe.recipe_ingredients.any? ? recipe.recipe_ingredients : [recipe.recipe_ingredients.build] %>
+      <%= f.fields_for :recipe_ingredients, ingredients do |ri_form| %>
+        <%= render "recipes/ingredient_row", form: ri_form %>
+      <% end %>
+    </div>
+
+    <!-- Template for new rows -->
+    <template data-nested-form-target="template">
+      <div data-nested-form-row class="grid grid-cols-12 gap-3 items-start">
+        <div class="col-span-5 relative"
+             data-controller="autocomplete"
+             data-autocomplete-url-value="<%= search_ingredients_path %>"
+             data-autocomplete-create-label-value="创建食材"
+             data-action="autocomplete:requestCreate->inline-create#openModal">
+          <input type="hidden"
+                 name="recipe[recipe_ingredients_attributes][NEW_RECORD][ingredient_id]"
+                 data-autocomplete-target="hiddenField">
+          <input type="text" placeholder="搜索食材..." class="form-input" autocomplete="off"
+                 data-autocomplete-target="input"
+                 data-action="input->autocomplete#onInput click@window->autocomplete#outside">
+          <ul data-autocomplete-target="list" class="autocomplete-list hidden"></ul>
+        </div>
+        <div class="col-span-3">
+          <input type="text" name="recipe[recipe_ingredients_attributes][NEW_RECORD][quantity]"
+                 placeholder="数量" class="form-input">
+        </div>
+        <div class="col-span-3">
+          <input type="text" name="recipe[recipe_ingredients_attributes][NEW_RECORD][unit]"
+                 placeholder="单位" class="form-input">
+        </div>
+        <div class="col-span-1 flex items-center justify-center pt-2">
+          <button type="button" data-action="nested-form#remove"
+                  class="text-gray-400 hover:text-red-500" title="删除">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </template>
+
+    <button type="button" data-action="nested-form#add" class="btn-secondary btn-sm mt-3">
+      + 添加食材
+    </button>
+
+    <%= render "recipes/ingredient_modal",
+          ingredient_categories: ingredient_categories,
+          grocery_store_types: grocery_store_types %>
+  </div>
+
+  <!-- Instructions (markdown) -->
+  <%= render "shared/markdown_editor", form: f, field: :instructions, label: "制作步骤",
+        rows: 10, min_height: "260px", class: "pt-4" %>
+
+  <!-- Source (searchable dropdown + create modal) -->
+  <div class="field pt-4"
+       data-controller="inline-create"
+       data-inline-create-create-url-value="<%= sources_path %>">
+    <%= f.label :source_id, "来源", class: "form-label" %>
+
+    <div class="relative"
+         data-controller="autocomplete"
+         data-autocomplete-url-value="<%= search_sources_path %>"
+         data-autocomplete-create-label-value="创建来源"
+         data-action="autocomplete:requestCreate->inline-create#openModal">
+      <%= f.hidden_field :source_id, data: { autocomplete_target: "hiddenField" } %>
+      <input type="text"
+             value="<%= recipe.source&.name %>"
+             placeholder="搜索来源..."
+             class="form-input"
+             autocomplete="off"
+             data-autocomplete-target="input"
+             data-action="input->autocomplete#onInput click@window->autocomplete#outside">
+      <ul data-autocomplete-target="list" class="autocomplete-list hidden"></ul>
+    </div>
+
+    <%= render "recipes/source_modal" %>
+  </div>
+
+  <!-- Submit -->
+  <div class="flex items-center gap-3 pt-4">
+    <%= f.submit recipe.persisted? ? "更新菜谱" : "创建菜谱", class: "btn-primary" %>
+    <%= link_to "取消", recipe.persisted? ? recipe_path(recipe) : recipes_path, class: "btn-cancel" %>
+  </div>
+<% end %>

@@ -1,0 +1,10 @@
+<%# locals: (store_name:, categories:) %>
+<div class="grocery-store-card">
+  <div class="grocery-store-header"><%= store_name %></div>
+  <% categories.each do |category_name, items| %>
+    <div class="grocery-category-header"><%= category_name %></div>
+    <% items.each do |item| %>
+      <%= render "grocery_lists/grocery_item", item: item %>
+    <% end %>
+  <% end %>
+</div>

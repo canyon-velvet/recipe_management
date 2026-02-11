@@ -1,0 +1,12 @@
+@layer components {
+  .meal-grid          { @apply w-full border-collapse text-sm; }
+  .meal-grid th       { @apply px-2 py-2 text-center text-xs font-semibold text-gray-500 uppercase tracking-wide; }
+  .meal-grid td       { @apply border border-gray-200 align-top; }
+  .meal-type-label    { @apply px-2 py-3 text-xs font-semibold text-sectiontext bg-sectionbackground whitespace-nowrap; }
+  .meal-slot-cell     { @apply relative min-h-[4rem] p-1.5; }
+  .meal-slot-cell--empty  { @apply flex items-center justify-center h-full; }
+  .meal-slot-cell--filled { @apply bg-white; }
+  .meal-slot-cell--grocery { @apply bg-green-50; }
+  .slot-add-btn       { @apply text-gray-300 hover:text-indigo-500 transition-colors cursor-pointer; }
+  .slot-recipe-name   { @apply text-xs leading-tight text-gray-800 truncate block; }
+}

@@ -15,6 +15,14 @@ class MealPlan < ApplicationRecord
   after_create :create_meal_slots
   after_create :create_grocery_list
 
+  def display_name
+    name.presence || "#{start_date.strftime('%m/%d')} - #{end_date.strftime('%m/%d')}"
+  end
+
+  def assigned_recipe_count
+    MealSlotRecipe.joins(:meal_slot).where(meal_slots: { meal_plan_id: id }).count
+  end
+
   private
 
   def start_date_must_be_monday

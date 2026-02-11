@@ -1,0 +1,42 @@
+<section class="container mx-auto max-w-3xl px-4 py-8" data-controller="grocery-list">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold">购物清单</h1>
+      <p class="text-sm text-gray-500 mt-1"><%= @meal_plan.display_name %></p>
+    </div>
+    <div class="flex items-center gap-3">
+      <%= link_to "返回餐计划", meal_plan_path(@meal_plan), class: "btn-secondary" %>
+    </div>
+  </div>
+
+  <% if @active_grouped.empty? && @pantry_items.empty? %>
+    <div class="text-center py-16 text-gray-400">
+      <p class="text-lg">购物清单为空</p>
+      <p class="text-sm mt-1">在餐计划中勾选菜谱的购物复选框以添加食材</p>
+    </div>
+  <% else %>
+    <!-- Active items grouped by store → category -->
+    <div id="active_items" class="space-y-4">
+      <% @active_grouped.each do |store_name, categories| %>
+        <%= render "grocery_lists/store_group", store_name: store_name, categories: categories %>
+      <% end %>
+    </div>
+
+    <!-- Pantry section -->
+    <% if @pantry_items.any? %>
+      <div class="mt-8">
+        <h2 class="text-sm font-semibold text-gray-500 mb-3">已有食材</h2>
+        <div id="pantry_items" class="grocery-store-card divide-y divide-gray-100">
+          <% @pantry_items.each do |item| %>
+            <%= render "grocery_lists/grocery_item", item: item %>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <div id="pantry_items" class="hidden mt-8">
+        <h2 class="text-sm font-semibold text-gray-500 mb-3">已有食材</h2>
+      </div>
+    <% end %>
+  <% end %>
+</section>

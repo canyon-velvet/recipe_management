@@ -1,0 +1,16 @@
+<%# locals: (meal_plan:) %>
+<div class="relative rounded-xl border border-gray-200 bg-sectionbackground p-5 hover:shadow-md transition-shadow">
+  <%= link_to meal_plan_path(meal_plan), class: "absolute inset-0 z-0" do %><% end %>
+
+  <div class="relative z-10 flex items-start justify-between">
+    <div>
+      <h3 class="font-semibold text-gray-900"><%= meal_plan.display_name %></h3>
+      <p class="text-sm text-gray-500 mt-1"><%= format_week_range(meal_plan) %></p>
+      <p class="text-xs text-gray-400 mt-2">已安排 <%= meal_plan.assigned_recipe_count %> 道菜谱</p>
+    </div>
+
+    <%= render "shared/kebab_menu", items: [
+      { label: "删除", url: meal_plan_path(meal_plan), data: { turbo_method: :delete, turbo_confirm: "确定要删除这个餐计划吗？" }, class: "text-red-600" }
+    ] %>
+  </div>
+</div>

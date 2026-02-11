@@ -23,7 +23,7 @@
   <!-- Description -->
   <% if @recipe.description.present? %>
     <div class="mt-16">
-      <%= render "shared/section_card", title: "描述", text: @recipe.description %>
+      <%= render "shared/section_card", title: "描述", html: render_markdown(@recipe.description) %>
     </div>
   <% end %>
 
@@ -39,7 +39,7 @@
 
   <!-- Instructions -->
   <div class="mt-16">
-    <%= render "shared/section_card", title: "制作步骤", html: simple_format(@recipe.instructions) %>
+    <%= render "shared/section_card", title: "制作步骤", html: render_markdown(@recipe.instructions) %>
   </div>
 
   <!-- Source footnote -->

@@ -1,0 +1,43 @@
+<%# locals: (form:) %>
+<div data-nested-form-row class="grid grid-cols-12 gap-3 items-start">
+  <!-- Ingredient autocomplete -->
+  <div class="col-span-5 relative"
+       data-controller="autocomplete"
+       data-autocomplete-url-value="<%= search_ingredients_path %>"
+       data-autocomplete-create-label-value="创建食材"
+       data-action="autocomplete:requestCreate->inline-create#openModal">
+    <%= form.hidden_field :ingredient_id, data: { autocomplete_target: "hiddenField" } %>
+    <input type="text"
+           value="<%= form.object.ingredient&.name %>"
+           placeholder="搜索食材..."
+           class="form-input"
+           autocomplete="off"
+           data-autocomplete-target="input"
+           data-action="input->autocomplete#onInput click@window->autocomplete#outside">
+    <ul data-autocomplete-target="list" class="autocomplete-list hidden"></ul>
+  </div>
+
+  <!-- Quantity -->
+  <div class="col-span-3">
+    <%= form.text_field :quantity, placeholder: "数量", class: "form-input" %>
+  </div>
+
+  <!-- Unit -->
+  <div class="col-span-3">
+    <%= form.text_field :unit, placeholder: "单位", class: "form-input" %>
+  </div>
+
+  <!-- Remove button -->
+  <div class="col-span-1 flex items-center justify-center pt-2">
+    <% if form.object.persisted? %>
+      <%= form.hidden_field :id %>
+      <%= form.hidden_field :_destroy, value: "0" %>
+    <% end %>
+    <button type="button" data-action="nested-form#remove"
+            class="text-gray-400 hover:text-red-500" title="删除">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+</div>
