@@ -12,26 +12,26 @@ Rails.application.routes.draw do
   end
 
   # Ingredients & Sources (AJAX search + inline create)
-  resources :ingredients, only: [:create] do
+  resources :ingredients, only: [ :create ] do
     get :search, on: :collection
   end
-  resources :sources, only: [:create] do
+  resources :sources, only: [ :create ] do
     get :search, on: :collection
   end
 
   # Meal Plans
-  resources :meal_plans, only: [:index, :show, :new, :create, :destroy] do
-    resource :grocery_list, only: [:show]
+  resources :meal_plans, only: [ :index, :show, :new, :create, :destroy ] do
+    resource :grocery_list, only: [ :show ]
   end
 
   # Grocery List Items (pantry toggle)
-  resources :grocery_list_items, only: [:update]
+  resources :grocery_list_items, only: [ :update ]
 
   # Meal Slot Recipes (add/remove recipes from slots)
   resources :meal_slots, only: [] do
-    resources :meal_slot_recipes, only: [:create]
+    resources :meal_slot_recipes, only: [ :create ]
   end
-  resources :meal_slot_recipes, only: [:destroy, :update]
+  resources :meal_slot_recipes, only: [ :destroy, :update ]
 
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check

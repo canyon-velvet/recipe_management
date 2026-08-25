@@ -1,6 +1,6 @@
 class MealSlotRecipesController < ApplicationController
-  before_action :set_meal_slot, only: [:create]
-  before_action :set_meal_slot_recipe, only: [:destroy, :update]
+  before_action :set_meal_slot, only: [ :create ]
+  before_action :set_meal_slot_recipe, only: [ :destroy, :update ]
 
   def create
     @meal_slot_recipe = @meal_slot.meal_slot_recipes.build(

@@ -1,5 +1,5 @@
 class RegistrationsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:new, :create]
+  skip_before_action :authenticate_user!, only: [ :new, :create ]
 
   def new
     @user = User.new
@@ -18,6 +18,6 @@ class RegistrationsController < ApplicationController
   private
 
   def user_params
-    params.expect(user: [:username, :password, :password_confirmation])
+    params.expect(user: [ :username, :password, :password_confirmation ])
   end
 end

@@ -7,6 +7,6 @@ class CreateMealSlots < ActiveRecord::Migration[8.1]
 
       t.timestamps
     end
-    add_index :meal_slots, [:meal_plan_id, :day_of_week, :meal_type], unique: true, name: "index_meal_slots_uniqueness"
+    add_index :meal_slots, [ :meal_plan_id, :day_of_week, :meal_type ], unique: true, name: "index_meal_slots_uniqueness"
   end
 end

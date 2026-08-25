@@ -12,7 +12,7 @@ class GroceryListItemsController < ApplicationController
   private
 
   def set_item
-    @item = GroceryListItem.includes(ingredient: [:ingredient_category, :grocery_store_types], grocery_list: :meal_plan).find(params[:id])
+    @item = GroceryListItem.includes(ingredient: [ :ingredient_category, :grocery_store_types ], grocery_list: :meal_plan).find(params[:id])
     meal_plan = @item.grocery_list.meal_plan
     redirect_to meal_plans_path, alert: "无权操作" unless meal_plan.user_id == current_user.id
   end

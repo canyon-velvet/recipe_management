@@ -1,5 +1,5 @@
 class MealPlansController < ApplicationController
-  before_action :set_meal_plan, only: [:show, :destroy]
+  before_action :set_meal_plan, only: [ :show, :destroy ]
 
   def index
     meal_plans = current_user.meal_plans.order(start_date: :desc)

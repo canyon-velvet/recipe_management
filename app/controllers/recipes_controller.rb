@@ -1,6 +1,6 @@
 class RecipesController < ApplicationController
-  before_action :set_recipe, only: [:show, :edit, :update, :destroy]
-  before_action :set_form_data, only: [:new, :create, :edit, :update]
+  before_action :set_recipe, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_form_data, only: [ :new, :create, :edit, :update ]
 
   def index
     recipes = Recipe.includes(:source)
@@ -64,7 +64,7 @@ class RecipesController < ApplicationController
   def recipe_params
     params.require(:recipe).permit(
       :name, :category, :description, :instructions, :source_id,
-      recipe_ingredients_attributes: [:id, :ingredient_id, :quantity, :unit, :_destroy]
+      recipe_ingredients_attributes: [ :id, :ingredient_id, :quantity, :unit, :_destroy ]
     )
   end
 end

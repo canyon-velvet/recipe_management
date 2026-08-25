@@ -4,7 +4,7 @@ class GroceryListsController < ApplicationController
     @grocery_list = @meal_plan.grocery_list
 
     items = @grocery_list.grocery_list_items
-              .includes(ingredient: [:ingredient_category, :grocery_store_types])
+              .includes(ingredient: [ :ingredient_category, :grocery_store_types ])
               .order("ingredients.name")
 
     @active_grouped = group_by_store_and_category(items.active)

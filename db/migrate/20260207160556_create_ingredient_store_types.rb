@@ -6,6 +6,6 @@ class CreateIngredientStoreTypes < ActiveRecord::Migration[8.1]
 
       t.timestamps
     end
-    add_index :ingredient_store_types, [:ingredient_id, :grocery_store_type_id], unique: true, name: "index_ingredient_store_types_uniqueness"
+    add_index :ingredient_store_types, [ :ingredient_id, :grocery_store_type_id ], unique: true, name: "index_ingredient_store_types_uniqueness"
   end
 end

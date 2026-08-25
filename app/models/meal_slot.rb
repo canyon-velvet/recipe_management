@@ -8,5 +8,5 @@ class MealSlot < ApplicationRecord
 
   validates :day_of_week, presence: true
   validates :meal_type, presence: true
-  validates :meal_type, uniqueness: { scope: [:meal_plan_id, :day_of_week] }
+  validates :meal_type, uniqueness: { scope: [ :meal_plan_id, :day_of_week ] }
 end
