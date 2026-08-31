@@ -21,7 +21,7 @@ gem "tailwindcss-rails"
 gem "bcrypt", "~> 3.1.7"
 
 # Pagination
-gem "pagy", "~> 9.0"
+gem "pagy", "~> 43.6"
 
 # Server-side markdown rendering
 gem "redcarpet", "~> 3.6"
