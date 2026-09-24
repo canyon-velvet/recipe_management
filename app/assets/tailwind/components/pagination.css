@@ -1,0 +1,21 @@
+@layer components {
+  .pagy.series-nav {
+    @apply flex justify-center items-center space-x-1 mt-8;
+  }
+
+  .pagy.series-nav a {
+    @apply px-3 py-2 text-sm rounded-lg border border-gray-300 hover:bg-gray-50;
+  }
+
+  .pagy.series-nav a[aria-current="page"] {
+    @apply bg-indigo-600 border-indigo-600 text-white hover:bg-indigo-600;
+  }
+
+  .pagy.series-nav a[aria-disabled="true"]:not([aria-current]) {
+    @apply text-gray-400 hover:bg-transparent;
+  }
+
+  .pagy.series-nav a[role="separator"] {
+    @apply border-transparent px-2;
+  }
+}
