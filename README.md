@@ -2,7 +2,9 @@
 
 One place for all the recipes I've saved, and a weekly meal plan that writes my grocery list for me.
 
-<!-- Screen recording goes here -->
+https://github.com/user-attachments/assets/628aaba2-f09d-4c47-b458-a642517685ee
+
+
 
 ## The problem
 
