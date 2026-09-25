@@ -6,6 +6,9 @@ Rails.application.routes.draw do
   get "register", to: "registrations#new"
   post "register", to: "registrations#create"
 
+  # Language switcher
+  resource :locale, only: [ :update ]
+
   # Recipes
   resources :recipes do
     get :search, on: :collection

@@ -1,0 +1,198 @@
+zh-CN:
+  app_name: "食谱管理"
+  locale_name: "中文"
+
+  actions:
+    back: "返回"
+    cancel: "取消"
+    delete: "删除"
+    edit: "编辑"
+    save: "保存"
+
+  flash:
+    admin_required: "需要管理员权限"
+    invalid_login: "用户名或密码错误"
+    logged_in: "登录成功"
+    logged_out: "已退出登录"
+    login_required: "请先登录"
+    meal_plan_created: "餐计划创建成功"
+    meal_plan_deleted: "餐计划已删除"
+    not_authorized: "无权操作"
+    recipe_created: "菜谱创建成功"
+    recipe_deleted: "菜谱已删除"
+    recipe_updated: "菜谱更新成功"
+    registered: "注册成功"
+
+  recipe_categories:
+    beef: "牛肉"
+    pork: "猪肉"
+    poultry: "禽肉"
+    seafood: "海鲜"
+    vegan: "素食"
+    rice-noodles: "中式主食"
+    soup: "汤"
+    bakery: "烘焙"
+    dessert: "甜点"
+    salad: "沙拉"
+    sandwich: "三明治"
+    pasta: "意面"
+    sauce: "酱料"
+
+  activerecord:
+    attributes:
+      ingredient:
+        ingredient_category: "分类"
+        name: "名称"
+      meal_plan:
+        end_date: "结束日期"
+        name: "名称"
+        start_date: "开始日期"
+      meal_slot_recipe:
+        recipe: "菜谱"
+        recipe_id: "菜谱"
+      recipe:
+        category: "分类"
+        description: "描述"
+        instructions: "制作步骤"
+        name: "菜名"
+        source: "来源"
+        source_id: "来源"
+      recipe/recipe_ingredients:
+        ingredient: "食材"
+        ingredient_id: "食材"
+      source:
+        name: "名称"
+        url: "链接"
+      user:
+        password: "密码"
+        password_confirmation: "确认密码"
+        username: "用户名"
+    errors:
+      models:
+        meal_plan:
+          attributes:
+            end_date:
+              not_sunday_after_start: "必须是开始日期后的周日"
+            start_date:
+              not_monday: "必须是周一"
+              week_taken: "已有本周的餐计划"
+        meal_slot_recipe:
+          attributes:
+            recipe_id:
+              already_in_slot: "已在此时段中"
+
+  shared:
+    hero:
+      browse_recipes: "浏览菜谱"
+      image_alt: "家庭餐食计划"
+      tagline: "轻松管理食谱，规划每日餐单，生成购物清单，让家庭用餐更简单。"
+    locale_switcher:
+      label: "语言"
+    markdown_editor:
+      empty_preview: "无内容可预览"
+      preview: "预览"
+      write: "编辑"
+    navbar:
+      home: "首页"
+      login: "登录"
+      logout: "退出"
+      meal_plans: "餐计划"
+      recipes: "所有菜谱"
+
+  recipes:
+    confirm_delete: "确定要删除这个菜谱吗？"
+    ingredient_fields:
+      create: "创建食材"
+      quantity: "数量"
+      search: "搜索食材..."
+      unit: "单位"
+    index:
+      all_categories: "全部"
+      banner_alt: "所有菜谱"
+      banner_title: "用美食开启美好的一天"
+      empty: "没有找到符合条件的菜谱。"
+      new_recipe: "新建菜谱"
+      search_placeholder: "搜索菜谱"
+    new:
+      title: "新建菜谱"
+    edit:
+      title: "编辑菜谱"
+    show:
+      ingredients: "食材"
+      link: "链接"
+      source: "来源：%{name}"
+    form:
+      add_ingredient: "+ 添加食材"
+      category_prompt: "请选择分类"
+      create: "创建菜谱"
+      create_source: "创建来源"
+      ingredients: "食材"
+      save_failed: "保存失败，请重试"
+      search_source: "搜索来源..."
+      update: "更新菜谱"
+    ingredient_modal:
+      category_prompt: "请选择"
+      stores: "购买地点"
+
+  meal_plans:
+    days:
+      monday: "周一"
+      tuesday: "周二"
+      wednesday: "周三"
+      thursday: "周四"
+      friday: "周五"
+      saturday: "周六"
+      sunday: "周日"
+    meal_types:
+      breakfast: "早餐"
+      lunch: "午餐"
+      dinner: "晚餐"
+      snack: "加餐"
+    index:
+      empty: "还没有餐计划"
+      new_meal_plan: "新建餐计划"
+      title: "餐计划"
+    meal_plan_card:
+      confirm_delete: "确定要删除这个餐计划吗？"
+      recipe_count: "已安排 %{count} 道菜谱"
+    new:
+      create: "创建"
+      name: "名称（可选）"
+      name_placeholder: "例：第一周"
+      title: "新建餐计划"
+      week: "选择周"
+      week_help: "将自动调整到所选日期所在周的周一"
+    show:
+      grocery_list: "查看购物清单"
+      no_recipes_found: "没有找到菜谱"
+    meal_slot_cell:
+      remove: "移出计划"
+      view_recipe: "浏览菜谱"
+    recipe_search_modal:
+      prompt: "输入关键词搜索"
+      search_placeholder: "搜索菜谱..."
+      title: "选择菜谱"
+
+  grocery_lists:
+    uncategorized_category: "未分类"
+    uncategorized_store: "未分类商店"
+    show:
+      back: "返回餐计划"
+      empty: "购物清单为空"
+      empty_hint: "在餐计划中勾选菜谱的购物复选框以添加食材"
+      pantry: "已有食材"
+      title: "购物清单"
+
+  sessions:
+    new:
+      no_account: "还没有账号？"
+      register: "注册"
+      submit: "登录"
+      title: "登录"
+
+  registrations:
+    new:
+      have_account: "已有账号？"
+      login: "登录"
+      submit: "注册"
+      title: "注册"

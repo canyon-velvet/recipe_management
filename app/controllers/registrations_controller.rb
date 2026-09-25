@@ -9,7 +9,7 @@ class RegistrationsController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       session[:user_id] = @user.id
-      redirect_to root_path, notice: "注册成功"
+      redirect_to root_path, notice: t("flash.registered")
     else
       render :new, status: :unprocessable_entity
     end

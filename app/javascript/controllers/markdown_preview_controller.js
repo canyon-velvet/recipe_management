@@ -3,6 +3,7 @@ import { marked } from "marked"
 
 export default class extends Controller {
   static targets = ["input", "preview", "writeTab", "previewTab"]
+  static values = { emptyText: String }
 
   connect() {
     this.showWrite()
@@ -18,7 +19,10 @@ export default class extends Controller {
   showPreview() {
     const text = this.inputTarget.value
     if (text.trim() === "") {
-      this.previewTarget.innerHTML = '<p class="text-gray-400 text-sm">无内容可预览</p>'
+      const empty = document.createElement("p")
+      empty.className = "text-gray-400 text-sm"
+      empty.textContent = this.emptyTextValue
+      this.previewTarget.replaceChildren(empty)
     } else {
       this.previewTarget.innerHTML = marked(text, { breaks: true, gfm: true })
     }

@@ -14,7 +14,7 @@ class RecipesController < ApplicationController
     recipes = Recipe.where("name ILIKE ?", "%#{params[:q]}%")
                     .order(:name)
                     .limit(20)
-    render json: recipes.map { |r| { id: r.id, name: r.name, category: Recipe::CATEGORIES[r.category] } }
+    render json: recipes.map { |r| { id: r.id, name: r.name, category: r.category_label } }
   end
 
   def show
@@ -28,7 +28,7 @@ class RecipesController < ApplicationController
     @recipe = current_user.recipes.build(recipe_params)
 
     if @recipe.save
-      redirect_to recipe_path(@recipe), notice: "菜谱创建成功"
+      redirect_to recipe_path(@recipe), notice: t("flash.recipe_created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -39,7 +39,7 @@ class RecipesController < ApplicationController
 
   def update
     if @recipe.update(recipe_params)
-      redirect_to recipe_path(@recipe), notice: "菜谱更新成功"
+      redirect_to recipe_path(@recipe), notice: t("flash.recipe_updated")
     else
       render :edit, status: :unprocessable_entity
     end
@@ -47,7 +47,7 @@ class RecipesController < ApplicationController
 
   def destroy
     @recipe.destroy
-    redirect_to recipes_path, notice: "菜谱已删除"
+    redirect_to recipes_path, notice: t("flash.recipe_deleted")
   end
 
   private

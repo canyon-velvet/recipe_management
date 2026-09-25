@@ -20,8 +20,8 @@
           </svg>
         </button>
         <div data-dropdown-target="menu" class="hidden absolute right-0 z-20 mt-1 w-28 rounded-lg border border-gray-200 bg-white shadow-lg py-1">
-          <%= link_to "浏览菜谱", recipe_path(msr.recipe), class: "block px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50" %>
-          <%= button_to "移出计划", meal_slot_recipe_path(msr),
+          <%= link_to t(".view_recipe"), recipe_path(msr.recipe), class: "block px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50" %>
+          <%= button_to t(".remove"), meal_slot_recipe_path(msr),
                 method: :delete,
                 class: "block w-full text-left px-3 py-1.5 text-xs text-red-600 hover:bg-gray-50",
                 form: { data: { turbo_stream: true } } %>

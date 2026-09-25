@@ -1,31 +1,200 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  app_name: "Recipe Manager"
+  locale_name: "English"
+
+  actions:
+    back: "Back"
+    cancel: "Cancel"
+    delete: "Delete"
+    edit: "Edit"
+    save: "Save"
+
+  flash:
+    admin_required: "Admin access required."
+    invalid_login: "Incorrect username or password."
+    logged_in: "Logged in."
+    logged_out: "Logged out."
+    login_required: "Please log in first."
+    meal_plan_created: "Meal plan created."
+    meal_plan_deleted: "Meal plan deleted."
+    not_authorized: "You don't have permission to do that."
+    recipe_created: "Recipe created."
+    recipe_deleted: "Recipe deleted."
+    recipe_updated: "Recipe updated."
+    registered: "Account created."
+
+  recipe_categories:
+    beef: "Beef"
+    pork: "Pork"
+    poultry: "Poultry"
+    seafood: "Seafood"
+    vegan: "Vegetarian"
+    rice-noodles: "Rice & Noodles"
+    soup: "Soup"
+    bakery: "Baking"
+    dessert: "Dessert"
+    salad: "Salad"
+    sandwich: "Sandwich"
+    pasta: "Pasta"
+    sauce: "Sauces"
+
+  activerecord:
+    attributes:
+      ingredient:
+        ingredient_category: "Category"
+        name: "Name"
+      meal_plan:
+        end_date: "End date"
+        name: "Name"
+        start_date: "Start date"
+      meal_slot_recipe:
+        recipe: "Recipe"
+        recipe_id: "Recipe"
+      recipe:
+        category: "Category"
+        description: "Description"
+        instructions: "Instructions"
+        name: "Name"
+        source: "Source"
+        source_id: "Source"
+      recipe/recipe_ingredients:
+        ingredient: "Ingredient"
+        ingredient_id: "Ingredient"
+      source:
+        name: "Name"
+        url: "Link"
+      user:
+        password: "Password"
+        password_confirmation: "Confirm password"
+        username: "Username"
+    errors:
+      models:
+        meal_plan:
+          attributes:
+            end_date:
+              not_sunday_after_start: "must be the Sunday after the start date"
+            start_date:
+              not_monday: "must be a Monday"
+              week_taken: "already has a meal plan for this week"
+        meal_slot_recipe:
+          attributes:
+            recipe_id:
+              already_in_slot: "is already in this slot"
+
+  shared:
+    hero:
+      browse_recipes: "Browse recipes"
+      image_alt: "Home meal planning"
+      tagline: "Keep your recipes in one place, plan the week, and get your grocery list made for you."
+    locale_switcher:
+      label: "Language"
+    markdown_editor:
+      empty_preview: "Nothing to preview"
+      preview: "Preview"
+      write: "Write"
+    navbar:
+      home: "Home"
+      login: "Log in"
+      logout: "Log out"
+      meal_plans: "Meal Plans"
+      recipes: "All Recipes"
+
+  recipes:
+    confirm_delete: "Delete this recipe?"
+    ingredient_fields:
+      create: "Create ingredient"
+      quantity: "Quantity"
+      search: "Search ingredients..."
+      unit: "Unit"
+    index:
+      all_categories: "All categories"
+      banner_alt: "All recipes"
+      banner_title: "Start your day with good food"
+      empty: "No recipes match your search."
+      new_recipe: "New recipe"
+      search_placeholder: "Search recipes"
+    new:
+      title: "New recipe"
+    edit:
+      title: "Edit recipe"
+    show:
+      ingredients: "Ingredients"
+      link: "Link"
+      source: "Source: %{name}"
+    form:
+      add_ingredient: "+ Add ingredient"
+      category_prompt: "Choose a category"
+      create: "Create recipe"
+      create_source: "Create source"
+      ingredients: "Ingredients"
+      save_failed: "Couldn't save. Please try again."
+      search_source: "Search sources..."
+      update: "Update recipe"
+    ingredient_modal:
+      category_prompt: "Choose one"
+      stores: "Where to buy"
+
+  meal_plans:
+    days:
+      monday: "Mon"
+      tuesday: "Tue"
+      wednesday: "Wed"
+      thursday: "Thu"
+      friday: "Fri"
+      saturday: "Sat"
+      sunday: "Sun"
+    meal_types:
+      breakfast: "Breakfast"
+      lunch: "Lunch"
+      dinner: "Dinner"
+      snack: "Snack"
+    index:
+      empty: "No meal plans yet."
+      new_meal_plan: "New meal plan"
+      title: "Meal Plans"
+    meal_plan_card:
+      confirm_delete: "Delete this meal plan?"
+      recipe_count:
+        one: "%{count} recipe planned"
+        other: "%{count} recipes planned"
+    new:
+      create: "Create"
+      name: "Name (optional)"
+      name_placeholder: "e.g. Week 1"
+      title: "New meal plan"
+      week: "Week"
+      week_help: "Snaps to the Monday of the week you pick."
+    show:
+      grocery_list: "Grocery list"
+      no_recipes_found: "No recipes found"
+    meal_slot_cell:
+      remove: "Remove from plan"
+      view_recipe: "View recipe"
+    recipe_search_modal:
+      prompt: "Type to search"
+      search_placeholder: "Search recipes..."
+      title: "Choose a recipe"
+
+  grocery_lists:
+    uncategorized_category: "Uncategorized"
+    uncategorized_store: "Any store"
+    show:
+      back: "Back to meal plan"
+      empty: "Your grocery list is empty"
+      empty_hint: "Tick a recipe's grocery checkbox in the meal plan to add its ingredients."
+      pantry: "Already have"
+      title: "Grocery List"
+
+  sessions:
+    new:
+      no_account: "Don't have an account? "
+      register: "Sign up"
+      submit: "Log in"
+      title: "Log in"
+
+  registrations:
+    new:
+      have_account: "Already have an account? "
+      login: "Log in"
+      submit: "Sign up"
+      title: "Sign up"

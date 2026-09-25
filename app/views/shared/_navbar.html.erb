@@ -1,20 +1,20 @@
 <header>
   <div class="flex items-center px-6">
-    <span class="logo-text">食谱管理</span>
+    <span class="logo-text"><%= t("app_name") %></span>
   </div>
 
   <nav class="relative">
     <div class="flex flex-grow">
       <div class="topnav-item-container">
         <div class="topnav-item">
-          <%= link_to "首页", root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
+          <%= link_to t(".home"), root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
         </div>
         <% if logged_in? %>
           <div class="topnav-item">
-            <%= link_to "所有菜谱", recipes_path, class: "nav-link #{'active' if current_page?(recipes_path)}" %>
+            <%= link_to t(".recipes"), recipes_path, class: "nav-link #{'active' if current_page?(recipes_path)}" %>
           </div>
           <div class="topnav-item">
-            <%= link_to "餐计划", meal_plans_path, class: "nav-link #{'active' if current_page?(meal_plans_path)}" %>
+            <%= link_to t(".meal_plans"), meal_plans_path, class: "nav-link #{'active' if current_page?(meal_plans_path)}" %>
           </div>
         <% end %>
       </div>
@@ -22,11 +22,12 @@
   </nav>
 
   <div class="flex items-center px-6 ml-auto">
+    <%= render "shared/locale_switcher" %>
     <% if logged_in? %>
       <span class="text-white text-sm opacity-70 mr-4"><%= current_user.username %></span>
-      <%= link_to "退出", logout_path, data: { turbo_method: :delete }, class: "nav-link" %>
+      <%= link_to t(".logout"), logout_path, data: { turbo_method: :delete }, class: "nav-link" %>
     <% else %>
-      <%= link_to "登录", login_path, class: "nav-link" %>
+      <%= link_to t(".login"), login_path, class: "nav-link" %>
     <% end %>
   </div>
 </header>

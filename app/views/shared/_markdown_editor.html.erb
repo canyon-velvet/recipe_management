@@ -1,9 +1,10 @@
 <%# locals: (form:, field:, label:, rows: 6, min_height: "156px", help: nil, class: nil) %>
-<div class="field <%= binding.local_variable_get(:class) %>" data-controller="markdown-preview">
+<div class="field <%= binding.local_variable_get(:class) %>" data-controller="markdown-preview"
+     data-markdown-preview-empty-text-value="<%= t(".empty_preview") %>">
   <%= form.label field, label, class: "form-label" %>
   <div class="md-tab-bar">
-    <button type="button" class="md-tab tab-active" data-markdown-preview-target="writeTab" data-action="markdown-preview#showWrite">编辑</button>
-    <button type="button" class="md-tab" data-markdown-preview-target="previewTab" data-action="markdown-preview#showPreview">预览</button>
+    <button type="button" class="md-tab tab-active" data-markdown-preview-target="writeTab" data-action="markdown-preview#showWrite"><%= t(".write") %></button>
+    <button type="button" class="md-tab" data-markdown-preview-target="previewTab" data-action="markdown-preview#showPreview"><%= t(".preview") %></button>
   </div>
   <%= form.text_area field, rows: rows, class: "form-textarea rounded-t-none",
         data: { markdown_preview_target: "input" } %>

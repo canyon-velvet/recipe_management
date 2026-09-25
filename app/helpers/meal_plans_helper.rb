@@ -1,13 +1,10 @@
 module MealPlansHelper
-  DAY_LABELS = %w[周一 周二 周三 周四 周五 周六 周日].freeze
-  MEAL_TYPE_LABELS = %w[早餐 午餐 晚餐 加餐].freeze
-
   def day_label(index)
-    DAY_LABELS[index]
+    t(MealPlan::DAYS_OF_WEEK[index], scope: "meal_plans.days")
   end
 
   def meal_type_label(index)
-    MEAL_TYPE_LABELS[index]
+    t(MealPlan::MEAL_TYPES[index], scope: "meal_plans.meal_types")
   end
 
   def format_week_range(meal_plan)

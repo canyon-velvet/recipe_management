@@ -8,7 +8,7 @@ class MealPlan < ApplicationRecord
 
   validates :start_date, presence: true
   validates :end_date, presence: true
-  validates :start_date, uniqueness: { scope: :user_id, message: "already has a meal plan for this week" }
+  validates :start_date, uniqueness: { scope: :user_id, message: :week_taken }
   validate :start_date_must_be_monday
   validate :end_date_must_be_sunday_after_start
 
@@ -27,12 +27,12 @@ class MealPlan < ApplicationRecord
 
   def start_date_must_be_monday
     return if start_date.blank?
-    errors.add(:start_date, "must be a Monday") unless start_date.monday?
+    errors.add(:start_date, :not_monday) unless start_date.monday?
   end
 
   def end_date_must_be_sunday_after_start
     return if start_date.blank? || end_date.blank?
-    errors.add(:end_date, "must be the Sunday after start date") unless end_date == start_date + 6.days
+    errors.add(:end_date, :not_sunday_after_start) unless end_date == start_date + 6.days
   end
 
   def create_meal_slots
