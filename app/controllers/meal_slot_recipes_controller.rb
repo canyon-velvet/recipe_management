@@ -4,7 +4,7 @@ class MealSlotRecipesController < ApplicationController
 
   def create
     @meal_slot_recipe = @meal_slot.meal_slot_recipes.build(
-      recipe_id: params.dig(:meal_slot_recipe, :recipe_id),
+      recipe: current_user.recipes.find(params.dig(:meal_slot_recipe, :recipe_id)),
       add_to_grocery_list: false
     )
 
