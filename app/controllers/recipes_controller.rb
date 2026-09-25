@@ -3,17 +3,15 @@ class RecipesController < ApplicationController
   before_action :set_form_data, only: [ :new, :create, :edit, :update ]
 
   def index
-    recipes = Recipe.includes(:source)
-                    .search_by_name(params[:q])
-                    .by_category(params[:category])
-                    .order(updated_at: :desc)
+    recipes = current_user.recipes.includes(:source)
+                          .search_by_name(params[:q])
+                          .by_category(params[:category])
+                          .order(updated_at: :desc)
     @pagy, @recipes = pagy(recipes)
   end
 
   def search
-    recipes = Recipe.where("name ILIKE ?", "%#{params[:q]}%")
-                    .order(:name)
-                    .limit(20)
+    recipes = current_user.recipes.search_by_name(params[:q]).order(:name).limit(20)
     render json: recipes.map { |r| { id: r.id, name: r.name, category: r.category_label } }
   end
 
@@ -53,7 +51,7 @@ class RecipesController < ApplicationController
   private
 
   def set_recipe
-    @recipe = Recipe.includes(:source, recipe_ingredients: :ingredient).find(params[:id])
+    @recipe = current_user.recipes.includes(:source, recipe_ingredients: :ingredient).find(params[:id])
   end
 
   def set_form_data

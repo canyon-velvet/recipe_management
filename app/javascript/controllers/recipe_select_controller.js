@@ -54,14 +54,25 @@ export default class extends Controller {
       return
     }
 
-    this.resultsTarget.innerHTML = recipes.map(r => `
-      <li class="flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer hover:bg-indigo-50 transition-colors"
-          data-action="click->recipe-select#select"
-          data-recipe-id="${r.id}">
-        <span class="text-sm text-gray-800">${r.name}</span>
-        <span class="text-xs text-gray-400">${r.category || ""}</span>
-      </li>
-    `).join("")
+    this.resultsTarget.replaceChildren(...recipes.map(recipe => this.buildResult(recipe)))
+  }
+
+  buildResult(recipe) {
+    const li = document.createElement("li")
+    li.className = "flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer hover:bg-indigo-50 transition-colors"
+    li.dataset.action = "click->recipe-select#select"
+    li.dataset.recipeId = recipe.id
+
+    const name = document.createElement("span")
+    name.className = "text-sm text-gray-800"
+    name.textContent = recipe.name
+
+    const category = document.createElement("span")
+    category.className = "text-xs text-gray-400"
+    category.textContent = recipe.category || ""
+
+    li.append(name, category)
+    return li
   }
 
   async select(event) {
