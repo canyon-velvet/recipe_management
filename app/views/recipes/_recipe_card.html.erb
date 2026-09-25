@@ -11,14 +11,14 @@
         </h3>
         <div class="flex-none pointer-events-auto relative z-20">
           <%= render "shared/kebab_menu", items: [
-            { label: "编辑", url: edit_recipe_path(recipe) },
-            { label: "删除", url: recipe_path(recipe), data: { turbo_method: :delete, turbo_confirm: "确定要删除这个菜谱吗？" }, class: "text-red-600" }
+            { label: t("actions.edit"), url: edit_recipe_path(recipe) },
+            { label: t("actions.delete"), url: recipe_path(recipe), data: { turbo_method: :delete, turbo_confirm: t("recipes.confirm_delete") }, class: "text-red-600" }
           ] %>
         </div>
       </div>
 
       <span class="inline-flex mt-1 items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700">
-        <%= Recipe::CATEGORIES[recipe.category] %>
+        <%= recipe.category_label %>
       </span>
 
       <% if recipe.source %>

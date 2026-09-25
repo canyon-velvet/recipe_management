@@ -17,8 +17,8 @@ class GroceryListsController < ApplicationController
     grouped = {}
 
     items.each do |item|
-      store_name = item.ingredient.grocery_store_types.first&.name || "未分类商店"
-      category_name = item.ingredient.ingredient_category&.name || "未分类"
+      store_name = item.ingredient.grocery_store_types.first&.name || t("grocery_lists.uncategorized_store")
+      category_name = item.ingredient.ingredient_category&.name || t("grocery_lists.uncategorized_category")
 
       grouped[store_name] ||= {}
       grouped[store_name][category_name] ||= []

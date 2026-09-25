@@ -23,6 +23,9 @@ gem "bcrypt", "~> 3.1.7"
 # Pagination
 gem "pagy", "~> 43.6"
 
+# Locale data (validation messages, dates) for zh-CN
+gem "rails-i18n", "~> 8.0"
+
 # Server-side markdown rendering
 gem "redcarpet", "~> 3.6"
 

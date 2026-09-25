@@ -4,7 +4,7 @@ export default class extends Controller {
   static targets = ["input", "hiddenField", "list"]
   static values = {
     url: String,
-    createLabel: { type: String, default: "创建" }
+    createLabel: String
   }
 
   connect() {

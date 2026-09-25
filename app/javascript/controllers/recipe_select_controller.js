@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["dialog", "input", "results", "slotId"]
-  static values = { searchUrl: String }
+  static values = { searchUrl: String, promptText: String, noResultsText: String }
 
   connect() {
     this.timeout = null
@@ -12,7 +12,7 @@ export default class extends Controller {
     const slotId = event.currentTarget.dataset.mealSlotId
     this.slotIdTarget.value = slotId
     this.inputTarget.value = ""
-    this.resultsTarget.innerHTML = '<li class="text-sm text-gray-400 text-center py-4">输入关键词搜索</li>'
+    this.showMessage(this.promptTextValue)
     this.dialogTarget.showModal()
     this.inputTarget.focus()
   }
@@ -32,7 +32,7 @@ export default class extends Controller {
     const query = this.inputTarget.value.trim()
 
     if (query.length === 0) {
-      this.resultsTarget.innerHTML = '<li class="text-sm text-gray-400 text-center py-4">输入关键词搜索</li>'
+      this.showMessage(this.promptTextValue)
       return
     }
 
@@ -50,7 +50,7 @@ export default class extends Controller {
 
   renderResults(recipes) {
     if (recipes.length === 0) {
-      this.resultsTarget.innerHTML = '<li class="text-sm text-gray-400 text-center py-4">没有找到菜谱</li>'
+      this.showMessage(this.noResultsTextValue)
       return
     }
 
@@ -99,6 +99,13 @@ export default class extends Controller {
   }
 
   // Helpers
+
+  showMessage(text) {
+    const li = document.createElement("li")
+    li.className = "text-sm text-gray-400 text-center py-4"
+    li.textContent = text
+    this.resultsTarget.replaceChildren(li)
+  }
 
   turboFetch(url, method, params) {
     const formData = new FormData()

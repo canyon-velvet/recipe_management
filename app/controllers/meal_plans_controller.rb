@@ -30,7 +30,7 @@ class MealPlansController < ApplicationController
     @meal_plan.end_date = @meal_plan.start_date + 6.days if @meal_plan.start_date.present?
 
     if @meal_plan.save
-      redirect_to meal_plan_path(@meal_plan), notice: "餐计划创建成功"
+      redirect_to meal_plan_path(@meal_plan), notice: t("flash.meal_plan_created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -38,7 +38,7 @@ class MealPlansController < ApplicationController
 
   def destroy
     @meal_plan.destroy
-    redirect_to meal_plans_path, notice: "餐计划已删除"
+    redirect_to meal_plans_path, notice: t("flash.meal_plan_deleted")
   end
 
   private

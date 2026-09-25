@@ -1,5 +1,7 @@
 <section class="container mx-auto max-w-6xl px-4 py-8" data-controller="recipe-select"
-         data-recipe-select-search-url-value="<%= search_recipes_path %>">
+         data-recipe-select-search-url-value="<%= search_recipes_path %>"
+         data-recipe-select-prompt-text-value="<%= t("meal_plans.recipe_search_modal.prompt") %>"
+         data-recipe-select-no-results-text-value="<%= t(".no_recipes_found") %>">
   <!-- Header -->
   <div class="flex items-center justify-between mb-6">
     <div>
@@ -7,8 +9,8 @@
       <p class="text-sm text-gray-500 mt-1"><%= format_week_range(@meal_plan) %></p>
     </div>
     <div class="flex items-center gap-3">
-      <%= link_to "查看购物清单", meal_plan_grocery_list_path(@meal_plan), class: "btn-primary" %>
-      <%= link_to "返回", meal_plans_path, class: "btn-secondary" %>
+      <%= link_to t(".grocery_list"), meal_plan_grocery_list_path(@meal_plan), class: "btn-primary" %>
+      <%= link_to t("actions.back"), meal_plans_path, class: "btn-secondary" %>
     </div>
   </div>
 

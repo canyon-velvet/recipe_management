@@ -5,25 +5,25 @@
       <h1 class="text-2xl md:text-3xl font-bold tracking-wider truncate"><%= @recipe.name %></h1>
       <div class="ml-2">
         <%= render "shared/kebab_menu", items: [
-          { label: "删除", url: recipe_path(@recipe), data: { turbo_method: :delete, turbo_confirm: "确定要删除这个菜谱吗？" }, class: "text-red-600" }
+          { label: t("actions.delete"), url: recipe_path(@recipe), data: { turbo_method: :delete, turbo_confirm: t("recipes.confirm_delete") }, class: "text-red-600" }
         ] %>
       </div>
     </div>
 
-    <%= link_to "编辑", edit_recipe_path(@recipe), class: "btn-secondary" %>
+    <%= link_to t("actions.edit"), edit_recipe_path(@recipe), class: "btn-secondary" %>
   </div>
 
   <!-- Category badge -->
   <div class="flex justify-start mb-4">
     <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700">
-      <%= Recipe::CATEGORIES[@recipe.category] %>
+      <%= @recipe.category_label %>
     </span>
   </div>
 
   <!-- Description -->
   <% if @recipe.description.present? %>
     <div class="mt-16">
-      <%= render "shared/section_card", title: "描述", html: render_markdown(@recipe.description) %>
+      <%= render "shared/section_card", title: Recipe.human_attribute_name(:description), html: render_markdown(@recipe.description) %>
     </div>
   <% end %>
 
@@ -34,20 +34,20 @@
       value = [ri.quantity, ri.unit].compact_blank.join(" ")
       [label, value]
     } %>
-    <%= render "shared/section_card", title: "食材", items_kv: ingredients_kv %>
+    <%= render "shared/section_card", title: t(".ingredients"), items_kv: ingredients_kv %>
   </div>
 
   <!-- Instructions -->
   <div class="mt-16">
-    <%= render "shared/section_card", title: "制作步骤", html: render_markdown(@recipe.instructions) %>
+    <%= render "shared/section_card", title: Recipe.human_attribute_name(:instructions), html: render_markdown(@recipe.instructions) %>
   </div>
 
   <!-- Source footnote -->
   <div class="mt-4 text-left text-xs text-gray-400">
     <% if @recipe.source %>
-      来源：<%= @recipe.source.name %>
+      <%= t(".source", name: @recipe.source.name) %>
       <% if @recipe.source.url.present? %>
-        · <%= link_to "链接", @recipe.source.url, class: "underline hover:no-underline", target: "_blank", rel: "noopener" %>
+        · <%= link_to t(".link"), @recipe.source.url, class: "underline hover:no-underline", target: "_blank", rel: "noopener" %>
       <% end %>
     <% end %>
   </div>

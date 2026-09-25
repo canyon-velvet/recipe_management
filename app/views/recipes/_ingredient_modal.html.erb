@@ -1,16 +1,16 @@
 <%# locals: (ingredient_categories:, grocery_store_types:) %>
-<%= render layout: "shared/inline_create_modal", locals: { title: "创建食材" } do %>
+<%= render layout: "shared/inline_create_modal", locals: { title: t("recipes.ingredient_fields.create") } do %>
   <div class="field">
-    <label class="form-label">名称</label>
+    <label class="form-label"><%= Ingredient.human_attribute_name(:name) %></label>
     <input type="text" name="ingredient[name]"
            data-inline-create-target="prefill"
            class="form-input">
   </div>
 
   <div class="field">
-    <label class="form-label">分类</label>
+    <label class="form-label"><%= Ingredient.human_attribute_name(:ingredient_category) %></label>
     <select name="ingredient[ingredient_category_id]" class="form-select">
-      <option value="">请选择</option>
+      <option value=""><%= t("recipes.ingredient_modal.category_prompt") %></option>
       <% ingredient_categories.each do |cat| %>
         <option value="<%= cat.id %>"><%= cat.name %></option>
       <% end %>
@@ -18,7 +18,7 @@
   </div>
 
   <div class="field">
-    <label class="form-label">购买地点</label>
+    <label class="form-label"><%= t("recipes.ingredient_modal.stores") %></label>
     <div class="flex gap-4">
       <% grocery_store_types.each do |store| %>
         <label class="flex items-center gap-2 text-sm text-gray-700">

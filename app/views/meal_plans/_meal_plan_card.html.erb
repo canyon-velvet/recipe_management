@@ -6,12 +6,12 @@
     <div>
       <h3 class="font-semibold text-gray-900"><%= meal_plan.display_name %></h3>
       <p class="text-sm text-gray-500 mt-1"><%= format_week_range(meal_plan) %></p>
-      <p class="text-xs text-gray-400 mt-2">已安排 <%= meal_plan.assigned_recipe_count %> 道菜谱</p>
+      <p class="text-xs text-gray-400 mt-2"><%= t(".recipe_count", count: meal_plan.assigned_recipe_count) %></p>
     </div>
 
     <div class="flex-none pointer-events-auto relative z-20">
       <%= render "shared/kebab_menu", items: [
-        { label: "删除", url: meal_plan_path(meal_plan), data: { turbo_method: :delete, turbo_confirm: "确定要删除这个餐计划吗？" }, class: "text-red-600" }
+        { label: t("actions.delete"), url: meal_plan_path(meal_plan), data: { turbo_method: :delete, turbo_confirm: t(".confirm_delete") }, class: "text-red-600" }
       ] %>
     </div>
   </div>

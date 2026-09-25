@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include Pagy::Method
+  include Localization
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
@@ -21,10 +22,10 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_user!
-    redirect_to login_path, alert: "请先登录" unless logged_in?
+    redirect_to login_path, alert: t("flash.login_required") unless logged_in?
   end
 
   def require_admin
-    redirect_to root_path, alert: "需要管理员权限" unless current_user&.admin?
+    redirect_to root_path, alert: t("flash.admin_required") unless current_user&.admin?
   end
 end

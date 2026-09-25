@@ -78,6 +78,6 @@ class MealSlotRecipesController < ApplicationController
   end
 
   def authorize_meal_plan!(meal_plan)
-    redirect_to meal_plans_path, alert: "无权操作" unless meal_plan.user_id == current_user.id
+    redirect_to meal_plans_path, alert: t("flash.not_authorized") unless meal_plan.user_id == current_user.id
   end
 end

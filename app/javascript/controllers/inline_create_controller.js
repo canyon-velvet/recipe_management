@@ -4,7 +4,7 @@ import { Controller } from "@hotwired/stimulus"
 // Collects all named inputs inside the dialog and POSTs as FormData.
 export default class extends Controller {
   static targets = ["dialog", "errors", "prefill"]
-  static values = { createUrl: String }
+  static values = { createUrl: String, errorText: String }
 
   openModal(event) {
     this.triggerAutocomplete = event.target.closest("[data-controller*='autocomplete']")
@@ -59,11 +59,11 @@ export default class extends Controller {
         this.resetForm()
       } else {
         const data = await response.json()
-        this.errorsTarget.textContent = data.errors ? data.errors.join(", ") : "保存失败"
+        this.errorsTarget.textContent = data.errors ? data.errors.join(", ") : this.errorTextValue
       }
     } catch (error) {
       console.error("Inline create error:", error)
-      this.errorsTarget.textContent = "保存失败，请重试"
+      this.errorsTarget.textContent = this.errorTextValue
     }
   }
 
