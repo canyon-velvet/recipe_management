@@ -177,3 +177,13 @@ This is a Ruby on Rails recipe management system for home use. Follow these guid
 - Check Rails Guides for best practices
 - Keep it simple - add complexity only when needed
 - Ask for clarification if requirements are unclear
+
+## Agent skills
+
+### Issue tracker
+
+Issues are tracked in GitHub Issues (`canyon-velvet/recipe_management`) using the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
