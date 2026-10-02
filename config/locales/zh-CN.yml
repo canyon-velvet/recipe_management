@@ -155,7 +155,9 @@ zh-CN:
       search_source: "搜索来源..."
       update: "更新菜谱"
     tag_picker:
+      no_results: "没有匹配的标签"
       placeholder: "选择标签"
+      remove: "移除"
     ingredient_modal:
       category_prompt: "请选择"
 

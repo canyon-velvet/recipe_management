@@ -155,7 +155,9 @@ en:
       search_source: "Search sources..."
       update: "Update recipe"
     tag_picker:
+      no_results: "No matching tags"
       placeholder: "Choose tags"
+      remove: "Remove"
     ingredient_modal:
       category_prompt: "Choose one"
 

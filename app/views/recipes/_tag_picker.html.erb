@@ -1,31 +1,15 @@
 <%# locals: (form:) %>
 <div class="field">
-  <span class="form-label" id="tag_picker_label"><%= Recipe.human_attribute_name(:tags) %></span>
-  <%= form.hidden_field :tag_ids, multiple: true, value: "" %>
-
-  <div class="relative"
-       data-controller="dropdown tag-select"
-       data-tag-select-placeholder-value="<%= t(".placeholder") %>">
-    <button type="button" class="form-select tag-select-toggle" aria-haspopup="listbox"
-            aria-labelledby="tag_picker_label"
-            data-action="dropdown#toggle click@window->dropdown#close">
-      <span class="truncate" data-tag-select-target="summary"></span>
-      <svg width="16" height="16" class="shrink-0 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-      </svg>
-    </button>
-
-    <div class="tag-select-menu hidden" data-dropdown-target="menu" role="listbox" aria-multiselectable="true">
-      <% Tag.grouped_by_kind.each do |kind_name, tags| %>
-        <p class="tag-group-label"><%= kind_name %></p>
-        <% tags.each do |name, id| %>
-          <label class="tag-option-row">
-            <%= form.check_box :tag_ids, { multiple: true, include_hidden: false, class: "tag-option-checkbox",
-                  data: { tag_select_target: "checkbox", action: "change->tag-select#render" } }, id, nil %>
-            <span data-tag-select-target="name"><%= name %></span>
-          </label>
-        <% end %>
-      <% end %>
-    </div>
-  </div>
+  <%= form.label :tag_ids, Recipe.human_attribute_name(:tags), class: "form-label" %>
+  <%= form.select :tag_ids,
+        grouped_options_for_select(Tag.grouped_by_kind, form.object.tag_ids),
+        {},
+        multiple: true,
+        placeholder: t(".placeholder"),
+        class: "tag-select",
+        data: {
+          controller: "tag-select",
+          tag_select_no_results_value: t(".no_results"),
+          tag_select_remove_label_value: t(".remove")
+        } %>
 </div>
