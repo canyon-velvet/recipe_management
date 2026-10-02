@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_07_160624) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_02_022035) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -33,28 +33,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_07_160624) do
     t.index ["meal_plan_id"], name: "index_grocery_lists_on_meal_plan_id", unique: true
   end
 
-  create_table "grocery_store_types", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "name", null: false
-    t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_grocery_store_types_on_name", unique: true
-  end
-
   create_table "ingredient_categories", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "name", null: false
     t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_ingredient_categories_on_name", unique: true
-  end
-
-  create_table "ingredient_store_types", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.bigint "grocery_store_type_id", null: false
-    t.bigint "ingredient_id", null: false
-    t.datetime "updated_at", null: false
-    t.index ["grocery_store_type_id"], name: "index_ingredient_store_types_on_grocery_store_type_id"
-    t.index ["ingredient_id", "grocery_store_type_id"], name: "index_ingredient_store_types_uniqueness", unique: true
-    t.index ["ingredient_id"], name: "index_ingredient_store_types_on_ingredient_id"
+    t.string "key", null: false
+    t.integer "position", null: false
+    t.index ["key"], name: "index_ingredient_categories_on_key", unique: true
+    t.index ["position"], name: "index_ingredient_categories_on_position"
   end
 
   create_table "ingredients", force: :cascade do |t|
@@ -143,8 +128,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_07_160624) do
   add_foreign_key "grocery_list_items", "grocery_lists"
   add_foreign_key "grocery_list_items", "ingredients"
   add_foreign_key "grocery_lists", "meal_plans"
-  add_foreign_key "ingredient_store_types", "grocery_store_types"
-  add_foreign_key "ingredient_store_types", "ingredients"
   add_foreign_key "ingredients", "ingredient_categories"
   add_foreign_key "meal_plans", "users"
   add_foreign_key "meal_slot_recipes", "meal_slots"

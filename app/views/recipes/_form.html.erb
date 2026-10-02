@@ -1,4 +1,4 @@
-<%# locals: (recipe:, ingredient_categories:, grocery_store_types:) %>
+<%# locals: (recipe:, ingredient_categories:) %>
 
 <%= form_with model: recipe, class: "space-y-6" do |f| %>
   <% if recipe.errors.any? %>
@@ -84,9 +84,7 @@
       <%= t(".add_ingredient") %>
     </button>
 
-    <%= render "recipes/ingredient_modal",
-          ingredient_categories: ingredient_categories,
-          grocery_store_types: grocery_store_types %>
+    <%= render "recipes/ingredient_modal", ingredient_categories: ingredient_categories %>
   </div>
 
   <!-- Instructions (markdown) -->

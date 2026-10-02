@@ -7,8 +7,7 @@ class GroceryListItem < ApplicationRecord
 
   scope :active, -> { where(in_pantry: false) }
   scope :in_pantry, -> { where(in_pantry: true) }
-  scope :by_store_type, ->(store_type_id) {
-    joins(ingredient: :ingredient_store_types)
-      .where(ingredient_store_types: { grocery_store_type_id: store_type_id })
+  scope :in_aisle_order, -> {
+    includes(ingredient: :ingredient_category).order("ingredient_categories.position", "ingredients.name")
   }
 end

@@ -55,8 +55,7 @@ class RecipesController < ApplicationController
   end
 
   def set_form_data
-    @ingredient_categories = IngredientCategory.order(:name)
-    @grocery_store_types = GroceryStoreType.order(:name)
+    @ingredient_categories = IngredientCategory.ordered
   end
 
   def recipe_params

@@ -39,6 +39,17 @@ zh-CN:
     pasta: "意面"
     sauce: "酱料"
 
+  ingredient_categories:
+    produce: "蔬菜水果"
+    meat_seafood: "肉类海鲜"
+    dairy_eggs: "乳制品蛋类"
+    bakery: "烘焙面包"
+    pantry: "干货杂货"
+    spices_seasonings: "调味料"
+    frozen: "冷冻食品"
+    beverages: "饮料"
+    other: "其他"
+
   activerecord:
     attributes:
       ingredient:
@@ -133,7 +144,6 @@ zh-CN:
       update: "更新菜谱"
     ingredient_modal:
       category_prompt: "请选择"
-      stores: "购买地点"
 
   meal_plans:
     days:
@@ -175,8 +185,6 @@ zh-CN:
       title: "选择菜谱"
 
   grocery_lists:
-    uncategorized_category: "未分类"
-    uncategorized_store: "未分类商店"
     show:
       back: "返回餐计划"
       empty: "购物清单为空"

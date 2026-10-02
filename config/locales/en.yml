@@ -39,6 +39,17 @@ en:
     pasta: "Pasta"
     sauce: "Sauces"
 
+  ingredient_categories:
+    produce: "Produce"
+    meat_seafood: "Meat & Seafood"
+    dairy_eggs: "Dairy & Eggs"
+    bakery: "Bakery"
+    pantry: "Pantry"
+    spices_seasonings: "Spices & Seasonings"
+    frozen: "Frozen"
+    beverages: "Beverages"
+    other: "Other"
+
   activerecord:
     attributes:
       ingredient:
@@ -133,7 +144,6 @@ en:
       update: "Update recipe"
     ingredient_modal:
       category_prompt: "Choose one"
-      stores: "Where to buy"
 
   meal_plans:
     days:
@@ -177,8 +187,6 @@ en:
       title: "Choose a recipe"
 
   grocery_lists:
-    uncategorized_category: "Uncategorized"
-    uncategorized_store: "Any store"
     show:
       back: "Back to meal plan"
       empty: "Your grocery list is empty"
