@@ -8,6 +8,6 @@ class GroceryListItem < ApplicationRecord
   scope :active, -> { where(in_pantry: false) }
   scope :in_pantry, -> { where(in_pantry: true) }
   scope :in_aisle_order, -> {
-    includes(ingredient: :ingredient_category).order("ingredient_categories.position", "ingredients.name")
+    includes(ingredient: :aisle).order("aisles.position", "ingredients.name")
   }
 end

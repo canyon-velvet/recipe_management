@@ -10,9 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_02_031825) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_02_161943) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "aisles", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "key", null: false
+    t.integer "position", null: false
+    t.index ["key"], name: "index_aisles_on_key", unique: true
+    t.index ["position"], name: "index_aisles_on_position"
+  end
 
   create_table "grocery_list_items", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -33,22 +42,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_031825) do
     t.index ["meal_plan_id"], name: "index_grocery_lists_on_meal_plan_id", unique: true
   end
 
-  create_table "ingredient_categories", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "key", null: false
-    t.integer "position", null: false
-    t.index ["key"], name: "index_ingredient_categories_on_key", unique: true
-    t.index ["position"], name: "index_ingredient_categories_on_position"
-  end
-
   create_table "ingredients", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.bigint "ingredient_category_id", null: false
+    t.bigint "aisle_id", null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
     t.index "lower((name)::text)", name: "index_ingredients_on_lowercase_name", unique: true
-    t.index ["ingredient_category_id"], name: "index_ingredients_on_ingredient_category_id"
+    t.index ["aisle_id"], name: "index_ingredients_on_aisle_id"
   end
 
   create_table "meal_plans", force: :cascade do |t|
@@ -154,7 +154,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_031825) do
   add_foreign_key "grocery_list_items", "grocery_lists"
   add_foreign_key "grocery_list_items", "ingredients"
   add_foreign_key "grocery_lists", "meal_plans"
-  add_foreign_key "ingredients", "ingredient_categories"
+  add_foreign_key "ingredients", "aisles"
   add_foreign_key "meal_plans", "users"
   add_foreign_key "meal_slot_recipes", "meal_slots"
   add_foreign_key "meal_slot_recipes", "recipes"

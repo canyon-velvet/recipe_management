@@ -1,4 +1,4 @@
-<%# locals: (ingredient_categories:) %>
+<%# locals: (aisles:) %>
 <%= render layout: "shared/inline_create_modal", locals: { title: t("recipes.ingredient_fields.create") } do %>
   <div class="field">
     <label class="form-label"><%= Ingredient.human_attribute_name(:name) %></label>
@@ -8,11 +8,11 @@
   </div>
 
   <div class="field">
-    <label class="form-label"><%= Ingredient.human_attribute_name(:ingredient_category) %></label>
-    <select name="ingredient[ingredient_category_id]" class="form-select">
-      <option value=""><%= t("recipes.ingredient_modal.category_prompt") %></option>
-      <% ingredient_categories.each do |cat| %>
-        <option value="<%= cat.id %>"><%= cat.name %></option>
+    <label class="form-label"><%= Ingredient.human_attribute_name(:aisle) %></label>
+    <select name="ingredient[aisle_id]" class="form-select">
+      <option value=""><%= t("recipes.ingredient_modal.aisle_prompt") %></option>
+      <% aisles.each do |aisle| %>
+        <option value="<%= aisle.id %>"><%= aisle.name %></option>
       <% end %>
     </select>
   </div>

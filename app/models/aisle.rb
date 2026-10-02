@@ -1,4 +1,4 @@
-class IngredientCategory < ApplicationRecord
+class Aisle < ApplicationRecord
   include TranslatedName
 
   has_many :ingredients, dependent: :restrict_with_error

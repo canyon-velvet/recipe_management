@@ -1,5 +1,5 @@
 class Ingredient < ApplicationRecord
-  belongs_to :ingredient_category
+  belongs_to :aisle
   has_many :recipe_ingredients, dependent: :restrict_with_error
   has_many :recipes, through: :recipe_ingredients
   has_many :grocery_list_items, dependent: :restrict_with_error

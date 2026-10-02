@@ -16,10 +16,10 @@
       <p class="text-sm mt-1"><%= t(".empty_hint") %></p>
     </div>
   <% else %>
-    <!-- Active items grouped by ingredient category, in aisle order -->
+    <!-- Active items grouped by aisle, in shopping order -->
     <div id="active_items" class="space-y-4">
-      <% @active_groups.each do |category, items| %>
-        <%= render "grocery_lists/category_group", category: category, items: items %>
+      <% @active_groups.each do |aisle, items| %>
+        <%= render "grocery_lists/aisle_group", aisle: aisle, items: items %>
       <% end %>
     </div>
 
