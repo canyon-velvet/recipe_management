@@ -35,9 +35,10 @@
     <%= render "shared/section_card", title: t(".ingredients"), items_kv: ingredients_kv %>
   </div>
 
-  <!-- Instructions -->
+  <!-- Steps -->
   <div class="mt-16">
-    <%= render "shared/section_card", title: Recipe.human_attribute_name(:instructions), html: render_markdown(@recipe.instructions) %>
+    <%= render "shared/section_card", title: Recipe.human_attribute_name(:steps),
+          html: render("recipes/steps", steps: @recipe.steps) %>
   </div>
 
   <!-- Source footnote -->

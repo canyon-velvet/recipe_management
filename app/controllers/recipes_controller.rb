@@ -52,7 +52,7 @@ class RecipesController < ApplicationController
   private
 
   def set_recipe
-    @recipe = current_user.recipes.includes(:source, :tags, recipe_ingredients: :ingredient).find(params[:id])
+    @recipe = current_user.recipes.includes(:source, :tags, :steps, recipe_ingredients: :ingredient).find(params[:id])
   end
 
   def set_form_data
@@ -62,8 +62,9 @@ class RecipesController < ApplicationController
 
   def recipe_params
     params.require(:recipe).permit(
-      :name, :description, :instructions, :source_id, tag_ids: [],
-      recipe_ingredients_attributes: [ :id, :ingredient_id, :quantity, :unit, :_destroy ]
+      :name, :description, :source_id, tag_ids: [],
+      recipe_ingredients_attributes: [ :id, :ingredient_id, :quantity, :unit, :_destroy ],
+      steps_attributes: [ :id, :body, :position, :_destroy ]
     )
   end
 end
