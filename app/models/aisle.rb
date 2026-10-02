@@ -17,7 +17,7 @@ class Aisle < ApplicationRecord
   # Saving a default aisle under its own translated name would freeze it in one language; keep it translated instead.
   before_validation :clear_name_matching_default, if: :key?
 
-  scope :ordered, -> { order(:position) }
+  scope :ordered, -> { order(:position, :id) }
 
   # Idempotent: gives the user any default aisle they don't have yet, in shopping order.
   def self.create_defaults_for(user)
@@ -27,8 +27,10 @@ class Aisle < ApplicationRecord
   end
 
   # A new aisle goes just before Other, which stays the catch-all at the end of the list.
+  # Locking the user makes concurrent adds take turns, so two aisles never share a position.
   def self.add_before_other(user, name)
     transaction do
+      user.lock!
       position = user.aisles.find_by(key: "other")&.position || (user.aisles.maximum(:position).to_i + 10)
       aisle = user.aisles.new(name: name, position: position)
       user.aisles.where(position: position..).update_all("position = position + 10") if aisle.valid?
@@ -41,7 +43,10 @@ class Aisle < ApplicationRecord
 
   def other? = key == "other"
 
-  def move_up = swap_with(movable_siblings.where(position: ...position).reorder(position: :desc).first)
+  # The name as stored, ignoring an unsaved rename.
+  def saved_name = attribute_in_database(:name) || (key && I18n.t(key, scope: :aisles))
+
+  def move_up = swap_with(movable_siblings.where(position: ...position).reorder(position: :desc, id: :desc).first)
   def move_down = swap_with(movable_siblings.where("position > ?", position).first)
 
   # Other is the catch-all, so it can't be deleted; anything in this aisle moves there.

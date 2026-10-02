@@ -9,4 +9,8 @@
   .aisle-action--delete {
     @apply hover:text-red-600 hover:bg-red-50;
   }
+  /* Turbo marks the frame busy while a change is saving; a second click would cancel the first. */
+  .aisle-editor-frame[aria-busy="true"] {
+    @apply pointer-events-none opacity-60;
+  }
 }

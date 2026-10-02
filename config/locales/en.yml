@@ -228,10 +228,11 @@ en:
 
   aisle_editor:
     confirm_delete: "Delete \"%{name}\"? Its ingredients will move to %{other}."
+    delete: "Delete %{name}"
     done: "Done"
     loading: "Loading…"
-    move_down: "Move down"
-    move_up: "Move up"
+    move_down: "Move %{name} down"
+    move_up: "Move %{name} up"
     new_aisle_placeholder: "New aisle name"
     other_hint: "%{other} always stays last and can't be deleted."
     title: "Edit aisles"
