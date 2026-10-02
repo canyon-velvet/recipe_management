@@ -1,0 +1,17 @@
+@layer components {
+  /* Read-only tag label on cards and the recipe page */
+  .tag-badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700;
+  }
+
+  /* Selectable tag pills in the recipe form */
+  .tag-group-label { @apply text-xs font-medium text-gray-500 mb-1; }
+
+  .tag-pill {
+    @apply inline-flex items-center px-3 py-1 rounded-full border border-gray-300 bg-white
+           text-sm text-gray-700 cursor-pointer select-none hover:bg-gray-50;
+  }
+
+  .tag-option input:checked + .tag-pill { @apply bg-indigo-600 border-indigo-600 text-white hover:bg-indigo-500; }
+  .tag-option input:focus-visible + .tag-pill { @apply ring-2 ring-indigo-400 ring-offset-1; }
+}

@@ -1,0 +1,20 @@
+<%# locals: (form:) %>
+<fieldset class="field">
+  <legend class="form-label"><%= Recipe.human_attribute_name(:tags) %></legend>
+  <%= form.hidden_field :tag_ids, multiple: true, value: "" %>
+  <div class="space-y-3 pt-1">
+    <% Tag.grouped_by_kind.each do |kind_name, tags| %>
+      <div>
+        <p class="tag-group-label"><%= kind_name %></p>
+        <div class="flex flex-wrap gap-2">
+          <% tags.each do |name, id| %>
+            <label class="tag-option">
+              <%= form.check_box :tag_ids, { multiple: true, include_hidden: false, class: "sr-only" }, id, nil %>
+              <span class="tag-pill"><%= name %></span>
+            </label>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</fieldset>

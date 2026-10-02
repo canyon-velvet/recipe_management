@@ -13,11 +13,9 @@
     <%= link_to t("actions.edit"), edit_recipe_path(@recipe), class: "btn-secondary" %>
   </div>
 
-  <!-- Category badge -->
-  <div class="flex justify-start mb-4">
-    <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700">
-      <%= @recipe.category_label %>
-    </span>
+  <!-- Tags -->
+  <div class="mb-4">
+    <%= render "shared/tag_badges", tags: @recipe.tags %>
   </div>
 
   <!-- Description -->

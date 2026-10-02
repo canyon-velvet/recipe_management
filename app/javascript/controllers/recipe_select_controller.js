@@ -67,11 +67,11 @@ export default class extends Controller {
     name.className = "text-sm text-gray-800"
     name.textContent = recipe.name
 
-    const category = document.createElement("span")
-    category.className = "text-xs text-gray-400"
-    category.textContent = recipe.category || ""
+    const tags = document.createElement("span")
+    tags.className = "text-xs text-gray-400"
+    tags.textContent = recipe.tags.join(" · ")
 
-    li.append(name, category)
+    li.append(name, tags)
     return li
   }
 

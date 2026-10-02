@@ -17,9 +17,9 @@
         </div>
       </div>
 
-      <span class="inline-flex mt-1 items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700">
-        <%= recipe.category_label %>
-      </span>
+      <div class="mt-1">
+        <%= render "shared/tag_badges", tags: recipe.tags, limit: 3 %>
+      </div>
 
       <% if recipe.source %>
         <p class="mt-2 text-xs text-gray-500 truncate"><%= recipe.source.name %></p>
@@ -28,7 +28,7 @@
 
     <!-- Right 1/4 icon -->
     <div class="col-span-1 flex items-center justify-center bg-gray-50 rounded-tr-xl rounded-br-xl">
-      <%= image_tag "icons/#{recipe.category}.svg", alt: "", class: "w-12 h-12 object-contain", loading: "lazy" %>
+      <%= image_tag "icons/recipe-placeholder.svg", alt: "", class: "w-12 h-12 object-contain", loading: "lazy" %>
     </div>
   </div>
 

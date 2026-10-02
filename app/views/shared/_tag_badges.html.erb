@@ -1,0 +1,8 @@
+<%# locals: (tags:, limit: nil) %>
+<% if tags.any? %>
+  <div class="flex flex-wrap gap-1">
+    <% tags.first(limit || tags.size).each do |tag| %>
+      <span class="tag-badge"><%= tag.name %></span>
+    <% end %>
+  </div>
+<% end %>

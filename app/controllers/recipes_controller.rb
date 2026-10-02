@@ -3,16 +3,16 @@ class RecipesController < ApplicationController
   before_action :set_form_data, only: [ :new, :create, :edit, :update ]
 
   def index
-    recipes = current_user.recipes.includes(:source)
+    recipes = current_user.recipes.includes(:source, :tags)
                           .search_by_name(params[:q])
-                          .by_category(params[:category])
+                          .tagged(params[:tag])
                           .order(updated_at: :desc)
     @pagy, @recipes = pagy(recipes)
   end
 
   def search
-    recipes = current_user.recipes.search_by_name(params[:q]).order(:name).limit(20)
-    render json: recipes.map { |r| { id: r.id, name: r.name, category: r.category_label } }
+    recipes = current_user.recipes.includes(:tags).search_by_name(params[:q]).order(:name).limit(20)
+    render json: recipes.map { |r| { id: r.id, name: r.name, tags: r.tags.map(&:name) } }
   end
 
   def show
@@ -51,7 +51,7 @@ class RecipesController < ApplicationController
   private
 
   def set_recipe
-    @recipe = current_user.recipes.includes(:source, recipe_ingredients: :ingredient).find(params[:id])
+    @recipe = current_user.recipes.includes(:source, :tags, recipe_ingredients: :ingredient).find(params[:id])
   end
 
   def set_form_data
@@ -60,7 +60,7 @@ class RecipesController < ApplicationController
 
   def recipe_params
     params.require(:recipe).permit(
-      :name, :category, :description, :instructions, :source_id,
+      :name, :description, :instructions, :source_id, tag_ids: [],
       recipe_ingredients_attributes: [ :id, :ingredient_id, :quantity, :unit, :_destroy ]
     )
   end

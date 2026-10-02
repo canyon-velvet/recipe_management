@@ -11,21 +11,14 @@
     </div>
   <% end %>
 
-  <!-- Name + Category -->
-  <div class="field-row">
-    <div class="field">
-      <%= f.label :name, class: "form-label" %>
-      <%= f.text_field :name, class: "form-input", autofocus: true %>
-    </div>
-
-    <div class="field">
-      <%= f.label :category, class: "form-label" %>
-      <%= f.select :category,
-            options_for_select(Recipe.category_options, recipe.category),
-            { include_blank: t(".category_prompt") },
-            class: "form-select" %>
-    </div>
+  <!-- Name -->
+  <div class="field">
+    <%= f.label :name, class: "form-label" %>
+    <%= f.text_field :name, class: "form-input", autofocus: true %>
   </div>
+
+  <!-- Tags -->
+  <%= render "recipes/tag_picker", form: f %>
 
   <!-- Description (markdown) -->
   <%= render "shared/markdown_editor", form: f, field: :description, label: Recipe.human_attribute_name(:description),

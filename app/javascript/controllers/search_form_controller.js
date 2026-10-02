@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["form", "query", "category"]
+  static targets = ["form", "query", "tag"]
 
   submitLater() {
     clearTimeout(this.timeout)
@@ -10,7 +10,7 @@ export default class extends Controller {
 
   clearAll() {
     this.queryTarget.value = ""
-    this.categoryTarget.value = ""
+    this.tagTarget.value = ""
     this.formTarget.requestSubmit()
   }
 }
