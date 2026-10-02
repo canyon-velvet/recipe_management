@@ -1,0 +1,12 @@
+@layer components {
+  .aisle-list {
+    @apply max-h-[60vh] overflow-y-auto space-y-2;
+  }
+  .aisle-action {
+    @apply inline-flex items-center justify-center w-8 h-8 rounded-lg text-gray-500
+           hover:bg-gray-100 disabled:opacity-30 disabled:hover:bg-transparent;
+  }
+  .aisle-action--delete {
+    @apply hover:text-red-600 hover:bg-red-50;
+  }
+}

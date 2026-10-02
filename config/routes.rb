@@ -18,7 +18,9 @@ Rails.application.routes.draw do
   resources :ingredients, only: [ :create ] do
     get :search, on: :collection
   end
-  resources :aisles, only: [ :create ]
+  resources :aisles, only: [ :index, :create, :update, :destroy ] do
+    patch :move, on: :member
+  end
   resources :sources, only: [ :create ] do
     get :search, on: :collection
   end

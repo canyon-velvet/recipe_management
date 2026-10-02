@@ -100,6 +100,8 @@ en:
         username: "Username"
     errors:
       models:
+        aisle:
+          other_aisle_permanent: "Other can't be deleted"
         meal_plan:
           attributes:
             end_date:
@@ -218,10 +220,21 @@ en:
   grocery_lists:
     show:
       back: "Back to meal plan"
+      edit_aisles: "Edit aisles"
       empty: "Your grocery list is empty"
       empty_hint: "Tick a recipe's grocery checkbox in the meal plan to add its ingredients."
       pantry: "Already have"
       title: "Grocery List"
+
+  aisle_editor:
+    confirm_delete: "Delete \"%{name}\"? Its ingredients will move to %{other}."
+    done: "Done"
+    loading: "Loading…"
+    move_down: "Move down"
+    move_up: "Move up"
+    new_aisle_placeholder: "New aisle name"
+    other_hint: "%{other} always stays last and can't be deleted."
+    title: "Edit aisles"
 
   sessions:
     new:

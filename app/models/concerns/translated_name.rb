@@ -9,7 +9,7 @@ module TranslatedName
     validates :name, presence: true, if: -> { nameable? && key.blank? }
   end
 
-  def name = custom_name? ? self[:name] : I18n.t(key, scope: model_name.plural)
+  def name = custom_name? ? self[:name] : key && I18n.t(key, scope: model_name.plural)
 
   private
 

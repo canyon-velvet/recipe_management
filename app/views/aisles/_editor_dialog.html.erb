@@ -1,0 +1,16 @@
+<%# Needs an aisle-editor controller on an ancestor. The list loads the first time the pop-up opens. %>
+<dialog data-aisle-editor-target="dialog"
+        data-action="click->aisle-editor#backdropClose close->aisle-editor#refresh turbo:submit-end->aisle-editor#markChanged"
+        class="rounded-xl p-0 backdrop:bg-black/40">
+  <div class="modal-panel">
+    <h3 class="modal-title"><%= t("aisle_editor.title") %></h3>
+
+    <%= turbo_frame_tag "aisles", src: aisles_path, loading: :lazy do %>
+      <p class="help-text"><%= t("aisle_editor.loading") %></p>
+    <% end %>
+
+    <div class="flex justify-end pt-4">
+      <button type="button" class="btn-primary" data-action="aisle-editor#close"><%= t("aisle_editor.done") %></button>
+    </div>
+  </div>
+</dialog>
