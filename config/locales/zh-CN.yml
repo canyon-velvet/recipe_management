@@ -156,7 +156,6 @@ zh-CN:
       update: "更新菜谱"
     tag_picker:
       placeholder: "选择标签"
-      remove: "移除"
     ingredient_modal:
       category_prompt: "请选择"
 

@@ -4,32 +4,10 @@
     @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700;
   }
 
-  /* Multi-select tag dropdown in the recipe form */
-  .tag-select-control {
-    @apply flex items-center gap-2 w-full min-h-[42px] rounded-lg border border-gray-300 bg-white px-3 py-1.5
-           cursor-pointer focus:outline-none focus:ring focus:ring-indigo-200;
-  }
-
-  .tag-select-menu {
-    @apply absolute z-40 mt-1 w-full max-h-72 overflow-auto rounded-lg border border-gray-200 bg-white shadow-lg py-1;
-  }
-
-  .tag-group-label { @apply px-3 pt-2 pb-1 text-xs font-semibold uppercase tracking-wide text-gray-400; }
-
-  .tag-option-row {
-    @apply flex items-center justify-between px-3 py-1.5 text-sm text-gray-700 cursor-pointer hover:bg-indigo-50;
-  }
-
-  .tag-check { @apply w-4 h-4 text-indigo-600 invisible; }
-  .tag-option-row input:checked ~ .tag-check { @apply visible; }
-  .tag-option-row input:checked ~ .tag-option-name { @apply font-medium text-indigo-700; }
-  .tag-option-row input:focus-visible ~ .tag-option-name { @apply underline; }
-
-  .tag-chip {
-    @apply inline-flex items-center gap-1 rounded bg-indigo-50 pl-2 pr-1 py-0.5 text-sm text-indigo-700;
-  }
-
-  .tag-chip-remove {
-    @apply rounded px-1 leading-none text-indigo-400 hover:bg-indigo-100 hover:text-indigo-700;
-  }
+  /* Multi-select tag dropdown in the recipe form, styled like .form-select */
+  .tag-select-toggle   { @apply flex items-center justify-between gap-2 text-left; }
+  .tag-select-menu     { @apply absolute z-40 mt-1 w-full max-h-64 overflow-auto rounded-lg border border-gray-200 bg-white shadow-lg py-1; }
+  .tag-group-label     { @apply px-3 pt-2 pb-1 text-xs font-semibold text-gray-500; }
+  .tag-option-row      { @apply flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 cursor-pointer hover:bg-gray-50; }
+  .tag-option-checkbox { @apply size-4 shrink-0 accent-indigo-600; }
 }
