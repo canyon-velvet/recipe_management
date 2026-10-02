@@ -52,7 +52,7 @@ zh-CN:
     kid_friendly: "儿童友好"
     make_ahead: "可提前准备"
 
-  ingredient_categories:
+  aisles:
     produce: "蔬菜水果"
     meat_seafood: "肉类海鲜"
     dairy_eggs: "乳制品蛋类"
@@ -66,7 +66,7 @@ zh-CN:
   activerecord:
     attributes:
       ingredient:
-        ingredient_category: "分类"
+        aisle: "货架区"
         name: "名称"
       meal_plan:
         end_date: "结束日期"
@@ -167,7 +167,7 @@ zh-CN:
       placeholder: "选择标签"
       remove: "移除"
     ingredient_modal:
-      category_prompt: "请选择"
+      aisle_prompt: "请选择货架区"
 
   meal_plans:
     days:

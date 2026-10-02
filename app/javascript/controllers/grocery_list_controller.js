@@ -50,7 +50,7 @@ export default class extends Controller {
   }
 
   cleanupEmptyGroups() {
-    document.querySelectorAll(".grocery-category-card").forEach(card => {
+    document.querySelectorAll(".grocery-aisle-card").forEach(card => {
       if (!card.querySelector(".grocery-item")) card.remove()
     })
   }

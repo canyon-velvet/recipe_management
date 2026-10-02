@@ -52,7 +52,7 @@ en:
     kid_friendly: "Kid-friendly"
     make_ahead: "Make-ahead"
 
-  ingredient_categories:
+  aisles:
     produce: "Produce"
     meat_seafood: "Meat & Seafood"
     dairy_eggs: "Dairy & Eggs"
@@ -66,7 +66,7 @@ en:
   activerecord:
     attributes:
       ingredient:
-        ingredient_category: "Category"
+        aisle: "Aisle"
         name: "Name"
       meal_plan:
         end_date: "End date"
@@ -167,7 +167,7 @@ en:
       placeholder: "Choose tags"
       remove: "Remove"
     ingredient_modal:
-      category_prompt: "Choose one"
+      aisle_prompt: "Choose an aisle"
 
   meal_plans:
     days:

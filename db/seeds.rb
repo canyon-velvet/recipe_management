@@ -1,10 +1,10 @@
 # Idempotent seed data — safe to run multiple times
 
-# Ingredient categories, in grocery-aisle order. Display names live in config/locales under `ingredient_categories`.
+# Aisles, in shopping order. Display names live in config/locales under `aisles`.
 %w[produce meat_seafood dairy_eggs bakery pantry spices_seasonings frozen beverages other].each.with_index(1) do |key, i|
-  IngredientCategory.find_or_initialize_by(key: key).update!(position: i * 10)
+  Aisle.find_or_initialize_by(key: key).update!(position: i * 10)
 end
-puts "Seeded #{IngredientCategory.count} ingredient categories"
+puts "Seeded #{Aisle.count} aisles"
 
 # Recipe tags, grouped by kind. Display names live in config/locales under `tags` and `tag_kinds`.
 {
