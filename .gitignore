@@ -40,6 +40,7 @@
 /app/assets/builds/*
 !/app/assets/builds/.keep
 
-# Ignore local Claude Code files (worktrees, skills, settings); keep the project instructions.
+# Ignore local Claude Code files (worktrees, skills, settings); keep the project instructions and agents.
 /.claude/*
 !/.claude/CLAUDE.md
+!/.claude/agents/
