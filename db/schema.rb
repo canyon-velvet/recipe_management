@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_02_161943) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_02_162122) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -130,7 +130,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_161943) do
     t.string "name", null: false
     t.datetime "updated_at", null: false
     t.string "url"
-    t.index "lower((name)::text)", name: "index_sources_on_lowercase_name", unique: true
+    t.bigint "user_id", null: false
+    t.index "user_id, lower((name)::text)", name: "index_sources_on_user_id_and_lowercase_name", unique: true
+    t.index ["user_id"], name: "index_sources_on_user_id"
   end
 
   create_table "tags", force: :cascade do |t|
@@ -166,4 +168,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_161943) do
   add_foreign_key "recipe_tags", "tags"
   add_foreign_key "recipes", "sources"
   add_foreign_key "recipes", "users"
+  add_foreign_key "sources", "users"
 end
