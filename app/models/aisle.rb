@@ -7,7 +7,8 @@ class Aisle < ApplicationRecord
   has_many :ingredients, dependent: :restrict_with_error
 
   validates :key, uniqueness: { scope: :user_id }, allow_nil: true
-  validates :name, uniqueness: { scope: :user_id, case_sensitive: false }, allow_blank: true
+  validates :name, uniqueness: { scope: :user_id, case_sensitive: false }, if: :custom_name?
+  validate :name_must_differ_from_default_aisles, if: :custom_name?
   validates :position, presence: true
 
   normalizes :name, with: ->(name) { name.strip }
@@ -30,5 +31,14 @@ class Aisle < ApplicationRecord
       aisle.save
       aisle
     end
+  end
+
+  private
+
+  # Default aisles keep their name in the locale files, so the uniqueness index can't see it.
+  def name_must_differ_from_default_aisles
+    keys = user.aisles.where.not(key: nil).pluck(:key)
+    labels = I18n.available_locales.flat_map { |locale| keys.map { |key| I18n.t(key, scope: :aisles, locale: locale) } }
+    errors.add(:name, :taken) if labels.any? { |label| label.casecmp?(self[:name]) }
   end
 end
