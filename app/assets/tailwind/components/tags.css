@@ -1,0 +1,27 @@
+@layer components {
+  /* Read-only tag label on cards and the recipe page */
+  .tag-badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700;
+  }
+}
+
+/* Tom Select tag picker, matched to .form-select. Unlayered so it overrides the vendored tom-select.css. */
+.ts-wrapper.tag-select .ts-control {
+  @apply min-h-[42px] rounded-lg border-gray-300 px-3 py-1.5 text-base shadow-none;
+}
+
+.ts-wrapper.tag-select.focus .ts-control {
+  @apply border-gray-300 ring ring-indigo-200 shadow-none;
+}
+
+.ts-wrapper.tag-select.multi .ts-control > .item {
+  @apply rounded bg-indigo-50 text-indigo-700 border-0 px-2;
+}
+
+.ts-wrapper.tag-select .ts-dropdown {
+  @apply rounded-lg border-gray-200 shadow-lg;
+}
+
+.ts-wrapper.tag-select .ts-dropdown .active {
+  @apply bg-indigo-50 text-indigo-700;
+}

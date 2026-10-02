@@ -1,4 +1,4 @@
-<%# locals: (recipe:, ingredient_categories:, grocery_store_types:) %>
+<%# locals: (recipe:, ingredient_categories:, tags:) %>
 
 <%= form_with model: recipe, class: "space-y-6" do |f| %>
   <% if recipe.errors.any? %>
@@ -11,21 +11,14 @@
     </div>
   <% end %>
 
-  <!-- Name + Category -->
-  <div class="field-row">
-    <div class="field">
-      <%= f.label :name, class: "form-label" %>
-      <%= f.text_field :name, class: "form-input", autofocus: true %>
-    </div>
-
-    <div class="field">
-      <%= f.label :category, class: "form-label" %>
-      <%= f.select :category,
-            options_for_select(Recipe.category_options, recipe.category),
-            { include_blank: t(".category_prompt") },
-            class: "form-select" %>
-    </div>
+  <!-- Name -->
+  <div class="field">
+    <%= f.label :name, class: "form-label" %>
+    <%= f.text_field :name, class: "form-input", autofocus: true %>
   </div>
+
+  <!-- Tags -->
+  <%= render "recipes/tag_picker", form: f, tags: tags %>
 
   <!-- Description (markdown) -->
   <%= render "shared/markdown_editor", form: f, field: :description, label: Recipe.human_attribute_name(:description),
@@ -84,9 +77,7 @@
       <%= t(".add_ingredient") %>
     </button>
 
-    <%= render "recipes/ingredient_modal",
-          ingredient_categories: ingredient_categories,
-          grocery_store_types: grocery_store_types %>
+    <%= render "recipes/ingredient_modal", ingredient_categories: ingredient_categories %>
   </div>
 
   <!-- Instructions (markdown) -->

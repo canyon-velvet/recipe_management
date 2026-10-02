@@ -10,16 +10,16 @@
     </div>
   </div>
 
-  <% if @active_grouped.empty? && @pantry_items.empty? %>
+  <% if @active_groups.empty? && @pantry_items.empty? %>
     <div class="text-center py-16 text-gray-400">
       <p class="text-lg"><%= t(".empty") %></p>
       <p class="text-sm mt-1"><%= t(".empty_hint") %></p>
     </div>
   <% else %>
-    <!-- Active items grouped by store → category -->
+    <!-- Active items grouped by ingredient category, in aisle order -->
     <div id="active_items" class="space-y-4">
-      <% @active_grouped.each do |store_name, categories| %>
-        <%= render "grocery_lists/store_group", store_name: store_name, categories: categories %>
+      <% @active_groups.each do |category, items| %>
+        <%= render "grocery_lists/category_group", category: category, items: items %>
       <% end %>
     </div>
 
@@ -27,7 +27,7 @@
     <% if @pantry_items.any? %>
       <div class="mt-8">
         <h2 class="text-sm font-semibold text-gray-500 mb-3"><%= t(".pantry") %></h2>
-        <div id="pantry_items" class="grocery-store-card divide-y divide-gray-100">
+        <div id="pantry_items" class="grocery-card divide-y divide-gray-100">
           <% @pantry_items.each do |item| %>
             <%= render "grocery_lists/grocery_item", item: item %>
           <% end %>

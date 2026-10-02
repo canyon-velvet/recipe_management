@@ -1,16 +1,21 @@
 # Idempotent seed data — safe to run multiple times
 
-# Ingredient Categories
-%w[香料 油 酒 调料 面粉 熟食 蛋奶 谷物 菇类 水果 蔬菜 肉类].each do |name|
-  IngredientCategory.find_or_create_by!(name: name)
+# Ingredient categories, in grocery-aisle order. Display names live in config/locales under `ingredient_categories`.
+%w[produce meat_seafood dairy_eggs bakery pantry spices_seasonings frozen beverages other].each.with_index(1) do |key, i|
+  IngredientCategory.find_or_initialize_by(key: key).update!(position: i * 10)
 end
 puts "Seeded #{IngredientCategory.count} ingredient categories"
 
-# Grocery Store Types
-%w[中国超市 美国超市].each do |name|
-  GroceryStoreType.find_or_create_by!(name: name)
+# Recipe tags, grouped by kind. Display names live in config/locales under `tags` and `tag_kinds`.
+{
+  "meal" => %w[breakfast lunch dinner snack dessert appetizer soup salad drink],
+  "cuisine" => %w[chinese italian japanese mexican american],
+  "diet" => %w[vegetarian vegan gluten_free],
+  "convenience" => %w[quick kid_friendly make_ahead]
+}.flat_map { |kind, keys| keys.map { [ kind, _1 ] } }.each.with_index(1) do |(kind, key), i|
+  Tag.find_or_initialize_by(key: key).update!(kind: kind, position: i * 10)
 end
-puts "Seeded #{GroceryStoreType.count} grocery store types"
+puts "Seeded #{Tag.count} tags"
 
 # Admin user (only in development)
 if Rails.env.development?

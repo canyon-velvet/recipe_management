@@ -1,4 +1,4 @@
-<%# locals: (ingredient_categories:, grocery_store_types:) %>
+<%# locals: (ingredient_categories:) %>
 <%= render layout: "shared/inline_create_modal", locals: { title: t("recipes.ingredient_fields.create") } do %>
   <div class="field">
     <label class="form-label"><%= Ingredient.human_attribute_name(:name) %></label>
@@ -15,20 +15,5 @@
         <option value="<%= cat.id %>"><%= cat.name %></option>
       <% end %>
     </select>
-  </div>
-
-  <div class="field">
-    <label class="form-label"><%= t("recipes.ingredient_modal.stores") %></label>
-    <div class="flex gap-4">
-      <% grocery_store_types.each do |store| %>
-        <label class="flex items-center gap-2 text-sm text-gray-700">
-          <input type="checkbox"
-                 name="ingredient[grocery_store_type_ids][]"
-                 value="<%= store.id %>"
-                 class="rounded border-gray-300">
-          <%= store.name %>
-        </label>
-      <% end %>
-    </div>
   </div>
 <% end %>

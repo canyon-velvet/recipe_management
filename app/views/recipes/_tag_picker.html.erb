@@ -1,0 +1,15 @@
+<%# locals: (form:, tags:) %>
+<div class="field">
+  <%= form.label :tag_ids, Recipe.human_attribute_name(:tags), class: "form-label" %>
+  <%= form.select :tag_ids,
+        options_from_collection_for_select(tags, :id, :name, form.object.tag_ids),
+        {},
+        multiple: true,
+        placeholder: t(".placeholder"),
+        class: "tag-select",
+        data: {
+          controller: "tag-select",
+          tag_select_no_results_value: t(".no_results"),
+          tag_select_remove_label_value: t(".remove")
+        } %>
+</div>

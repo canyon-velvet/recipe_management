@@ -50,19 +50,7 @@ export default class extends Controller {
   }
 
   cleanupEmptyGroups() {
-    document.querySelectorAll(".grocery-store-card").forEach(card => {
-      // Remove category headers with no items following them
-      card.querySelectorAll(".grocery-category-header").forEach(header => {
-        let hasItems = false
-        let sibling = header.nextElementSibling
-        while (sibling && !sibling.classList.contains("grocery-category-header")) {
-          if (sibling.classList.contains("grocery-item")) { hasItems = true; break }
-          sibling = sibling.nextElementSibling
-        }
-        if (!hasItems) header.remove()
-      })
-
-      // Remove entire store card if no items remain
+    document.querySelectorAll(".grocery-category-card").forEach(card => {
       if (!card.querySelector(".grocery-item")) card.remove()
     })
   }

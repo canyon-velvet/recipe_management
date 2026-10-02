@@ -20,10 +20,10 @@
       </div>
 
       <div class="md:col-span-1">
-        <%= f.select :category,
-              options_for_select(Recipe.category_options, params[:category]),
-              { include_blank: t(".all_categories") },
-              data: { search_form_target: "category", action: "change->search-form#submitLater" },
+        <%= f.select :tag,
+              grouped_options_for_select(@tag_filter_options, params[:tag]),
+              { include_blank: t(".all_tags") },
+              data: { search_form_target: "tag", action: "change->search-form#submitLater" },
               class: "form-select" %>
       </div>
 

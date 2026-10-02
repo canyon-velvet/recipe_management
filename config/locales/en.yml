@@ -24,20 +24,44 @@ en:
     recipe_updated: "Recipe updated."
     registered: "Account created."
 
-  recipe_categories:
-    beef: "Beef"
-    pork: "Pork"
-    poultry: "Poultry"
-    seafood: "Seafood"
-    vegan: "Vegetarian"
-    rice-noodles: "Rice & Noodles"
-    soup: "Soup"
-    bakery: "Baking"
+  tag_kinds:
+    meal: "Meal & dish"
+    cuisine: "Cuisine"
+    diet: "Diet"
+    convenience: "Convenience"
+
+  tags:
+    breakfast: "Breakfast"
+    lunch: "Lunch"
+    dinner: "Dinner"
+    snack: "Snack"
     dessert: "Dessert"
+    appetizer: "Appetizer"
+    soup: "Soup"
     salad: "Salad"
-    sandwich: "Sandwich"
-    pasta: "Pasta"
-    sauce: "Sauces"
+    drink: "Drink"
+    chinese: "Chinese"
+    italian: "Italian"
+    japanese: "Japanese"
+    mexican: "Mexican"
+    american: "American"
+    vegetarian: "Vegetarian"
+    vegan: "Vegan"
+    gluten_free: "Gluten-free"
+    quick: "Quick"
+    kid_friendly: "Kid-friendly"
+    make_ahead: "Make-ahead"
+
+  ingredient_categories:
+    produce: "Produce"
+    meat_seafood: "Meat & Seafood"
+    dairy_eggs: "Dairy & Eggs"
+    bakery: "Bakery"
+    pantry: "Pantry"
+    spices_seasonings: "Spices & Seasonings"
+    frozen: "Frozen"
+    beverages: "Beverages"
+    other: "Other"
 
   activerecord:
     attributes:
@@ -52,12 +76,12 @@ en:
         recipe: "Recipe"
         recipe_id: "Recipe"
       recipe:
-        category: "Category"
         description: "Description"
         instructions: "Instructions"
         name: "Name"
         source: "Source"
         source_id: "Source"
+        tags: "Tags"
       recipe/recipe_ingredients:
         ingredient: "Ingredient"
         ingredient_id: "Ingredient"
@@ -108,7 +132,7 @@ en:
       search: "Search ingredients..."
       unit: "Unit"
     index:
-      all_categories: "All categories"
+      all_tags: "All tags"
       banner_alt: "All recipes"
       banner_title: "Start your day with good food"
       empty: "No recipes match your search."
@@ -124,16 +148,18 @@ en:
       source: "Source: %{name}"
     form:
       add_ingredient: "+ Add ingredient"
-      category_prompt: "Choose a category"
       create: "Create recipe"
       create_source: "Create source"
       ingredients: "Ingredients"
       save_failed: "Couldn't save. Please try again."
       search_source: "Search sources..."
       update: "Update recipe"
+    tag_picker:
+      no_results: "No matching tags"
+      placeholder: "Choose tags"
+      remove: "Remove"
     ingredient_modal:
       category_prompt: "Choose one"
-      stores: "Where to buy"
 
   meal_plans:
     days:
@@ -177,8 +203,6 @@ en:
       title: "Choose a recipe"
 
   grocery_lists:
-    uncategorized_category: "Uncategorized"
-    uncategorized_store: "Any store"
     show:
       back: "Back to meal plan"
       empty: "Your grocery list is empty"

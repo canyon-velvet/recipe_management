@@ -24,20 +24,44 @@ zh-CN:
     recipe_updated: "菜谱更新成功"
     registered: "注册成功"
 
-  recipe_categories:
-    beef: "牛肉"
-    pork: "猪肉"
-    poultry: "禽肉"
-    seafood: "海鲜"
-    vegan: "素食"
-    rice-noodles: "中式主食"
-    soup: "汤"
-    bakery: "烘焙"
+  tag_kinds:
+    meal: "餐点"
+    cuisine: "菜系"
+    diet: "饮食"
+    convenience: "便捷"
+
+  tags:
+    breakfast: "早餐"
+    lunch: "午餐"
+    dinner: "晚餐"
+    snack: "零食"
     dessert: "甜点"
+    appetizer: "前菜"
+    soup: "汤"
     salad: "沙拉"
-    sandwich: "三明治"
-    pasta: "意面"
-    sauce: "酱料"
+    drink: "饮品"
+    chinese: "中餐"
+    italian: "意大利菜"
+    japanese: "日本料理"
+    mexican: "墨西哥菜"
+    american: "美式"
+    vegetarian: "素食"
+    vegan: "纯素"
+    gluten_free: "无麸质"
+    quick: "快手菜"
+    kid_friendly: "儿童友好"
+    make_ahead: "可提前准备"
+
+  ingredient_categories:
+    produce: "蔬菜水果"
+    meat_seafood: "肉类海鲜"
+    dairy_eggs: "乳制品蛋类"
+    bakery: "烘焙面包"
+    pantry: "干货杂货"
+    spices_seasonings: "调味料"
+    frozen: "冷冻食品"
+    beverages: "饮料"
+    other: "其他"
 
   activerecord:
     attributes:
@@ -52,12 +76,12 @@ zh-CN:
         recipe: "菜谱"
         recipe_id: "菜谱"
       recipe:
-        category: "分类"
         description: "描述"
         instructions: "制作步骤"
         name: "菜名"
         source: "来源"
         source_id: "来源"
+        tags: "标签"
       recipe/recipe_ingredients:
         ingredient: "食材"
         ingredient_id: "食材"
@@ -108,7 +132,7 @@ zh-CN:
       search: "搜索食材..."
       unit: "单位"
     index:
-      all_categories: "全部"
+      all_tags: "全部标签"
       banner_alt: "所有菜谱"
       banner_title: "用美食开启美好的一天"
       empty: "没有找到符合条件的菜谱。"
@@ -124,16 +148,18 @@ zh-CN:
       source: "来源：%{name}"
     form:
       add_ingredient: "+ 添加食材"
-      category_prompt: "请选择分类"
       create: "创建菜谱"
       create_source: "创建来源"
       ingredients: "食材"
       save_failed: "保存失败，请重试"
       search_source: "搜索来源..."
       update: "更新菜谱"
+    tag_picker:
+      no_results: "没有匹配的标签"
+      placeholder: "选择标签"
+      remove: "移除"
     ingredient_modal:
       category_prompt: "请选择"
-      stores: "购买地点"
 
   meal_plans:
     days:
@@ -175,8 +201,6 @@ zh-CN:
       title: "选择菜谱"
 
   grocery_lists:
-    uncategorized_category: "未分类"
-    uncategorized_store: "未分类商店"
     show:
       back: "返回餐计划"
       empty: "购物清单为空"
