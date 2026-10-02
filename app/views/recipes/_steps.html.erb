@@ -1,0 +1,9 @@
+<%# locals: (steps:) %>
+<ol class="space-y-4 list-none pl-0">
+  <% steps.each.with_index(1) do |step, number| %>
+    <li class="flex gap-3">
+      <span class="step-number"><%= number %></span>
+      <div class="flex-1 min-w-0"><%= render_markdown(step.body) %></div>
+    </li>
+  <% end %>
+</ol>

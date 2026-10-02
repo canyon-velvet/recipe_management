@@ -77,14 +77,17 @@ zh-CN:
         recipe_id: "菜谱"
       recipe:
         description: "描述"
-        instructions: "制作步骤"
         name: "菜名"
         source: "来源"
         source_id: "来源"
+        steps: "制作步骤"
         tags: "标签"
       recipe/recipe_ingredients:
         ingredient: "食材"
         ingredient_id: "食材"
+      recipe/steps:
+        body: "步骤"
+        position: "步骤序号"
       source:
         name: "名称"
         url: "链接"
@@ -148,12 +151,17 @@ zh-CN:
       source: "来源：%{name}"
     form:
       add_ingredient: "+ 添加食材"
+      add_step: "+ 添加步骤"
       create: "创建菜谱"
       create_source: "创建来源"
       ingredients: "食材"
       save_failed: "保存失败，请重试"
       search_source: "搜索来源..."
       update: "更新菜谱"
+    step_fields:
+      move_down: "下移"
+      move_up: "上移"
+      placeholder: "描述这一步"
     tag_picker:
       no_results: "没有匹配的标签"
       placeholder: "选择标签"

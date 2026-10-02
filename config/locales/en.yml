@@ -77,14 +77,17 @@ en:
         recipe_id: "Recipe"
       recipe:
         description: "Description"
-        instructions: "Instructions"
         name: "Name"
         source: "Source"
         source_id: "Source"
+        steps: "Steps"
         tags: "Tags"
       recipe/recipe_ingredients:
         ingredient: "Ingredient"
         ingredient_id: "Ingredient"
+      recipe/steps:
+        body: "Step"
+        position: "Step number"
       source:
         name: "Name"
         url: "Link"
@@ -148,12 +151,17 @@ en:
       source: "Source: %{name}"
     form:
       add_ingredient: "+ Add ingredient"
+      add_step: "+ Add step"
       create: "Create recipe"
       create_source: "Create source"
       ingredients: "Ingredients"
       save_failed: "Couldn't save. Please try again."
       search_source: "Search sources..."
       update: "Update recipe"
+    step_fields:
+      move_down: "Move down"
+      move_up: "Move up"
+      placeholder: "Describe this step"
     tag_picker:
       no_results: "No matching tags"
       placeholder: "Choose tags"

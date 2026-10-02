@@ -1,0 +1,13 @@
+@layer components {
+  /* Recipe step rows in the form */
+  .step-row     { @apply flex items-start gap-3; }
+  .step-actions { @apply flex flex-col gap-1 pt-1; }
+  .step-action  { @apply rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-700; }
+  .step-action--remove { @apply hover:text-red-500; }
+
+  /* Step number badge, shared by the form and the recipe page */
+  .step-number {
+    @apply mt-1.5 inline-flex size-7 shrink-0 items-center justify-center rounded-full
+           bg-indigo-100 text-sm font-semibold text-indigo-700;
+  }
+}

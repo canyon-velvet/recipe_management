@@ -1,0 +1,30 @@
+<%# locals: (form:) %>
+<div data-nested-form-row data-step-list-target="step"
+     class="step-row <%= "hidden" if form.object.marked_for_destruction? %>">
+  <span class="step-number" data-step-list-target="number"><%= form.object.position %></span>
+  <%= form.hidden_field :position, data: { step_list_target: "position" } %>
+  <%= form.hidden_field :_destroy if form.object.persisted? %>
+
+  <%= form.text_area :body, rows: 3, class: "form-textarea flex-1", placeholder: t(".placeholder") %>
+
+  <div class="step-actions">
+    <button type="button" class="step-action" data-action="step-list#moveUp"
+            title="<%= t(".move_up") %>" aria-label="<%= t(".move_up") %>">
+      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+      </svg>
+    </button>
+    <button type="button" class="step-action" data-action="step-list#moveDown"
+            title="<%= t(".move_down") %>" aria-label="<%= t(".move_down") %>">
+      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+      </svg>
+    </button>
+    <button type="button" class="step-action step-action--remove" data-action="nested-form#remove step-list#renumber"
+            title="<%= t("actions.delete") %>" aria-label="<%= t("actions.delete") %>">
+      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+</div>
