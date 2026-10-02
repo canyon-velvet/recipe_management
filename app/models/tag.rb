@@ -8,6 +8,7 @@ class Tag < ApplicationRecord
 
   enum :kind, KINDS.index_by(&:itself), validate: true
 
+  validates :key, uniqueness: true
   validates :position, presence: true
 
   scope :ordered, -> { order(:position) }

@@ -1,11 +1,5 @@
 # Idempotent seed data — safe to run multiple times
 
-# Aisles, in shopping order. Display names live in config/locales under `aisles`.
-%w[produce meat_seafood dairy_eggs bakery pantry spices_seasonings frozen beverages other].each.with_index(1) do |key, i|
-  Aisle.find_or_initialize_by(key: key).update!(position: i * 10)
-end
-puts "Seeded #{Aisle.count} aisles"
-
 # Recipe tags, grouped by kind. Display names live in config/locales under `tags` and `tag_kinds`.
 {
   "meal" => %w[breakfast lunch dinner snack dessert appetizer soup salad drink],
@@ -25,3 +19,7 @@ if Rails.env.development?
   end
   puts "Seeded admin user (username: admin, password: password)"
 end
+
+# Aisles are per user; new users get the defaults on sign-up. Display names live in config/locales under `aisles`.
+User.find_each { |user| Aisle.create_defaults_for(user) }
+puts "Ensured default aisles for #{User.count} users"

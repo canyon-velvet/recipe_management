@@ -4,7 +4,7 @@ module TranslatedName
   extend ActiveSupport::Concern
 
   included do
-    validates :key, presence: true, uniqueness: true
+    validates :key, presence: true
   end
 
   def name = I18n.t(key, scope: model_name.plural)

@@ -56,7 +56,7 @@ class RecipesController < ApplicationController
   end
 
   def set_form_data
-    @aisles = Aisle.ordered
+    @aisles = current_user.aisles.ordered
     @tags = Tag.ordered
   end
 
