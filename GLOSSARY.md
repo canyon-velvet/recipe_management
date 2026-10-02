@@ -10,7 +10,7 @@ _Avoid_: Dish, post
 
 **Recipe link**:
 The address of the exact page or post a recipe was taken from.
-_Avoid_: Source URL, original link
+_Avoid_: Original link, source link
 
 **Source**:
 The website, app, publication, or person a recipe came from, such as Yummy Toddler Food, 下厨房, a cookbook, or Mom. Each user has their own sources. Many recipes share one source.

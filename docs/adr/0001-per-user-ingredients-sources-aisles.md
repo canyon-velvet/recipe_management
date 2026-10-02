@@ -1,6 +1,6 @@
 # Ingredients, sources and aisles are owned per user
 
-Recipes, meal plans and grocery lists were already private, but ingredients and sources were a single shared catalog. Once anyone could sign up and imports created ingredients and sources automatically, one user's typos, duplicates and aisles would show up in everyone's autocomplete and grocery list, and nobody could clean them up without breaking someone else's recipes. So ingredients, sources and aisles belong to one user. New users get their own copy of the default aisles, which they can rename, reorder, extend or delete (except Other).
+Recipes, meal plans and grocery lists were already private, but ingredients and sources were a single shared catalog. Once anyone can sign up and imports start creating ingredients and sources automatically, one user's typos, duplicates and aisles would show up in everyone's autocomplete and grocery list, and nobody could clean them up without breaking someone else's recipes. So ingredients, sources and aisles belong to one user. New users get their own copy of the default aisles. They can add their own, and will also be able to rename, reorder and delete them (except Other).
 
 ## Considered Options
 
