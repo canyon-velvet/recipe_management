@@ -171,6 +171,11 @@ This is a Ruby on Rails recipe management system for home use. Follow these guid
 - Make small, focused commits
 - Use feature branches for new functionality
 - Don't commit commented-out code - use git history instead
+- **Keep pull requests small and well-scoped.** Split a large feature into a sequence of PRs that can each be reviewed on its own:
+  - One concern per PR: e.g. a pure rename, a schema/ownership change, a new UI component, and docs are separate PRs.
+  - Keep refactors and renames free of behavior changes, so they can be reviewed quickly.
+  - When PRs depend on each other, stack the branches and state the merge order in each PR description.
+  - If a PR grows beyond its stated scope, split off the extra work into its own PR instead of expanding it.
 
 ## When in Doubt
 - Prefer Rails conventions over custom solutions
