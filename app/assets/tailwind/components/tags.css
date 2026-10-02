@@ -14,14 +14,6 @@
   @apply border-gray-300 ring ring-indigo-200 shadow-none;
 }
 
-.ts-wrapper.tag-select.multi .ts-control > .item {
-  @apply rounded bg-indigo-50 text-indigo-700 border-0 px-2;
-}
-
 .ts-wrapper.tag-select .ts-dropdown {
   @apply rounded-lg border-gray-200 shadow-lg;
-}
-
-.ts-wrapper.tag-select .ts-dropdown .active {
-  @apply bg-indigo-50 text-indigo-700;
 }
