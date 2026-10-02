@@ -154,6 +154,9 @@ en:
       save_failed: "Couldn't save. Please try again."
       search_source: "Search sources..."
       update: "Update recipe"
+    tag_picker:
+      placeholder: "Choose tags"
+      remove: "Remove"
     ingredient_modal:
       category_prompt: "Choose one"
 

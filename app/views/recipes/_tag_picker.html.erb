@@ -1,20 +1,35 @@
 <%# locals: (form:) %>
-<fieldset class="field">
-  <legend class="form-label"><%= Recipe.human_attribute_name(:tags) %></legend>
+<div class="field">
+  <span class="form-label" id="tag_picker_label"><%= Recipe.human_attribute_name(:tags) %></span>
   <%= form.hidden_field :tag_ids, multiple: true, value: "" %>
-  <div class="space-y-3 pt-1">
-    <% Tag.grouped_by_kind.each do |kind_name, tags| %>
-      <div>
+
+  <div class="relative"
+       data-controller="dropdown tag-select"
+       data-tag-select-remove-label-value="<%= t(".remove") %>">
+    <div class="tag-select-control" role="button" tabindex="0"
+         aria-haspopup="listbox" aria-labelledby="tag_picker_label"
+         data-action="click->dropdown#toggle keydown.enter->dropdown#toggle click@window->dropdown#close">
+      <div class="flex flex-1 flex-wrap gap-1" data-tag-select-target="chips"></div>
+      <span class="text-gray-400" data-tag-select-target="placeholder"><%= t(".placeholder") %></span>
+      <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+      </svg>
+    </div>
+
+    <div class="tag-select-menu hidden" data-dropdown-target="menu" role="listbox" aria-multiselectable="true">
+      <% Tag.grouped_by_kind.each do |kind_name, tags| %>
         <p class="tag-group-label"><%= kind_name %></p>
-        <div class="flex flex-wrap gap-2">
-          <% tags.each do |name, id| %>
-            <label class="tag-option">
-              <%= form.check_box :tag_ids, { multiple: true, include_hidden: false, class: "sr-only" }, id, nil %>
-              <span class="tag-pill"><%= name %></span>
-            </label>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
+        <% tags.each do |name, id| %>
+          <label class="tag-option-row">
+            <%= form.check_box :tag_ids, { multiple: true, include_hidden: false, class: "sr-only",
+                  data: { tag_select_target: "checkbox", action: "change->tag-select#render" } }, id, nil %>
+            <span class="tag-option-name"><%= name %></span>
+            <svg class="tag-check" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+          </label>
+        <% end %>
+      <% end %>
+    </div>
   </div>
-</fieldset>
+</div>
