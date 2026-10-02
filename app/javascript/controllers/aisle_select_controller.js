@@ -1,13 +1,13 @@
 import { Controller } from "@hotwired/stimulus"
 
 // Lets the aisle dropdown create a new aisle inline: choosing "+ New aisle…" swaps the dropdown
-// for a name field; Add or Cancel swaps it back.
+// for a name field; adding the aisle, or closing the pop-up, swaps it back.
 export default class extends Controller {
   static targets = ["select", "newAisle", "input", "error"]
   static values = { createUrl: String, errorText: String }
 
   connect() {
-    this.reset = () => this.cancel()
+    this.reset = () => this.showSelect()
     this.dialog = this.element.closest("dialog")
     this.dialog?.addEventListener("close", this.reset)
   }
@@ -25,7 +25,7 @@ export default class extends Controller {
     this.inputTarget.focus()
   }
 
-  cancel() {
+  showSelect() {
     this.inputTarget.value = ""
     this.errorTarget.textContent = ""
     this.newAisleTarget.hidden = true
@@ -50,7 +50,7 @@ export default class extends Controller {
 
       if (response.ok) {
         this.insertOption(data)
-        this.cancel()
+        this.showSelect()
       } else {
         this.errorTarget.textContent = data.errors ? data.errors.join(", ") : this.errorTextValue
       }
