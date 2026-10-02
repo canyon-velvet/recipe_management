@@ -3,6 +3,7 @@ zh-CN:
   locale_name: "中文"
 
   actions:
+    add: "添加"
     back: "返回"
     cancel: "取消"
     delete: "删除"
@@ -65,6 +66,8 @@ zh-CN:
 
   activerecord:
     attributes:
+      aisle:
+        name: "名称"
       ingredient:
         aisle: "货架区"
         name: "名称"
@@ -168,6 +171,8 @@ zh-CN:
       remove: "移除"
     ingredient_modal:
       aisle_prompt: "请选择货架区"
+      new_aisle: "+ 新建货架区…"
+      new_aisle_placeholder: "货架区名称"
 
   meal_plans:
     days:

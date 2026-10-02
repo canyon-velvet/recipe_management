@@ -3,6 +3,7 @@ en:
   locale_name: "English"
 
   actions:
+    add: "Add"
     back: "Back"
     cancel: "Cancel"
     delete: "Delete"
@@ -65,6 +66,8 @@ en:
 
   activerecord:
     attributes:
+      aisle:
+        name: "Name"
       ingredient:
         aisle: "Aisle"
         name: "Name"
@@ -168,6 +171,8 @@ en:
       remove: "Remove"
     ingredient_modal:
       aisle_prompt: "Choose an aisle"
+      new_aisle: "+ New aisle…"
+      new_aisle_placeholder: "Aisle name"
 
   meal_plans:
     days:

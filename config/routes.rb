@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   resources :ingredients, only: [ :create ] do
     get :search, on: :collection
   end
+  resources :aisles, only: [ :create ]
   resources :sources, only: [ :create ] do
     get :search, on: :collection
   end
