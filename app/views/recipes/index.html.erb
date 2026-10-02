@@ -21,7 +21,7 @@
 
       <div class="md:col-span-1">
         <%= f.select :tag,
-              grouped_options_for_select(Tag.grouped_by_kind(value: :key), params[:tag]),
+              grouped_options_for_select(@tag_filter_options, params[:tag]),
               { include_blank: t(".all_tags") },
               data: { search_form_target: "tag", action: "change->search-form#submitLater" },
               class: "form-select" %>

@@ -8,6 +8,7 @@ class RecipesController < ApplicationController
                           .tagged(params[:tag])
                           .order(updated_at: :desc)
     @pagy, @recipes = pagy(recipes)
+    @tag_filter_options = Tag.grouped_by_kind
   end
 
   def search
@@ -56,6 +57,7 @@ class RecipesController < ApplicationController
 
   def set_form_data
     @ingredient_categories = IngredientCategory.ordered
+    @tags = Tag.ordered
   end
 
   def recipe_params

@@ -1,8 +1,8 @@
-<%# locals: (form:) %>
+<%# locals: (form:, tags:) %>
 <div class="field">
   <%= form.label :tag_ids, Recipe.human_attribute_name(:tags), class: "form-label" %>
   <%= form.select :tag_ids,
-        grouped_options_for_select(Tag.grouped_by_kind, form.object.tag_ids),
+        options_from_collection_for_select(tags, :id, :name, form.object.tag_ids),
         {},
         multiple: true,
         placeholder: t(".placeholder"),

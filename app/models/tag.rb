@@ -14,8 +14,8 @@ class Tag < ApplicationRecord
 
   def self.kind_name(kind) = I18n.t(kind, scope: :tag_kinds)
 
-  # [[kind name, [[tag name, value], ...]], ...] for grouped selects and grouped pickers.
-  def self.grouped_by_kind(value: :id)
-    ordered.group_by(&:kind).map { |kind, tags| [ kind_name(kind), tags.map { [ _1.name, _1.public_send(value) ] } ] }
+  # [[kind name, [[tag name, tag key], ...]], ...] for the grouped tag filter.
+  def self.grouped_by_kind
+    ordered.group_by(&:kind).map { |kind, tags| [ kind_name(kind), tags.map { [ _1.name, _1.key ] } ] }
   end
 end
