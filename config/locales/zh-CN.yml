@@ -83,6 +83,7 @@ zh-CN:
         name: "菜名"
         source: "来源"
         source_id: "来源"
+        source_url: "菜谱链接"
         steps: "制作步骤"
         tags: "标签"
       recipe/recipe_ingredients:
@@ -93,7 +94,6 @@ zh-CN:
         position: "步骤序号"
       source:
         name: "名称"
-        url: "链接"
       user:
         password: "密码"
         password_confirmation: "确认密码"

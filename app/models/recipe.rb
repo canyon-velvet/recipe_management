@@ -10,6 +10,7 @@ class Recipe < ApplicationRecord
   has_many :meal_slots, through: :meal_slot_recipes
 
   validates :name, presence: true
+  validates :source_url, format: { with: /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/ }, allow_blank: true
   validate :must_have_steps
   validate :source_must_belong_to_user
 

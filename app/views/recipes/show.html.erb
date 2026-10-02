@@ -45,8 +45,8 @@
   <div class="mt-4 text-left text-xs text-gray-400">
     <% if @recipe.source %>
       <%= t(".source", name: @recipe.source.name) %>
-      <% if @recipe.source.url.present? %>
-        · <%= link_to t(".link"), @recipe.source.url, class: "underline hover:no-underline", target: "_blank", rel: "noopener" %>
+      <% if @recipe.source_url.present? %>
+        · <%= link_to t(".link"), @recipe.source_url, class: "underline hover:no-underline", target: "_blank", rel: "noopener" %>
       <% end %>
     <% end %>
   </div>

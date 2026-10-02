@@ -83,6 +83,7 @@ en:
         name: "Name"
         source: "Source"
         source_id: "Source"
+        source_url: "Recipe link"
         steps: "Steps"
         tags: "Tags"
       recipe/recipe_ingredients:
@@ -93,7 +94,6 @@ en:
         position: "Step number"
       source:
         name: "Name"
-        url: "Link"
       user:
         password: "Password"
         password_confirmation: "Confirm password"
