@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_02_170000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_03_170320) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -25,6 +25,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_170000) do
     t.index ["user_id", "key"], name: "index_aisles_on_user_id_and_key", unique: true
     t.index ["user_id", "position"], name: "index_aisles_on_user_id_and_position"
     t.index ["user_id"], name: "index_aisles_on_user_id"
+  end
+
+  create_table "drafts", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "status", default: "reading", null: false
+    t.string "source_url"
+    t.text "source_text"
+    t.string "failure_reason"
+    t.jsonb "data", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "created_at"], name: "index_drafts_on_user_id_and_created_at"
+    t.index ["user_id", "source_url"], name: "index_drafts_on_user_id_and_source_url", unique: true, where: "(source_url IS NOT NULL)"
   end
 
   create_table "grocery_list_items", force: :cascade do |t|
@@ -160,6 +173,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_170000) do
   end
 
   add_foreign_key "aisles", "users"
+  add_foreign_key "drafts", "users"
   add_foreign_key "grocery_list_items", "grocery_lists"
   add_foreign_key "grocery_list_items", "ingredients"
   add_foreign_key "grocery_lists", "meal_plans"

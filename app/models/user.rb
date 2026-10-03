@@ -6,6 +6,7 @@ class User < ApplicationRecord
   has_many :sources, dependent: :destroy
   has_many :ingredients, dependent: :destroy
   has_many :aisles, dependent: :destroy
+  has_many :drafts, dependent: :destroy
 
   validates :username, presence: true,
                        uniqueness: { case_sensitive: false },

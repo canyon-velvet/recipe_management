@@ -25,6 +25,9 @@ Rails.application.routes.draw do
     get :search, on: :collection
   end
 
+  # Draft box: imported recipes waiting to be reviewed
+  resources :drafts, only: [ :index, :destroy ]
+
   # Meal Plans
   resources :meal_plans, only: [ :index, :show, :new, :create, :destroy ] do
     resource :grocery_list, only: [ :show ]
