@@ -115,6 +115,8 @@ en:
               already_in_slot: "is already in this slot"
 
   shared:
+    account_menu:
+      logout: "Log out"
     hero:
       browse_recipes: "Browse recipes"
       image_alt: "Home meal planning"
@@ -128,7 +130,6 @@ en:
     navbar:
       home: "Home"
       login: "Log in"
-      logout: "Log out"
       meal_plans: "Meal Plans"
       recipes: "All Recipes"
 
@@ -220,7 +221,6 @@ en:
   grocery_lists:
     show:
       back: "Back to meal plan"
-      edit_aisles: "Edit aisles"
       empty: "Your grocery list is empty"
       empty_hint: "Tick a recipe's grocery checkbox in the meal plan to add its ingredients."
       pantry: "Already have"

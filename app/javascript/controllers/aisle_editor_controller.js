@@ -1,10 +1,11 @@
 import { Controller } from "@hotwired/stimulus"
 import { Turbo } from "@hotwired/turbo-rails"
 
-// Edit-aisles pop-up. The list itself is a Turbo Frame; this opens and closes the dialog, saves a
-// rename when the field changes, and once the dialog is closed and no save is in flight, reloads the
-// page if anything changed (so the page behind shows the new names and order) or otherwise reloads
-// the list (so an unsaved rename and its error don't come back on reopen).
+// Edit-aisles pop-up, available on every page. The list itself is a Turbo Frame; this opens and closes
+// the dialog and saves a rename when the field changes. Once the dialog is closed and no save is in
+// flight, a page that shows aisles (marked data-reload-on-aisle-change) is reloaded if anything changed;
+// any other page keeps its state, e.g. an unsaved recipe form, and only the list is reloaded, so an
+// unsaved rename and its error don't come back on reopen.
 export default class extends Controller {
   static targets = ["dialog", "frame"]
 
@@ -42,10 +43,11 @@ export default class extends Controller {
   refresh() {
     if (this.pending > 0) return
 
-    if (this.changed) {
+    if (this.changed && document.querySelector("[data-reload-on-aisle-change]")) {
       Turbo.visit(window.location.href, { action: "replace" })
     } else {
       this.frameTarget.reload()
+      this.changed = false
     }
   }
 }

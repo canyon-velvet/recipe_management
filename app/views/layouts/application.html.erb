@@ -20,12 +20,15 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-gray-50 min-h-screen">
+  <%# The Edit-aisles pop-up can be opened from any page (account menu, grocery list). %>
+  <%= tag.body class: "bg-gray-50 min-h-screen", data: ({ controller: "aisle-editor" } if logged_in?) do %>
     <%= render "shared/navbar" %>
 
     <main class="container mx-auto px-5 py-6">
       <%= render "shared/flash" %>
       <%= yield %>
     </main>
-  </body>
+
+    <%= render "aisles/editor_dialog" if logged_in? %>
+  <% end %>
 </html>
