@@ -1,4 +1,5 @@
-<%# locals: (form:) %>
+<%# locals: (form:, aisles: []) %>
+<% new_ingredient = form.object.new_ingredient? %>
 <div data-nested-form-row class="grid grid-cols-12 gap-3 items-start">
   <!-- Ingredient autocomplete -->
   <div class="col-span-5 relative"
@@ -7,14 +8,21 @@
        data-autocomplete-create-label-value="<%= t("recipes.ingredient_fields.create") %>"
        data-action="autocomplete:requestCreate->inline-create#openModal">
     <%= form.hidden_field :ingredient_id, data: { autocomplete_target: "hiddenField" } %>
-    <input type="text"
-           value="<%= form.object.ingredient&.name %>"
-           placeholder="<%= t("recipes.ingredient_fields.search") %>"
-           class="form-input"
-           autocomplete="off"
-           data-autocomplete-target="input"
-           data-action="input->autocomplete#onInput click@window->autocomplete#outside">
+    <%# A draft's ingredient the user doesn't have yet is submitted by name (unless one is picked) and created on save. %>
+    <%= tag.input type: "text", name: ("#{form.object_name}[new_ingredient_name]" if new_ingredient),
+                  value: form.object.ingredient&.name || form.object.new_ingredient_name,
+                  placeholder: t("recipes.ingredient_fields.search"), class: "form-input", autocomplete: "off",
+                  data: { autocomplete_target: "input",
+                          action: "input->autocomplete#onInput click@window->autocomplete#outside" } %>
     <ul data-autocomplete-target="list" class="autocomplete-list hidden"></ul>
+
+    <% if new_ingredient %>
+      <div class="flex items-center gap-2 mt-1">
+        <span class="new-badge"><%= t("recipes.form.new_badge") %></span>
+        <%= form.select :new_aisle_id, aisles.map { |aisle| [ aisle.name, aisle.id ] }, {},
+                        class: "form-select py-1 text-sm", aria: { label: Ingredient.human_attribute_name(:aisle) } %>
+      </div>
+    <% end %>
   </div>
 
   <!-- Quantity -->

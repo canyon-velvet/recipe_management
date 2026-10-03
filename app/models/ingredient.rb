@@ -11,6 +11,7 @@ class Ingredient < ApplicationRecord
   normalizes :name, with: ->(name) { name.strip }
 
   scope :alphabetical, -> { order(:name) }
+  scope :named, ->(name) { where("lower(name) = lower(?)", name.strip) }
 
   private
 

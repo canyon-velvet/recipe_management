@@ -23,6 +23,7 @@ zh-CN:
     rate_limited: "尝试次数过多，请稍后再试"
     recipe_created: "菜谱创建成功"
     recipe_deleted: "菜谱已删除"
+    recipe_saved_from_draft: "已从草稿箱保存菜谱"
     recipe_updated: "菜谱更新成功"
     registered: "注册成功"
 
@@ -153,6 +154,8 @@ zh-CN:
       new_recipe: "新建菜谱"
       search_placeholder: "搜索菜谱"
     new:
+      review_hint: "确认读取的内容后保存。标记为“新”的食材和来源会在保存时创建。"
+      review_title: "审阅草稿"
       title: "新建菜谱"
     edit:
       title: "编辑菜谱"
@@ -161,6 +164,7 @@ zh-CN:
       link: "链接"
       source: "来源：%{name}"
     form:
+      new_badge: "新"
       add_ingredient: "+ 添加食材"
       add_step: "+ 添加步骤"
       create: "创建菜谱"
@@ -245,6 +249,7 @@ zh-CN:
       added: "%{time}前添加"
       confirm_discard: "丢弃“%{title}”？"
       discard: "丢弃"
+      review: "审阅"
     failures:
       generic: "无法从中读取菜谱"
     index:

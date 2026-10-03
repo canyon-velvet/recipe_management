@@ -23,6 +23,7 @@ en:
     rate_limited: "Too many attempts. Please try again later."
     recipe_created: "Recipe created."
     recipe_deleted: "Recipe deleted."
+    recipe_saved_from_draft: "Recipe saved from your Draft box."
     recipe_updated: "Recipe updated."
     registered: "Account created."
 
@@ -153,6 +154,8 @@ en:
       new_recipe: "New recipe"
       search_placeholder: "Search recipes"
     new:
+      review_hint: "Check what was read, then save. Ingredients and sources marked New are created when you save."
+      review_title: "Review draft"
       title: "New recipe"
     edit:
       title: "Edit recipe"
@@ -161,6 +164,7 @@ en:
       link: "Link"
       source: "Source: %{name}"
     form:
+      new_badge: "New"
       add_ingredient: "+ Add ingredient"
       add_step: "+ Add step"
       create: "Create recipe"
@@ -247,6 +251,7 @@ en:
       added: "added %{time} ago"
       confirm_discard: "Discard \"%{title}\"?"
       discard: "Discard"
+      review: "Review"
     failures:
       generic: "We couldn't read a recipe from this."
     index:
