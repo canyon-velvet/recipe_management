@@ -23,3 +23,29 @@ end
 # Aisles are per user; new users get the defaults on sign-up. Display names live in config/locales under `aisles`.
 User.find_each { |user| Aisle.create_defaults_for(user) }
 puts "Ensured default aisles for #{User.count} users"
+
+# Sample drafts for the admin, one per status, so the Draft box can be tried before the importer exists.
+if Rails.env.development?
+  admin = User.find_by!(username: "admin")
+  aisle_id = ->(key) { admin.aisles.find_by(key: key)&.id }
+
+  admin.drafts.find_or_create_by!(source_url: "https://example.com/recipes/scallion-pancakes") do |draft|
+    draft.status = :ready
+    draft.data = {
+      "name" => "葱油饼",
+      "description" => "Flaky pan-fried scallion pancakes.",
+      "source_name" => "Example Kitchen",
+      "ingredients" => [
+        { "name" => "面粉", "quantity" => "300", "unit" => "g", "aisle_id" => aisle_id.("pantry") },
+        { "name" => "葱", "quantity" => "4", "unit" => "根", "aisle_id" => aisle_id.("produce") },
+        { "name" => "盐", "quantity" => "1", "unit" => "tsp", "aisle_id" => aisle_id.("spices_seasonings") }
+      ],
+      "steps" => [ "Mix the flour with warm water and rest the dough.", "Roll out, oil, salt, add scallions, roll up.",
+                   "Flatten and pan-fry until golden on both sides." ],
+      "tags" => %w[chinese snack]
+    }
+  end
+  admin.drafts.find_or_create_by!(source_url: "https://example.com/recipes/still-reading")
+  admin.drafts.find_or_create_by!(source_url: "https://example.com/recipes/blocked") { |draft| draft.status = :failed }
+  puts "Seeded #{admin.drafts.count} sample drafts for admin"
+end

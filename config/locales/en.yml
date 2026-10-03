@@ -12,6 +12,7 @@ en:
 
   flash:
     admin_required: "Admin access required."
+    draft_discarded: "Draft discarded."
     invalid_login: "Incorrect username or password."
     logged_in: "Logged in."
     logged_out: "Logged out."
@@ -68,6 +69,8 @@ en:
     attributes:
       aisle:
         name: "Name"
+      draft:
+        source_url: "Recipe link"
       ingredient:
         aisle: "Aisle"
         name: "Name"
@@ -116,6 +119,8 @@ en:
 
   shared:
     account_menu:
+      draft_box: "Draft box"
+      drafts_need_attention: "Some drafts need your attention"
       logout: "Log out"
     hero:
       browse_recipes: "Browse recipes"
@@ -236,6 +241,23 @@ en:
     new_aisle_placeholder: "New aisle name"
     other_hint: "%{other} always stays last and can't be deleted."
     title: "Edit aisles"
+
+  drafts:
+    draft:
+      added: "added %{time} ago"
+      confirm_discard: "Discard \"%{title}\"?"
+      discard: "Discard"
+    failures:
+      generic: "We couldn't read a recipe from this."
+    index:
+      empty: "No drafts yet."
+      subtitle: "Imported recipes wait here until you save or discard them."
+      title: "Draft box"
+    pasted_text: "Pasted text"
+    statuses:
+      failed: "Failed"
+      reading: "Reading…"
+      ready: "Ready"
 
   sessions:
     new:
