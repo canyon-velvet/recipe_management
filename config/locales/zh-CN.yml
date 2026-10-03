@@ -120,6 +120,7 @@ zh-CN:
 
   shared:
     account_menu:
+      background_jobs: "后台任务"
       draft_box: "草稿箱"
       drafts_need_attention: "有草稿需要处理"
       logout: "退出"

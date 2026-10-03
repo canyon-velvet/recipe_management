@@ -26,7 +26,8 @@ Rails.application.configure do
   end
 
   # Change to :null_store to avoid any caching.
-  config.cache_store = :memory_store
+  # Redis, shared with the Sidekiq process, so cache-backed limits like rate_limit see every request.
+  config.cache_store = :redis_cache_store, { url: ENV.fetch("REDIS_CACHE_URL", "redis://localhost:6379/1") }
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
@@ -42,6 +43,9 @@ Rails.application.configure do
 
   # Append comments with runtime information tags to SQL queries in logs.
   config.active_record.query_log_tags_enabled = true
+
+  # Jobs run in a separate Sidekiq process (see Procfile.dev), queued in Redis.
+  config.active_job.queue_adapter = :sidekiq
 
   # Highlight code that enqueued background job in logs.
   config.active_job.verbose_enqueue_logs = true

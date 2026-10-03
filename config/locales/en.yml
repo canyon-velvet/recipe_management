@@ -120,6 +120,7 @@ en:
 
   shared:
     account_menu:
+      background_jobs: "Background jobs"
       draft_box: "Draft box"
       drafts_need_attention: "Some drafts need your attention"
       logout: "Log out"
