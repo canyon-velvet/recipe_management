@@ -21,6 +21,10 @@
     <button type="button" class="account-menu-item" role="menuitem" data-action="dropdown#hide aisle-editor#open">
       <%= t("aisle_editor.title") %>
     </button>
+    <% if current_user.admin? %>
+      <%= link_to t(".background_jobs"), sidekiq_path, data: { turbo: false },
+                  class: "account-menu-item", role: "menuitem" %>
+    <% end %>
     <%= link_to t(".logout"), logout_path, data: { turbo_method: :delete },
                 class: "account-menu-item", role: "menuitem" %>
   </div>

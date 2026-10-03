@@ -37,6 +37,10 @@ gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
 
+# Background jobs run by Sidekiq, and the Redis client Action Cable uses to reach browsers from the Sidekiq process
+gem "sidekiq", "~> 8.0"
+gem "redis", "~> 5.4"
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
