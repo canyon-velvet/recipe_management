@@ -47,7 +47,8 @@ Rails.application.configure do
   config.active_support.report_deprecations = false
 
   # Replace the default in-process memory cache store with a durable alternative.
-  config.cache_store = :solid_cache_store
+  # Cache in its own Redis database (1), apart from Sidekiq's jobs (0).
+  config.cache_store = :redis_cache_store, { url: ENV.fetch("REDIS_CACHE_URL", "redis://localhost:6379/1") }
 
   # Jobs run in a separate Sidekiq process, queued in Redis (REDIS_URL).
   config.active_job.queue_adapter = :sidekiq

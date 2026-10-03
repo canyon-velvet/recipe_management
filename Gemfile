@@ -32,12 +32,7 @@ gem "redcarpet", "~> 3.6"
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
-# Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
-gem "solid_cache"
-gem "solid_queue"
-gem "solid_cable"
-
-# Background jobs run by Sidekiq, and the Redis client Action Cable uses to reach browsers from the Sidekiq process
+# Redis backs background jobs (Sidekiq), Action Cable and Rails.cache; the redis gem is the client for the latter two
 gem "sidekiq", "~> 8.0"
 gem "redis", "~> 5.4"
 
