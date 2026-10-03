@@ -42,7 +42,8 @@ env:
   secret:
     - RAILS_MASTER_KEY
   clear:
-    # Redis for Sidekiq jobs and Action Cable (db 0) and the cache (db 1); see the redis accessory below.
+    # Redis for Sidekiq jobs and Action Cable (db 0) and the cache (db 1).
+    # Before deploying, enable the redis accessory at the bottom of this file (or point these at a hosted Redis).
     REDIS_URL: redis://recipe_management-redis:6379/0
     REDIS_CACHE_URL: redis://recipe_management-redis:6379/1
 

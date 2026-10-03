@@ -27,7 +27,15 @@ Rails.application.configure do
 
   # Change to :null_store to avoid any caching.
   # Redis, shared with the Sidekiq process, so cache-backed limits like rate_limit see every request.
-  config.cache_store = :redis_cache_store, { url: ENV.fetch("REDIS_CACHE_URL", "redis://localhost:6379/1") }
+  config.cache_store = :redis_cache_store, {
+    url: ENV.fetch("REDIS_CACHE_URL", "redis://localhost:6379/1"),
+    namespace: "recipe_management:#{Rails.env}",
+    expires_in: 1.week,
+    # When Redis is down the cache (and cache-backed rate limits) quietly stop working instead of raising; report it.
+    error_handler: ->(method:, returning:, exception:) {
+      Rails.error.report(exception, handled: true, context: { cache_method: method, returning: returning })
+    }
+  }
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
