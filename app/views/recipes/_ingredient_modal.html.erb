@@ -7,13 +7,26 @@
            class="form-input">
   </div>
 
-  <div class="field">
+  <div class="field"
+       data-controller="aisle-select"
+       data-aisle-select-create-url-value="<%= aisles_path %>"
+       data-aisle-select-error-text-value="<%= t("recipes.form.save_failed") %>">
     <label class="form-label"><%= Ingredient.human_attribute_name(:aisle) %></label>
-    <select name="ingredient[aisle_id]" class="form-select">
+    <select name="ingredient[aisle_id]" class="form-select"
+            data-aisle-select-target="select" data-action="change->aisle-select#change">
       <option value=""><%= t("recipes.ingredient_modal.aisle_prompt") %></option>
       <% aisles.each do |aisle| %>
         <option value="<%= aisle.id %>"><%= aisle.name %></option>
       <% end %>
+      <option value="new"><%= t("recipes.ingredient_modal.new_aisle") %></option>
     </select>
+
+    <%# No name attribute: the ingredient form must not submit this field. %>
+    <div class="flex items-center gap-2 pt-2" data-aisle-select-target="newAisle" hidden>
+      <input type="text" class="form-input" placeholder="<%= t("recipes.ingredient_modal.new_aisle_placeholder") %>"
+             data-aisle-select-target="input" data-action="keydown.enter->aisle-select#add">
+      <button type="button" class="btn-primary btn-sm" data-action="aisle-select#add"><%= t("actions.add") %></button>
+    </div>
+    <p class="error-text" data-aisle-select-target="error"></p>
   </div>
 <% end %>

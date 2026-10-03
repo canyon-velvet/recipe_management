@@ -1,0 +1,24 @@
+<%= turbo_frame_tag "aisles" do %>
+  <% movable = @aisles.reject(&:other?) %>
+  <% other_name = @aisles.find(&:other?)&.saved_name %>
+
+  <ul class="aisle-list">
+    <% @aisles.each do |aisle| %>
+      <%= render "aisles/aisle_row", aisle: aisle, other_name: other_name,
+                 can_move_up: movable.include?(aisle) && movable.first != aisle,
+                 can_move_down: movable.include?(aisle) && movable.last != aisle %>
+    <% end %>
+  </ul>
+
+  <%= form_with url: aisles_path, scope: :aisle, class: "flex items-center gap-2 pt-4" do |f| %>
+    <%= f.text_field :name, value: @new_aisle&.name, id: "new_aisle_name", class: "form-input",
+                     placeholder: t("aisle_editor.new_aisle_placeholder"),
+                     aria: { label: t("aisle_editor.new_aisle_placeholder") } %>
+    <%= f.submit t("actions.add"), class: "btn-secondary btn-sm" %>
+  <% end %>
+  <% if @new_aisle&.errors&.any? %>
+    <p class="error-text"><%= @new_aisle.errors.full_messages.to_sentence %></p>
+  <% end %>
+
+  <p class="help-text pt-3"><%= t("aisle_editor.other_hint", other: other_name) %></p>
+<% end %>

@@ -3,6 +3,7 @@ zh-CN:
   locale_name: "中文"
 
   actions:
+    add: "添加"
     back: "返回"
     cancel: "取消"
     delete: "删除"
@@ -65,6 +66,8 @@ zh-CN:
 
   activerecord:
     attributes:
+      aisle:
+        name: "名称"
       ingredient:
         aisle: "货架区"
         name: "名称"
@@ -80,6 +83,7 @@ zh-CN:
         name: "菜名"
         source: "来源"
         source_id: "来源"
+        source_url: "菜谱链接"
         steps: "制作步骤"
         tags: "标签"
       recipe/recipe_ingredients:
@@ -90,13 +94,14 @@ zh-CN:
         position: "步骤序号"
       source:
         name: "名称"
-        url: "链接"
       user:
         password: "密码"
         password_confirmation: "确认密码"
         username: "用户名"
     errors:
       models:
+        aisle:
+          other_aisle_permanent: "“其他”不能删除"
         meal_plan:
           attributes:
             end_date:
@@ -168,6 +173,8 @@ zh-CN:
       remove: "移除"
     ingredient_modal:
       aisle_prompt: "请选择货架区"
+      new_aisle: "+ 新建货架区…"
+      new_aisle_placeholder: "货架区名称"
 
   meal_plans:
     days:
@@ -211,10 +218,22 @@ zh-CN:
   grocery_lists:
     show:
       back: "返回餐计划"
+      edit_aisles: "编辑货架区"
       empty: "购物清单为空"
       empty_hint: "在餐计划中勾选菜谱的购物复选框以添加食材"
       pantry: "已有食材"
       title: "购物清单"
+
+  aisle_editor:
+    confirm_delete: "删除“%{name}”？其中的食材将移到“%{other}”。"
+    delete: "删除“%{name}”"
+    done: "完成"
+    loading: "加载中…"
+    move_down: "下移“%{name}”"
+    move_up: "上移“%{name}”"
+    new_aisle_placeholder: "新货架区名称"
+    other_hint: "“%{other}”始终排在最后，不能删除。"
+    title: "编辑货架区"
 
   sessions:
     new:

@@ -1,4 +1,4 @@
-<section class="container mx-auto max-w-3xl px-4 py-8" data-controller="grocery-list">
+<section class="container mx-auto max-w-3xl px-4 py-8" data-controller="grocery-list aisle-editor">
   <!-- Header -->
   <div class="flex items-center justify-between mb-6">
     <div>
@@ -6,6 +6,7 @@
       <p class="text-sm text-gray-500 mt-1"><%= @meal_plan.display_name %></p>
     </div>
     <div class="flex items-center gap-3">
+      <button type="button" class="btn-secondary" data-action="aisle-editor#open"><%= t(".edit_aisles") %></button>
       <%= link_to t(".back"), meal_plan_path(@meal_plan), class: "btn-secondary" %>
     </div>
   </div>
@@ -39,4 +40,6 @@
       </div>
     <% end %>
   <% end %>
+
+  <%= render "aisles/editor_dialog" %>
 </section>

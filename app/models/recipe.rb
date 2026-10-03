@@ -10,7 +10,9 @@ class Recipe < ApplicationRecord
   has_many :meal_slots, through: :meal_slot_recipes
 
   validates :name, presence: true
+  validates :source_url, format: { with: /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/ }, allow_blank: true
   validate :must_have_steps
+  validate :source_must_belong_to_user
 
   accepts_nested_attributes_for :recipe_ingredients, allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :steps, allow_destroy: true,
@@ -32,6 +34,10 @@ class Recipe < ApplicationRecord
 
   def must_have_steps
     errors.add(:steps, :blank) if kept_steps.empty?
+  end
+
+  def source_must_belong_to_user
+    errors.add(:source, :invalid) if source && user && source.user_id != user_id
   end
 
   def renumber_steps

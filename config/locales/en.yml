@@ -3,6 +3,7 @@ en:
   locale_name: "English"
 
   actions:
+    add: "Add"
     back: "Back"
     cancel: "Cancel"
     delete: "Delete"
@@ -65,6 +66,8 @@ en:
 
   activerecord:
     attributes:
+      aisle:
+        name: "Name"
       ingredient:
         aisle: "Aisle"
         name: "Name"
@@ -80,6 +83,7 @@ en:
         name: "Name"
         source: "Source"
         source_id: "Source"
+        source_url: "Recipe link"
         steps: "Steps"
         tags: "Tags"
       recipe/recipe_ingredients:
@@ -90,13 +94,14 @@ en:
         position: "Step number"
       source:
         name: "Name"
-        url: "Link"
       user:
         password: "Password"
         password_confirmation: "Confirm password"
         username: "Username"
     errors:
       models:
+        aisle:
+          other_aisle_permanent: "Other can't be deleted"
         meal_plan:
           attributes:
             end_date:
@@ -168,6 +173,8 @@ en:
       remove: "Remove"
     ingredient_modal:
       aisle_prompt: "Choose an aisle"
+      new_aisle: "+ New aisle…"
+      new_aisle_placeholder: "Aisle name"
 
   meal_plans:
     days:
@@ -213,10 +220,22 @@ en:
   grocery_lists:
     show:
       back: "Back to meal plan"
+      edit_aisles: "Edit aisles"
       empty: "Your grocery list is empty"
       empty_hint: "Tick a recipe's grocery checkbox in the meal plan to add its ingredients."
       pantry: "Already have"
       title: "Grocery List"
+
+  aisle_editor:
+    confirm_delete: "Delete \"%{name}\"? Its ingredients will move to %{other}."
+    delete: "Delete %{name}"
+    done: "Done"
+    loading: "Loading…"
+    move_down: "Move %{name} down"
+    move_up: "Move %{name} up"
+    new_aisle_placeholder: "New aisle name"
+    other_hint: "%{other} always stays last and can't be deleted."
+    title: "Edit aisles"
 
   sessions:
     new:

@@ -1,13 +1,13 @@
 class SourcesController < ApplicationController
   def search
-    sources = Source.where("name ILIKE ?", "%#{params[:q]}%")
-                   .order(:name)
-                   .limit(20)
+    sources = current_user.sources.where("name ILIKE ?", "%#{params[:q]}%")
+                          .order(:name)
+                          .limit(20)
     render json: sources.map { |s| { id: s.id, name: s.name } }
   end
 
   def create
-    source = Source.new(source_params)
+    source = current_user.sources.new(source_params)
 
     if source.save
       render json: { id: source.id, name: source.name }, status: :created
@@ -19,6 +19,6 @@ class SourcesController < ApplicationController
   private
 
   def source_params
-    params.require(:source).permit(:name, :url)
+    params.require(:source).permit(:name)
   end
 end

@@ -10,17 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_02_161943) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_02_170000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "aisles", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "key", null: false
+    t.string "key"
     t.integer "position", null: false
-    t.index ["key"], name: "index_aisles_on_key", unique: true
-    t.index ["position"], name: "index_aisles_on_position"
+    t.bigint "user_id", null: false
+    t.string "name"
+    t.index "user_id, lower((name)::text)", name: "index_aisles_on_user_id_and_lowercase_name", unique: true
+    t.index ["user_id", "key"], name: "index_aisles_on_user_id_and_key", unique: true
+    t.index ["user_id", "position"], name: "index_aisles_on_user_id_and_position"
+    t.index ["user_id"], name: "index_aisles_on_user_id"
   end
 
   create_table "grocery_list_items", force: :cascade do |t|
@@ -47,8 +51,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_161943) do
     t.bigint "aisle_id", null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
-    t.index "lower((name)::text)", name: "index_ingredients_on_lowercase_name", unique: true
+    t.bigint "user_id", null: false
+    t.index "user_id, lower((name)::text)", name: "index_ingredients_on_user_id_and_lowercase_name", unique: true
     t.index ["aisle_id"], name: "index_ingredients_on_aisle_id"
+    t.index ["user_id"], name: "index_ingredients_on_user_id"
   end
 
   create_table "meal_plans", force: :cascade do |t|
@@ -121,6 +127,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_161943) do
     t.bigint "source_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.string "source_url"
     t.index ["source_id"], name: "index_recipes_on_source_id"
     t.index ["user_id"], name: "index_recipes_on_user_id"
   end
@@ -129,8 +136,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_161943) do
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
-    t.string "url"
-    t.index "lower((name)::text)", name: "index_sources_on_lowercase_name", unique: true
+    t.bigint "user_id", null: false
+    t.index "user_id, lower((name)::text)", name: "index_sources_on_user_id_and_lowercase_name", unique: true
+    t.index ["user_id"], name: "index_sources_on_user_id"
   end
 
   create_table "tags", force: :cascade do |t|
@@ -151,10 +159,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_161943) do
     t.index "lower((username)::text)", name: "index_users_on_lowercase_username", unique: true
   end
 
+  add_foreign_key "aisles", "users"
   add_foreign_key "grocery_list_items", "grocery_lists"
   add_foreign_key "grocery_list_items", "ingredients"
   add_foreign_key "grocery_lists", "meal_plans"
   add_foreign_key "ingredients", "aisles"
+  add_foreign_key "ingredients", "users"
   add_foreign_key "meal_plans", "users"
   add_foreign_key "meal_slot_recipes", "meal_slots"
   add_foreign_key "meal_slot_recipes", "recipes"
@@ -166,4 +176,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_161943) do
   add_foreign_key "recipe_tags", "tags"
   add_foreign_key "recipes", "sources"
   add_foreign_key "recipes", "users"
+  add_foreign_key "sources", "users"
 end
