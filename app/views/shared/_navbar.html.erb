@@ -24,8 +24,7 @@
   <div class="flex items-center px-6 ml-auto">
     <%= render "shared/locale_switcher" %>
     <% if logged_in? %>
-      <span class="text-white text-sm opacity-70 mr-4"><%= current_user.username %></span>
-      <%= link_to t(".logout"), logout_path, data: { turbo_method: :delete }, class: "nav-link" %>
+      <%= render "shared/account_menu" %>
     <% else %>
       <%= link_to t(".login"), login_path, class: "nav-link" %>
     <% end %>

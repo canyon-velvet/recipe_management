@@ -115,6 +115,8 @@ zh-CN:
               already_in_slot: "已在此时段中"
 
   shared:
+    account_menu:
+      logout: "退出"
     hero:
       browse_recipes: "浏览菜谱"
       image_alt: "家庭餐食计划"
@@ -128,7 +130,6 @@ zh-CN:
     navbar:
       home: "首页"
       login: "登录"
-      logout: "退出"
       meal_plans: "餐计划"
       recipes: "所有菜谱"
 
@@ -218,7 +219,6 @@ zh-CN:
   grocery_lists:
     show:
       back: "返回餐计划"
-      edit_aisles: "编辑货架区"
       empty: "购物清单为空"
       empty_hint: "在餐计划中勾选菜谱的购物复选框以添加食材"
       pantry: "已有食材"

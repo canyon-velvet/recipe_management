@@ -1,0 +1,17 @@
+<div data-controller="dropdown" data-action="turbo:before-cache@document->dropdown#hide" class="relative">
+  <button type="button" data-action="click->dropdown#toggle click@window->dropdown#close"
+          class="account-toggle" aria-haspopup="menu">
+    <span><%= current_user.username %></span>
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+    </svg>
+  </button>
+
+  <div data-dropdown-target="menu" class="account-menu hidden" role="menu">
+    <button type="button" class="account-menu-item" role="menuitem" data-action="dropdown#hide aisle-editor#open">
+      <%= t("aisle_editor.title") %>
+    </button>
+    <%= link_to t(".logout"), logout_path, data: { turbo_method: :delete },
+                class: "account-menu-item", role: "menuitem" %>
+  </div>
+</div>
