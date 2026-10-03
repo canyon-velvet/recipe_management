@@ -12,6 +12,9 @@
 
   <div class="flex items-center gap-2 flex-none">
     <span class="draft-status draft-status--<%= draft.status %>"><%= t("drafts.statuses.#{draft.status}") %></span>
+    <% if draft.ready? %>
+      <%= link_to t(".review"), new_recipe_path(draft_id: draft.id), class: "btn-primary btn-sm" %>
+    <% end %>
     <%= button_to t(".discard"), draft_path(draft), method: :delete, class: "btn-cancel btn-sm",
                   form: { data: { turbo_confirm: t(".confirm_discard", title: draft.title) } } %>
   </div>

@@ -1,7 +1,7 @@
 class Recipe < ApplicationRecord
-  belongs_to :source
+  belongs_to :source, autosave: true
   belongs_to :user
-  has_many :recipe_ingredients, dependent: :destroy
+  has_many :recipe_ingredients, dependent: :destroy, inverse_of: :recipe
   has_many :ingredients, through: :recipe_ingredients
   has_many :steps, -> { order(:position) }, class_name: "RecipeStep", dependent: :destroy, inverse_of: :recipe
   has_many :recipe_tags, dependent: :destroy
@@ -9,24 +9,38 @@ class Recipe < ApplicationRecord
   has_many :meal_slot_recipes, dependent: :destroy
   has_many :meal_slots, through: :meal_slot_recipes
 
+  # A draft's source the user doesn't have yet; it's created when the recipe saves.
+  attr_accessor :new_source_name
+
   validates :name, presence: true
   validates :source_url, http_url: true, allow_blank: true
   validate :must_have_steps
   validate :source_must_belong_to_user
 
-  accepts_nested_attributes_for :recipe_ingredients, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :recipe_ingredients, allow_destroy: true, reject_if: :blank_ingredient_row?
   accepts_nested_attributes_for :steps, allow_destroy: true,
                                         reject_if: ->(attributes) { attributes["id"].blank? && attributes["body"].blank? }
 
   # The form submits each step's position; renumber 1..n in that order so gaps or duplicates never persist.
   before_validation :renumber_steps
+  before_validation :use_new_source, if: -> { source.nil? && new_source_name.present? }
 
   scope :search_by_name, ->(query) { where("name ILIKE ?", "%#{query}%") if query.present? }
   scope :tagged, ->(tag_key) {
     where(id: RecipeTag.joins(:tag).where(tags: { key: tag_key }).select(:recipe_id)) if tag_key.present?
   }
 
+  # Shown with a "new" badge in the form until the recipe saves.
+  def new_source? = new_source_name.present? && (source.nil? || source.new_record?)
+
   private
+
+  # A row with nothing filled in is dropped. A draft's New row always carries an aisle choice, which doesn't count.
+  def blank_ingredient_row?(attributes) = attributes.except("new_aisle_id", "_destroy").values.all?(&:blank?)
+
+  def use_new_source
+    self.source = user.sources.named(new_source_name).first || user.sources.build(name: new_source_name)
+  end
 
   def kept_steps
     steps.reject(&:marked_for_destruction?)

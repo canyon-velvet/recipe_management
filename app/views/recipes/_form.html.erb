@@ -1,6 +1,8 @@
-<%# locals: (recipe:, aisles:, tags:) %>
+<%# locals: (recipe:, aisles:, tags:, draft: nil) %>
 
 <%= form_with model: recipe, class: "space-y-6" do |f| %>
+  <%= hidden_field_tag :draft_id, draft.id if draft %>
+
   <% if recipe.errors.any? %>
     <div class="bg-red-50 border border-red-300 text-red-700 rounded-md p-3">
       <ul class="list-disc list-inside text-sm">
@@ -34,7 +36,7 @@
     <div data-nested-form-target="container" class="space-y-3">
       <% ingredients = recipe.recipe_ingredients.any? ? recipe.recipe_ingredients : [recipe.recipe_ingredients.build] %>
       <%= f.fields_for :recipe_ingredients, ingredients do |ri_form| %>
-        <%= render "recipes/ingredient_row", form: ri_form %>
+        <%= render "recipes/ingredient_row", form: ri_form, aisles: aisles %>
       <% end %>
     </div>
 
@@ -87,15 +89,18 @@
          data-autocomplete-create-label-value="<%= t(".create_source") %>"
          data-action="autocomplete:requestCreate->inline-create#openModal">
       <%= f.hidden_field :source_id, data: { autocomplete_target: "hiddenField" } %>
-      <input type="text"
-             value="<%= recipe.source&.name %>"
-             placeholder="<%= t(".search_source") %>"
-             class="form-input"
-             autocomplete="off"
-             data-autocomplete-target="input"
-             data-action="input->autocomplete#onInput click@window->autocomplete#outside">
+      <%# A draft's source the user doesn't have yet is submitted by name and created on save. %>
+      <%= tag.input type: "text", name: ("recipe[new_source_name]" if recipe.new_source?),
+                    value: recipe.source&.name || recipe.new_source_name,
+                    placeholder: t(".search_source"), class: "form-input", autocomplete: "off",
+                    data: { autocomplete_target: "input",
+                            action: "input->autocomplete#onInput click@window->autocomplete#outside" } %>
       <ul data-autocomplete-target="list" class="autocomplete-list hidden"></ul>
     </div>
+
+    <% if recipe.new_source? %>
+      <span class="new-badge mt-1"><%= t(".new_badge") %></span>
+    <% end %>
 
     <%= render "recipes/source_modal" %>
   </div>
@@ -109,6 +114,7 @@
   <!-- Submit -->
   <div class="flex items-center gap-3 pt-4">
     <%= f.submit recipe.persisted? ? t(".update") : t(".create"), class: "btn-primary" %>
-    <%= link_to t("actions.cancel"), recipe.persisted? ? recipe_path(recipe) : recipes_path, class: "btn-cancel" %>
+    <%= link_to t("actions.cancel"), (draft && drafts_path) || (recipe.persisted? ? recipe_path(recipe) : recipes_path),
+                class: "btn-cancel" %>
   </div>
 <% end %>

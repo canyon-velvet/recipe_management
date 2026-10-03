@@ -1,6 +1,7 @@
 class RecipesController < ApplicationController
   before_action :set_recipe, only: [ :show, :edit, :update, :destroy ]
   before_action :set_form_data, only: [ :new, :create, :edit, :update ]
+  before_action :set_draft, only: [ :new, :create ]
 
   def index
     recipes = current_user.recipes.includes(:source, :tags)
@@ -20,14 +21,14 @@ class RecipesController < ApplicationController
   end
 
   def new
-    @recipe = Recipe.new
+    @recipe = @draft ? BuildRecipeFromDraftService.new(@draft).call : Recipe.new
   end
 
   def create
     @recipe = current_user.recipes.build(recipe_params)
 
-    if @recipe.save
-      redirect_to recipe_path(@recipe), notice: t("flash.recipe_created")
+    if save_recipe
+      redirect_to recipe_path(@recipe), notice: t(@draft ? "flash.recipe_saved_from_draft" : "flash.recipe_created")
     else
       render :new, status: :unprocessable_entity
     end
@@ -55,6 +56,21 @@ class RecipesController < ApplicationController
     @recipe = current_user.recipes.includes(:source, :tags, :steps, recipe_ingredients: :ingredient).find(params[:id])
   end
 
+  # Reviewing a Ready draft from the Draft box prefills the form; saving it empties the draft.
+  def set_draft
+    @draft = current_user.drafts.ready.find(params[:draft_id]) if params[:draft_id].present?
+  end
+
+  # Both happen or neither does, so a saved draft never stays in the Draft box.
+  def save_recipe
+    Recipe.transaction do
+      next false unless @recipe.save
+
+      @draft&.destroy!
+      true
+    end
+  end
+
   def set_form_data
     @aisles = current_user.aisles.ordered
     @tags = Tag.ordered
@@ -62,8 +78,8 @@ class RecipesController < ApplicationController
 
   def recipe_params
     params.require(:recipe).permit(
-      :name, :description, :source_id, :source_url, tag_ids: [],
-      recipe_ingredients_attributes: [ :id, :ingredient_id, :quantity, :unit, :_destroy ],
+      :name, :description, :source_id, :new_source_name, :source_url, tag_ids: [],
+      recipe_ingredients_attributes: [ :id, :ingredient_id, :new_ingredient_name, :new_aisle_id, :quantity, :unit, :_destroy ],
       steps_attributes: [ :id, :body, :position, :_destroy ]
     )
   end
