@@ -36,6 +36,9 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "sidekiq", "~> 8.0"
 gem "redis", "~> 5.4"
 
+# Fetches imported recipe pages without letting a link reach private or internal addresses (SSRF)
+gem "ssrf_filter", "~> 1.6"
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
