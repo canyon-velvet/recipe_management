@@ -6,6 +6,7 @@ en:
     add: "Add"
     back: "Back"
     cancel: "Cancel"
+    close: "Close"
     delete: "Delete"
     edit: "Edit"
     save: "Save"
@@ -273,6 +274,7 @@ en:
       subtitle: "Imported recipes wait here until you save or discard them."
       title: "Draft box"
     pasted_text: "Pasted text"
+    ready_toast: "“%{title}” is ready to review."
     statuses:
       failed: "Failed"
       reading: "Reading…"

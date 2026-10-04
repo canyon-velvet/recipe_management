@@ -4,13 +4,15 @@ class ImportRecipeJob < ApplicationJob
 
   # Claude rate limits and outages are worth waiting out; after the last attempt the draft shows the failure.
   retry_on CleanRecipeService::TemporaryError, wait: :polynomially_longer, attempts: 5 do |job, _error|
-    job.arguments.first.update!(status: :failed, failure_reason: :cleanup_failed)
+    draft, locale = job.arguments
+    I18n.with_locale(locale || I18n.default_locale) { draft.update!(status: :failed, failure_reason: :cleanup_failed) }
   end
 
   # The draft was discarded before it was read.
   discard_on ActiveJob::DeserializationError
 
-  def perform(draft)
-    ImportRecipeService.new(draft).call
+  # locale: the user's language, for the live updates the draft broadcasts while it's read.
+  def perform(draft, locale = I18n.default_locale.to_s)
+    I18n.with_locale(locale) { ImportRecipeService.new(draft).call }
   end
 end

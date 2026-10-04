@@ -2,10 +2,7 @@
   <button type="button" data-action="click->dropdown#toggle click@window->dropdown#close"
           class="account-toggle" aria-haspopup="menu">
     <span><%= current_user.username %></span>
-    <% if drafts_need_attention? %>
-      <span class="account-dot" aria-hidden="true"></span>
-      <span class="sr-only"><%= t(".drafts_need_attention") %></span>
-    <% end %>
+    <%= render "drafts/attention_dot", counts: draft_counts %>
     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
       <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
     </svg>
@@ -14,9 +11,7 @@
   <div data-dropdown-target="menu" class="account-menu hidden" role="menu">
     <%= link_to drafts_path, class: "account-menu-item", role: "menuitem" do %>
       <%= t(".draft_box") %>
-      <% if drafts_count.positive? %>
-        <span class="account-menu-count"><%= drafts_count %></span>
-      <% end %>
+      <%= render "drafts/menu_count", counts: draft_counts %>
     <% end %>
     <button type="button" class="account-menu-item" role="menuitem" data-action="dropdown#hide aisle-editor#open">
       <%= t("aisle_editor.title") %>

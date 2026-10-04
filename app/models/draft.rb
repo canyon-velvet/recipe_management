@@ -6,6 +6,8 @@
 #     "ingredients" => [{ "name" => "…", "quantity" => "…", "unit" => "…", "aisle_id" => 1 }],
 #     "steps" => ["…"], "tags" => ["tag_key"] }
 class Draft < ApplicationRecord
+  include DraftBoxBroadcasts
+
   belongs_to :user
 
   enum :status, { reading: "reading", ready: "ready", failed: "failed" }, validate: true

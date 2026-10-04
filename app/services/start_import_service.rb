@@ -27,7 +27,8 @@ class StartImportService
       return failure(draft.errors.of_kind?(:source_url, :taken) ? :already_in_draft_box : :invalid_link)
     end
 
-    ImportRecipeJob.perform_later(draft)
+    # The job renders live updates for this user, in the language they imported in.
+    ImportRecipeJob.perform_later(draft, I18n.locale.to_s)
     Result.new(draft: draft, error: nil, recipe: nil)
   rescue ActiveRecord::RecordNotUnique
     failure(:already_in_draft_box)

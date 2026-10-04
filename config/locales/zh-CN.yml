@@ -6,6 +6,7 @@ zh-CN:
     add: "添加"
     back: "返回"
     cancel: "取消"
+    close: "关闭"
     delete: "删除"
     edit: "编辑"
     save: "保存"
@@ -271,6 +272,7 @@ zh-CN:
       subtitle: "导入的菜谱会在这里等待，直到你保存或丢弃。"
       title: "草稿箱"
     pasted_text: "粘贴的文本"
+    ready_toast: "“%{title}”已读取完成，可以审阅了。"
     statuses:
       failed: "失败"
       reading: "读取中…"

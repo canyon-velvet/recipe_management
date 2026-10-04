@@ -1,0 +1,7 @@
+<%# locals: (counts:) %>
+<%# Always rendered (empty with no drafts), so broadcasts have a target to replace. %>
+<span id="draft_box_count" class="inline-flex">
+  <% if counts.values.sum.positive? %>
+    <span class="account-menu-count"><%= counts.values.sum %></span>
+  <% end %>
+</span>
