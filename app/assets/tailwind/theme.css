@@ -7,6 +7,8 @@
   --color-sectionbackground: #F7F2ED;
   --color-text: #333333;
   --color-sectiontext: #785F40;
+  /* Lighter brown for buttons and highlights; still readable with white text (4.6:1) */
+  --color-sectiontext-light: #887257;
   --color-border: #cccccc;
   --color-success: #00ff00;
   --color-danger: #ff0000;
