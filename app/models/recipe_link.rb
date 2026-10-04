@@ -26,6 +26,16 @@ module RecipeLink
     url
   end
 
+  SITE_NAMES = { "xiachufang.com" => "下厨房", "xiaohongshu.com" => "小红书" }.freeze
+
+  # The Source a link comes from: a known site's own name, otherwise its host (example.com).
+  def self.site_name(url)
+    host = URI.parse(url.to_s).host.to_s.downcase.delete_prefix("www.").delete_prefix("m.")
+    SITE_NAMES.find { |domain, _| host == domain || host.end_with?(".#{domain}") }&.last || host.presence
+  rescue URI::InvalidURIError
+    nil
+  end
+
   def self.without_tracking(query)
     return if query.blank?
 

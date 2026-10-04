@@ -15,14 +15,7 @@ class FetchPageService
   CHALLENGE_MAX_BYTES = 50_000
 
   # reason: :blocked (the site refused us, e.g. a captcha) or :fetch_failed (anything else).
-  class Error < StandardError
-    attr_reader :reason
-
-    def initialize(reason, message = reason.to_s)
-      @reason = reason
-      super(message)
-    end
-  end
+  class Error < ImportFailure; end
 
   class TooLarge < StandardError; end
   class TooSlow < StandardError; end

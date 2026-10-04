@@ -1,0 +1,58 @@
+# Reads one Reading… Draft (ImportRecipeJob runs this in the background): fetches and extracts the page unless the
+# recipe text was pasted, has Claude clean it up, and leaves the draft Ready with its data, or Failed with the
+# reason. Without an Anthropic API key, a page's structured recipe is used as it is.
+class ImportRecipeService
+  def initialize(draft)
+    @draft = draft
+  end
+
+  def call
+    return unless @draft.reading?
+
+    extracted = fetch_and_extract if @draft.source_text.blank?
+    data = CleanRecipeService.available? ? cleaned(extracted) : structured(extracted)
+    data["source_name"] = extracted&.site_name || RecipeLink.site_name(@draft.source_url)
+    @draft.update!(status: :ready, data: data, failure_reason: nil)
+  rescue ImportFailure => e
+    @draft.update!(status: :failed, failure_reason: e.reason)
+  rescue CleanRecipeService::TemporaryError
+    raise # ImportRecipeJob retries these
+  rescue StandardError => e
+    # Anything unexpected fails the draft (shown with the generic reason) instead of leaving it Reading… while the
+    # job is retried for weeks. The error is still reported.
+    Rails.error.report(e, handled: true, context: { draft_id: @draft.id })
+    @draft.update!(status: :failed, failure_reason: :unexpected)
+  end
+
+  private
+
+  def fetch_and_extract
+    ExtractRecipeService.new(FetchPageService.new(@draft.source_url).call, url: @draft.source_url).call
+  end
+
+  def cleaned(extracted)
+    text = @draft.source_text.presence || extracted&.text
+    without_images(CleanRecipeService.new(user: @draft.user, recipe: extracted&.recipe, text: text).call)
+  end
+
+  # Without Claude, ingredient lines stay whole (e.g. "1 cup oats") and land in Other; the review form fixes the rest.
+  def structured(extracted)
+    raise ImportFailure.new(:needs_claude) unless extracted&.complete?
+
+    recipe = extracted.recipe
+    without_images(
+      "name" => recipe[:name].to_s,
+      "description" => recipe[:description].to_s,
+      "ingredients" => recipe[:ingredients].map { |line| { "name" => line } },
+      "steps" => recipe[:steps],
+      "tags" => []
+    )
+  end
+
+  # Descriptions and steps are shown as markdown; an image in imported text would load from someone else's server
+  # every time the recipe is viewed.
+  def without_images(data)
+    strip = ->(text) { text.to_s.gsub(/!\[[^\]]*\]\([^)]*\)/, "").strip }
+    data.merge("description" => strip.(data["description"]), "steps" => data["steps"].map(&strip).compact_blank)
+  end
+end

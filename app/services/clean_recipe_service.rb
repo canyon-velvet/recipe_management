@@ -43,14 +43,7 @@ class CleanRecipeService
   PROMPT
 
   # reason: :not_a_recipe or :cleanup_failed. Temporary problems (rate limits, outages) raise TemporaryError.
-  class Error < StandardError
-    attr_reader :reason
-
-    def initialize(reason, message = reason.to_s)
-      @reason = reason
-      super(message)
-    end
-  end
+  class Error < ImportFailure; end
 
   class TemporaryError < StandardError; end
 

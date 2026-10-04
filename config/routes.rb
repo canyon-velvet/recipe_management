@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   end
 
   # Draft box: imported recipes waiting to be reviewed
+  resources :imports, only: [ :new, :create ]
   resources :drafts, only: [ :index, :destroy ]
 
   # Meal Plans

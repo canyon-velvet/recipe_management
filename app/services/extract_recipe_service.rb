@@ -4,7 +4,6 @@
 class ExtractRecipeService
   MAX_TEXT_CHARS = 20_000
   NOISE = "script, style, noscript, template, svg, nav, header, footer, aside, form, iframe"
-  SITE_NAMES = { "xiachufang.com" => "下厨房", "xiaohongshu.com" => "小红书" }.freeze
 
   # recipe: { name:, description:, ingredients: [lines], steps: [texts], hints: [category/cuisine/keywords] } or nil
   Result = Data.define(:recipe, :text, :site_name) do
@@ -91,9 +90,6 @@ class ExtractRecipeService
     meta = @doc.at_css('meta[property="og:site_name"]')&.[]("content")&.strip
     return meta if meta.present?
 
-    host = URI.parse(@url.to_s).host.to_s.delete_prefix("www.").delete_prefix("m.")
-    SITE_NAMES.find { |domain, _| host == domain || host.end_with?(".#{domain}") }&.last || host.presence
-  rescue URI::InvalidURIError
-    nil
+    RecipeLink.site_name(@url)
   end
 end
