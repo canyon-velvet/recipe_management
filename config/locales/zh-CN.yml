@@ -134,7 +134,9 @@ zh-CN:
     hero:
       browse_recipes: "浏览菜谱"
       image_alt: "家庭餐食计划"
-      tagline: "轻松管理食谱，规划每日餐单，生成购物清单，让家庭用餐更简单。"
+      tagline:
+        - "轻松管理食谱，规划每日餐单，"
+        - "生成购物清单，让家庭用餐更简单。"
     locale_switcher:
       label: "语言"
     markdown_editor:

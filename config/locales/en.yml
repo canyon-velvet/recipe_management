@@ -134,7 +134,9 @@ en:
     hero:
       browse_recipes: "Browse recipes"
       image_alt: "Home meal planning"
-      tagline: "Keep your recipes in one place, plan the week, and get your grocery list made for you."
+      tagline:
+        - "Keep your recipes in one place, plan the week,"
+        - "and get your grocery list made for you."
     locale_switcher:
       label: "Language"
     markdown_editor:
