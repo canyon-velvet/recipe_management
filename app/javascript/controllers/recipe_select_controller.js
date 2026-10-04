@@ -59,16 +59,16 @@ export default class extends Controller {
 
   buildResult(recipe) {
     const li = document.createElement("li")
-    li.className = "flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer hover:bg-indigo-50 transition-colors"
+    li.className = "group flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer hover:bg-sectiontext-light transition-colors"
     li.dataset.action = "click->recipe-select#select"
     li.dataset.recipeId = recipe.id
 
     const name = document.createElement("span")
-    name.className = "text-sm text-gray-800"
+    name.className = "text-sm text-gray-800 group-hover:text-white"
     name.textContent = recipe.name
 
     const tags = document.createElement("span")
-    tags.className = "text-xs text-gray-400"
+    tags.className = "text-xs text-gray-400 group-hover:text-white/80"
     tags.textContent = recipe.tags.join(" · ")
 
     li.append(name, tags)

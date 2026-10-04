@@ -14,23 +14,23 @@
 
     <div>
       <%= f.label :username, class: "block text-sm font-medium text-gray-700 mb-1" %>
-      <%= f.text_field :username, class: "w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500", autofocus: true %>
+      <%= f.text_field :username, class: "w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sectiontext-light", autofocus: true %>
     </div>
 
     <div>
       <%= f.label :password, class: "block text-sm font-medium text-gray-700 mb-1" %>
-      <%= f.password_field :password, class: "w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+      <%= f.password_field :password, class: "w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sectiontext-light" %>
     </div>
 
     <div>
       <%= f.label :password_confirmation, class: "block text-sm font-medium text-gray-700 mb-1" %>
-      <%= f.password_field :password_confirmation, class: "w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+      <%= f.password_field :password_confirmation, class: "w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sectiontext-light" %>
     </div>
 
-    <%= f.submit t(".submit"), class: "w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 cursor-pointer" %>
+    <%= f.submit t(".submit"), class: "w-full bg-sectiontext-light text-white py-2 px-4 rounded-md hover:bg-sectiontext cursor-pointer" %>
   <% end %>
 
   <p class="text-center mt-4 text-sm text-gray-600">
-    <%= t(".have_account") %><%= link_to t(".login"), login_path, class: "text-blue-600 hover:underline" %>
+    <%= t(".have_account") %><%= link_to t(".login"), login_path, class: "text-sectiontext hover:underline" %>
   </p>
 </div>

@@ -16,9 +16,15 @@
 }
 
 .ts-wrapper.tag-select.focus .ts-control {
-  @apply border-gray-300 ring ring-indigo-200 shadow-none;
+  @apply border-gray-300 ring ring-sectiontext-light/40 shadow-none;
 }
 
 .ts-wrapper.tag-select .ts-dropdown {
   @apply rounded-lg border-gray-200 shadow-lg;
+}
+
+/* The vendored theme's pale blue for the active option and matched letters, in the app's brown */
+.ts-wrapper.tag-select .ts-dropdown .active,
+.ts-wrapper.tag-select .ts-dropdown [data-selectable] .highlight {
+  @apply bg-sectiontext-light text-white;
 }
