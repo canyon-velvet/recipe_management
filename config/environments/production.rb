@@ -48,7 +48,15 @@ Rails.application.configure do
 
   # Replace the default in-process memory cache store with a durable alternative.
   # Cache in its own Redis database (1), apart from Sidekiq's jobs (0).
-  config.cache_store = :redis_cache_store, { url: ENV.fetch("REDIS_CACHE_URL", "redis://localhost:6379/1") }
+  config.cache_store = :redis_cache_store, {
+    url: ENV.fetch("REDIS_CACHE_URL", "redis://localhost:6379/1"),
+    namespace: "recipe_management:#{Rails.env}",
+    expires_in: 1.week,
+    # When Redis is down the cache (and cache-backed rate limits) quietly stop working instead of raising; report it.
+    error_handler: ->(method:, returning:, exception:) {
+      Rails.error.report(exception, handled: true, context: { cache_method: method, returning: returning })
+    }
+  }
 
   # Jobs run in a separate Sidekiq process, queued in Redis (REDIS_URL).
   config.active_job.queue_adapter = :sidekiq
