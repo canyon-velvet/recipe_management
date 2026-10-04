@@ -10,6 +10,7 @@ class ImportRecipeService
     return unless @draft.reading?
 
     extracted = fetch_and_extract if @draft.source_text.blank?
+    show_title(extracted&.title)
     data = CleanRecipeService.available? ? cleaned(extracted) : structured(extracted)
     data["source_name"] = extracted&.site_name || RecipeLink.site_name(@draft.source_url)
     @draft.update!(status: :ready, data: data, failure_reason: nil)
@@ -25,6 +26,11 @@ class ImportRecipeService
   end
 
   private
+
+  # Fetching takes a second; Claude takes several. Showing the page's title meanwhile tells drafts apart.
+  def show_title(title)
+    @draft.update!(data: @draft.data.merge("name" => title)) if title.present? && @draft.name.blank?
+  end
 
   def fetch_and_extract
     ExtractRecipeService.new(FetchPageService.new(@draft.source_url).call, url: @draft.source_url).call

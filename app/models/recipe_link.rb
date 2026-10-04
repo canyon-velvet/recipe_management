@@ -36,6 +36,20 @@ module RecipeLink
     nil
   end
 
+  # A readable stand-in for a page's title: "…/apple-oatmeal-cake/" → "Apple oatmeal cake"; a link without
+  # words, like "…/recipe/107110062/", is shown short instead: "xiachufang.com/recipe/107110062".
+  def self.title(url)
+    uri = URI.parse(url.to_s)
+    return unless uri.host
+
+    slug = uri.path.to_s.split("/").compact_blank.last.to_s.sub(/\.\w+\z/, "")
+    return slug.tr("-_", " ").squish.capitalize if slug.match?(/\p{L}{3,}/)
+
+    "#{uri.host.delete_prefix("www.")}#{uri.path.chomp("/")}"
+  rescue URI::InvalidURIError
+    nil
+  end
+
   def self.without_tracking(query)
     return if query.blank?
 

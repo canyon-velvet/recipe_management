@@ -6,7 +6,8 @@ class ExtractRecipeService
   NOISE = "script, style, noscript, template, svg, nav, header, footer, aside, form, iframe"
 
   # recipe: { name:, description:, ingredients: [lines], steps: [texts], hints: [category/cuisine/keywords] } or nil
-  Result = Data.define(:recipe, :text, :site_name) do
+  # title: the recipe or page title, known as soon as the page is fetched (shown while Claude reads the rest)
+  Result = Data.define(:recipe, :text, :site_name, :title) do
     def complete? = recipe.present? && recipe[:ingredients].any? && recipe[:steps].any?
   end
 
@@ -16,7 +17,8 @@ class ExtractRecipeService
   end
 
   def call
-    Result.new(recipe: structured_recipe, text: visible_text, site_name: site_name)
+    recipe = structured_recipe
+    Result.new(recipe: recipe, text: visible_text, site_name: site_name, title: recipe&.dig(:name) || page_title)
   end
 
   private
@@ -84,6 +86,11 @@ class ExtractRecipeService
     root.css(NOISE).each(&:remove)
     root.css("br, p, div, li, h1, h2, h3, h4, tr").each { |el| el.add_next_sibling("\n") }
     root.text.gsub(/[ \t ]+/, " ").gsub(/\s*\n\s*/, "\n").strip.first(MAX_TEXT_CHARS)
+  end
+
+  def page_title
+    title = @doc.at_css('meta[property="og:title"]')&.[]("content") || @doc.at_css("title")&.text
+    plain(title)
   end
 
   def site_name
