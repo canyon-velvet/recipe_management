@@ -59,6 +59,7 @@ class ImportRecipeService
   # every time the recipe is viewed.
   def without_images(data)
     strip = ->(text) { text.to_s.gsub(/!\[[^\]]*\]\([^)]*\)/, "").strip }
-    data.merge("description" => strip.(data["description"]), "steps" => data["steps"].map(&strip).compact_blank)
+    data.merge("description" => strip.(data["description"]), "steps" => data["steps"].map(&strip).compact_blank,
+               "tips" => Array(data["tips"]).map(&strip).compact_blank)
   end
 end

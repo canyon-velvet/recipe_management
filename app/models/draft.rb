@@ -4,7 +4,7 @@
 # `data` is what the importer read, in this shape:
 #   { "name" => "…", "description" => "…", "source_name" => "…",
 #     "ingredients" => [{ "name" => "…", "quantity" => "…", "unit" => "…", "aisle_id" => 1 }],
-#     "steps" => ["…"], "tags" => ["tag_key"] }
+#     "steps" => ["…"], "tags" => ["tag_key"], "tips" => ["…"] }
 class Draft < ApplicationRecord
   include DraftBoxBroadcasts
 

@@ -24,6 +24,7 @@ class CleanRecipeService
     required :ingredients, Anthropic::ArrayOf[Ingredient], doc: "Only the source's ingredient list; empty if it has none"
     required :steps, Anthropic::ArrayOf[String], doc: "One instruction per step, in order, without step numbers"
     required :tags, Anthropic::ArrayOf[String], doc: "Keys from the allowed tag list that clearly apply"
+    required :tips, Anthropic::ArrayOf[String], doc: "The source's own tips or notes, each as written; empty if none"
   end
 
   SYSTEM_PROMPT = <<~PROMPT.freeze
@@ -39,6 +40,8 @@ class CleanRecipeService
     use the "Other" aisle when nothing fits.
     Give one step per instruction, in order, without numbering. Drop ads, stories and comments.
     Suggest tags only from the allowed list, and only ones that clearly apply.
+    Copy the source's own tips, tricks or notes (e.g. "Tips", "Notes", "小贴士") into tips, each as written;
+    don't repeat steps or ingredients there, and leave tips empty if the source has none.
     If the input doesn't contain a recipe, set is_recipe to false and leave the lists empty.
   PROMPT
 
@@ -130,7 +133,8 @@ class CleanRecipeService
           "aisle_id" => (item.aisle_id if aisles.key?(item.aisle_id)) }
       end,
       "steps" => cleanup.steps.map(&:strip).compact_blank,
-      "tags" => cleanup.tags & tag_keys
+      "tags" => cleanup.tags & tag_keys,
+      "tips" => cleanup.tips.map(&:strip).compact_blank
     }
   end
 end
