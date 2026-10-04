@@ -158,7 +158,6 @@ zh-CN:
       search: "搜索食材..."
       unit: "单位"
     index:
-      all_tags: "全部标签"
       banner_alt: "所有菜谱"
       banner_title: "用美食开启美好的一天"
       empty: "没有找到符合条件的菜谱。"
@@ -189,6 +188,9 @@ zh-CN:
       move_down: "下移"
       move_up: "上移"
       placeholder: "描述这一步"
+    tag_catalog:
+      all_recipes: "全部菜谱"
+      label: "菜谱分类"
     tag_picker:
       no_results: "没有匹配的标签"
       placeholder: "选择标签"

@@ -26,8 +26,9 @@ class Tag < ApplicationRecord
 
   def icon = ICONS[key]
 
-  # [[kind name, [[tag name, tag key], ...]], ...] for the grouped tag filter.
-  def self.grouped_by_kind
-    ordered.group_by(&:kind).map { |kind, tags| [ kind_name(kind), tags.map { [ _1.name, _1.key ] } ] }
-  end
+  # { "meal" => [tags…], "cuisine" => […], … } in display order, for the recipe catalog.
+  def self.by_kind = ordered.group_by(&:kind)
+
+  # Ids of the tags on any of the user's recipes; the catalog dims the rest.
+  def self.ids_used_by(user) = RecipeTag.where(recipe_id: user.recipes.select(:id)).distinct.pluck(:tag_id).to_set
 end

@@ -4,12 +4,15 @@ class RecipesController < ApplicationController
   before_action :set_draft, only: [ :new, :create ]
 
   def index
+    # An unknown or malformed ?tag= shows all recipes, so the list and the catalog always agree.
+    @selected_tag = Tag.find_by(key: params[:tag]) if params[:tag].is_a?(String) && params[:tag].present?
     recipes = current_user.recipes.includes(:source, :tags)
                           .search_by_name(params[:q])
-                          .tagged(params[:tag])
+                          .tagged(@selected_tag&.key)
                           .order(updated_at: :desc)
     @pagy, @recipes = pagy(recipes)
-    @tag_filter_options = Tag.grouped_by_kind
+    @tags_by_kind = Tag.by_kind
+    @used_tag_ids = Tag.ids_used_by(current_user)
   end
 
   def search

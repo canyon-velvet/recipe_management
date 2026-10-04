@@ -158,7 +158,6 @@ en:
       search: "Search ingredients..."
       unit: "Unit"
     index:
-      all_tags: "All tags"
       banner_alt: "All recipes"
       banner_title: "Start your day with good food"
       empty: "No recipes match your search."
@@ -189,6 +188,9 @@ en:
       move_down: "Move down"
       move_up: "Move up"
       placeholder: "Describe this step"
+    tag_catalog:
+      all_recipes: "All recipes"
+      label: "Recipe categories"
     tag_picker:
       no_results: "No matching tags"
       placeholder: "Choose tags"
