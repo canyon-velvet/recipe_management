@@ -104,6 +104,10 @@ zh-CN:
         username: "用户名"
     errors:
       models:
+        recipe:
+          attributes:
+            source_url:
+              taken: "已被你的另一个菜谱使用"
         aisle:
           other_aisle_permanent: "“其他”不能删除"
         meal_plan:

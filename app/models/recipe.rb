@@ -14,8 +14,12 @@ class Recipe < ApplicationRecord
 
   validates :name, presence: true
   validates :source_url, http_url: true, allow_blank: true
+  validates :source_url, uniqueness: { scope: :user_id }, allow_nil: true
   validate :must_have_steps
   validate :source_must_belong_to_user
+
+  # One canonical form per page, so the same recipe link can't be saved twice in different spellings.
+  normalizes :source_url, with: ->(url) { RecipeLink.normalize(url) }
 
   accepts_nested_attributes_for :recipe_ingredients, allow_destroy: true, reject_if: :blank_ingredient_row?
   accepts_nested_attributes_for :steps, allow_destroy: true,

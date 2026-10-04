@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_03_170320) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_04_003641) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -142,6 +142,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_03_170320) do
     t.bigint "user_id", null: false
     t.string "source_url"
     t.index ["source_id"], name: "index_recipes_on_source_id"
+    t.index ["user_id", "source_url"], name: "index_recipes_on_user_id_and_source_url", unique: true, where: "(source_url IS NOT NULL)"
     t.index ["user_id"], name: "index_recipes_on_user_id"
   end
 

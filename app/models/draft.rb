@@ -14,7 +14,7 @@ class Draft < ApplicationRecord
   validates :source_url, uniqueness: { scope: :user_id }, allow_nil: true
   validate :data_must_be_an_object
 
-  normalizes :source_url, with: ->(url) { url.strip.presence }
+  normalizes :source_url, with: ->(url) { RecipeLink.normalize(url) }
 
   scope :newest_first, -> { order(created_at: :desc, id: :desc) }
 
