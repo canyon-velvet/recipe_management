@@ -104,6 +104,10 @@ en:
         username: "Username"
     errors:
       models:
+        recipe:
+          attributes:
+            source_url:
+              taken: "is already used by another of your recipes"
         aisle:
           other_aisle_permanent: "Other can't be deleted"
         meal_plan:
