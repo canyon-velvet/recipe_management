@@ -37,6 +37,13 @@ class Recipe < ApplicationRecord
   # Shown with a "new" badge in the form until the recipe saves.
   def new_source? = new_source_name.present? && (source.nil? || source.new_record?)
 
+  # The emoji on the recipe's card: one of its tags', picked by the recipe's id, so cards vary but a recipe always
+  # shows the same one. Nil without tags. Uses the loaded tags, so a list that includes them adds no queries.
+  def card_icon
+    with_icons = tags.select(&:icon)
+    with_icons[id.to_i % with_icons.size].icon if with_icons.any?
+  end
+
   private
 
   # A row with nothing filled in is dropped. A draft's New row always carries an aisle choice, which doesn't count.
