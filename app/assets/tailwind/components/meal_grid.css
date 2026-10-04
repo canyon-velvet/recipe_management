@@ -7,6 +7,6 @@
   .meal-slot-cell--empty  { @apply flex items-center justify-center h-full; }
   .meal-slot-cell--filled { @apply bg-white; }
   .meal-slot-cell--grocery { @apply bg-green-50; }
-  .slot-add-btn       { @apply text-gray-300 hover:text-indigo-500 transition-colors cursor-pointer; }
+  .slot-add-btn       { @apply text-gray-300 hover:text-sectiontext transition-colors cursor-pointer; }
   .slot-recipe-name   { @apply text-xs leading-tight text-gray-800 truncate block; }
 }

@@ -59,7 +59,7 @@ export default class extends Controller {
 
   buildResult(recipe) {
     const li = document.createElement("li")
-    li.className = "flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer hover:bg-indigo-50 transition-colors"
+    li.className = "flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer hover:bg-sectiontext-light hover:text-white transition-colors"
     li.dataset.action = "click->recipe-select#select"
     li.dataset.recipeId = recipe.id
 

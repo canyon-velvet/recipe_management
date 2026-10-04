@@ -15,5 +15,5 @@
 }
 
 .grocery-count-badge {
-  @apply inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-indigo-100 text-indigo-700 text-xs font-medium;
+  @apply inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-sectiontext-light text-white text-xs font-medium;
 }
