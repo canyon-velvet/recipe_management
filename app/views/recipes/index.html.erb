@@ -10,44 +10,40 @@
     </div>
   </section>
 
-  <!-- Search/Filter -->
-  <section class="py-6" data-controller="search-form">
-    <%= form_with url: recipes_path, method: :get, data: { search_form_target: "form" }, class: "grid grid-cols-1 md:grid-cols-6 gap-4 items-end" do |f| %>
-      <div class="md:col-span-2">
-        <%= f.text_field :q, value: params[:q], placeholder: t(".search_placeholder"),
-              data: { search_form_target: "query", action: "input->search-form#submitLater" },
-              class: "form-input" %>
-      </div>
-
-      <div class="md:col-span-1">
-        <%= f.select :tag,
-              grouped_options_for_select(@tag_filter_options, params[:tag]),
-              { include_blank: t(".all_tags") },
-              data: { search_form_target: "tag", action: "change->search-form#submitLater" },
-              class: "form-select" %>
-      </div>
-
-      <div class="hidden md:block md:col-span-1"></div>
-
-      <div class="md:col-span-2 flex md:justify-end gap-2">
-        <%= link_to t(".import_recipe"), new_import_path, class: "btn-secondary flex-shrink-0" %>
-        <%= link_to t(".new_recipe"), new_recipe_path, class: "btn-primary flex-shrink-0" %>
-      </div>
-    <% end %>
-  </section>
-
-  <!-- Recipe Cards -->
-  <section class="pb-10">
-    <% if @recipes.any? %>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        <% @recipes.each do |recipe| %>
-          <%= render "recipes/recipe_card", recipe: recipe %>
-        <% end %>
-      </div>
-    <% else %>
-      <p class="text-center text-gray-500 py-16"><%= t(".empty") %></p>
+  <!-- Search and actions, above both the catalog and the list -->
+  <section class="recipes-toolbar" data-controller="search-form">
+    <%= form_with url: recipes_path, method: :get, data: { search_form_target: "form" }, class: "w-full md:w-80" do |f| %>
+      <%# Searching keeps the selected tag. %>
+      <%= hidden_field_tag :tag, @selected_tag.key if @selected_tag %>
+      <%= f.text_field :q, value: params[:q], placeholder: t(".search_placeholder"),
+            data: { action: "input->search-form#submitLater" }, class: "form-input" %>
     <% end %>
 
-    <%= render "shared/pagination", pagy: @pagy %>
+    <div class="flex gap-2">
+      <%= link_to t(".import_recipe"), new_import_path, class: "btn-secondary flex-shrink-0" %>
+      <%= link_to t(".new_recipe"), new_recipe_path, class: "btn-primary flex-shrink-0" %>
+    </div>
   </section>
+
+  <div class="flex flex-col md:flex-row gap-8 pt-6 pb-10">
+    <aside class="recipes-sidebar">
+      <%= render "recipes/tag_catalog", tags_by_kind: @tags_by_kind, used_tag_ids: @used_tag_ids,
+                                        selected: @selected_tag, query: params[:q] %>
+    </aside>
+
+    <!-- Recipe Cards -->
+    <section class="flex-1 min-w-0">
+      <% if @recipes.any? %>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <% @recipes.each do |recipe| %>
+            <%= render "recipes/recipe_card", recipe: recipe %>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-center text-gray-500 py-16"><%= t(".empty") %></p>
+      <% end %>
+
+      <%= render "shared/pagination", pagy: @pagy %>
+    </section>
+  </div>
 <% end %>

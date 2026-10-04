@@ -1,0 +1,34 @@
+@layer components {
+  /* Recipe list: search + Import/New above a dividing line, then the catalog beside the cards */
+  .recipes-toolbar {
+    @apply flex flex-col md:flex-row md:items-center md:justify-between gap-4 py-6 border-b border-gray-200;
+  }
+  .recipes-sidebar {
+    /* Scrolls on its own when open panels make it taller than the window, so no tag is out of reach */
+    @apply md:w-56 md:flex-none md:sticky md:top-24 md:self-start md:max-h-[calc(100vh-7rem)] md:overflow-y-auto;
+  }
+
+  /* Tag catalog: collapsible kinds with their tags, one selectable at a time */
+  .tag-catalog {
+    @apply flex flex-col gap-1 text-base;
+  }
+  .tag-catalog-group {
+    @apply border-b border-gray-100 py-1;
+  }
+  .tag-catalog-kind {
+    @apply cursor-pointer select-none rounded-md px-3 py-2 text-lg font-semibold text-gray-800 hover:bg-gray-100;
+  }
+  .tag-catalog-tags {
+    @apply flex flex-col pl-3 pb-1;
+  }
+  .tag-catalog-link {
+    @apply block rounded-md px-3 py-1.5 text-gray-700 hover:bg-gray-100;
+  }
+  .tag-catalog-link--selected {
+    @apply bg-indigo-50 font-semibold text-indigo-700 hover:bg-indigo-50;
+  }
+  /* A tag none of the user's recipes have: shown, but dimmed and not a link */
+  .tag-catalog-link--empty {
+    @apply text-gray-300 hover:bg-transparent cursor-default;
+  }
+}

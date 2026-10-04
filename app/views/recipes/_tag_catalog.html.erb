@@ -1,0 +1,29 @@
+<%# locals: (tags_by_kind:, used_tag_ids:, selected:, query:) %>
+<%# One tag at a time. Kinds are collapsible; the selected tag's kind starts open. Tags none of the user's recipes
+    have are dimmed and not links. Switching tags keeps the search text and goes back to page 1. %>
+<nav class="tag-catalog" aria-label="<%= t(".label") %>">
+  <%= link_to t(".all_recipes"), recipes_path(q: query.presence),
+              class: "tag-catalog-link #{'tag-catalog-link--selected' unless selected}",
+              aria: { current: ("page" unless selected) } %>
+
+  <% tags_by_kind.each do |kind, kind_tags| %>
+    <%= tag.details class: "tag-catalog-group", open: selected&.kind == kind do %>
+      <summary class="tag-catalog-kind"><%= Tag.kind_name(kind) %></summary>
+      <ul class="tag-catalog-tags">
+        <% kind_tags.each do |catalog_tag| %>
+          <li>
+            <% chosen = catalog_tag == selected %>
+            <%# The selected tag stays selectable-looking even if none of the user's recipes have it. %>
+            <% if chosen || used_tag_ids.include?(catalog_tag.id) %>
+              <%= link_to catalog_tag.name, recipes_path(tag: catalog_tag.key, q: query.presence),
+                          class: "tag-catalog-link #{'tag-catalog-link--selected' if chosen}",
+                          aria: { current: ("page" if chosen) } %>
+            <% else %>
+              <span class="tag-catalog-link tag-catalog-link--empty"><%= catalog_tag.name %></span>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  <% end %>
+</nav>
