@@ -37,7 +37,7 @@ requirements, so I can just ask for what I feel like cooking.
 
 ## A note on language
 
-The interface is in Simplified Chinese. I built this for my own household, where we cook
-from both Chinese and American recipes.
+The interface is in English and Simplified Chinese, and the 🌐 button switches between them.
+I built this for my own household, where we cook from both Chinese and American recipes.
 
 Built with Ruby on Rails.
