@@ -149,6 +149,7 @@ en:
 
   recipes:
     confirm_delete: "Delete this recipe?"
+    tips_heading: "Tips"
     ingredient_fields:
       create: "Create ingredient"
       quantity: "Quantity"

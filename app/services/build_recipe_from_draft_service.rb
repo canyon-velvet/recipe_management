@@ -9,7 +9,7 @@ class BuildRecipeFromDraftService
   end
 
   def call
-    recipe = @user.recipes.build(name: text(@data["name"]), description: text(@data["description"]),
+    recipe = @user.recipes.build(name: text(@data["name"]), description: description_with_tips,
                                  source_url: @draft.source_url)
     assign_source(recipe)
     ingredient_rows.each { |attributes| recipe.recipe_ingredients.build(attributes) }
@@ -52,6 +52,17 @@ class BuildRecipeFromDraftService
   def aisle_id_for(item)
     @aisle_ids ||= @user.aisles.pluck(:id, :key)
     @aisle_ids.find { |id, _| id.to_s == item["aisle_id"].to_s }&.first || @aisle_ids.find { |_, key| key == "other" }&.first
+  end
+
+  # The source's tips go at the end of the description, under a heading in the reviewer's language.
+  def description_with_tips
+    description = text(@data["description"])
+    # One line each, so a tip can't break out of the list (a blank line would end it).
+    tips = list("tips").map { text(_1).squish }.compact_blank
+    return description if tips.empty?
+
+    section = "**#{I18n.t("recipes.tips_heading")}**\n\n#{tips.map { "- #{_1}" }.join("\n")}"
+    [ description.presence, section ].compact.join("\n\n")
   end
 
   def list(key) = @data[key].is_a?(Array) ? @data[key] : []

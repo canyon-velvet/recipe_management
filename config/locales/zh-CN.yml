@@ -149,6 +149,7 @@ zh-CN:
 
   recipes:
     confirm_delete: "确定要删除这个菜谱吗？"
+    tips_heading: "小贴士"
     ingredient_fields:
       create: "创建食材"
       quantity: "数量"
