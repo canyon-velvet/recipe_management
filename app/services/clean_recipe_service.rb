@@ -1,0 +1,143 @@
+# Has Claude turn what an import read (a page's structured recipe and text, or pasted text) into Draft data:
+# ingredients split into name / quantity / unit and placed in one of the user's aisles, steps split, tags
+# suggested from the fixed list, all in the recipe's original language. Structured outputs make the reply
+# always match RecipeCleanup's schema.
+class CleanRecipeService
+  MODEL = :"claude-haiku-4-5"
+  MAX_TOKENS = 8_000
+  # A page's structured recipe can be huge; only a recipe-sized part of it is sent (the page text is capped too).
+  MAX_ITEMS = 60
+  MAX_FIELD_CHARS = 500
+
+  # Claude's answer. The SDK turns this class into the JSON schema the response must follow.
+  class RecipeCleanup < Anthropic::BaseModel
+    class Ingredient < Anthropic::BaseModel
+      required :name, String, doc: "The ingredient only, e.g. 'flour' or '面粉'; no amount, unit or preparation note"
+      required :quantity, String, doc: "The amount as written, e.g. '300', '1/2', '适量'; empty string if none"
+      required :unit, String, doc: "The unit as written, e.g. 'g', 'cup', '个'; empty string if none"
+      required :aisle_id, Integer, doc: "The id of the aisle this ingredient is shopped in, from the user's aisles"
+    end
+
+    required :is_recipe, Anthropic::Boolean, doc: "false if the input doesn't contain a recipe"
+    required :name, String
+    required :description, String, doc: "One or two sentences, from the source; empty string if none"
+    required :ingredients, Anthropic::ArrayOf[Ingredient], doc: "Only the source's ingredient list; empty if it has none"
+    required :steps, Anthropic::ArrayOf[String], doc: "One instruction per step, in order, without step numbers"
+    required :tags, Anthropic::ArrayOf[String], doc: "Keys from the allowed tag list that clearly apply"
+  end
+
+  SYSTEM_PROMPT = <<~PROMPT.freeze
+    You turn recipes that a user imported into clean, structured data for their recipe app.
+
+    Keep the recipe's original language: don't translate names, ingredients or steps.
+    Use only what the source says; don't invent ingredients, amounts or steps.
+    Take the ingredients only from the source's ingredient list (e.g. "Ingredients" or "用料"), exactly as listed.
+    Never add an ingredient that is only mentioned in the steps, such as oil, salt or a seasoning used while
+    cooking. If the source has no ingredient list, return no ingredients.
+    Split every ingredient line into the ingredient's name, the quantity and the unit, keeping each as written.
+    Put each ingredient in exactly one of the user's aisles, choosing the aisle a shopper would find it in;
+    use the "Other" aisle when nothing fits.
+    Give one step per instruction, in order, without numbering. Drop ads, stories and comments.
+    Suggest tags only from the allowed list, and only ones that clearly apply.
+    If the input doesn't contain a recipe, set is_recipe to false and leave the lists empty.
+  PROMPT
+
+  # reason: :not_a_recipe or :cleanup_failed. Temporary problems (rate limits, outages) raise TemporaryError.
+  class Error < StandardError
+    attr_reader :reason
+
+    def initialize(reason, message = reason.to_s)
+      @reason = reason
+      super(message)
+    end
+  end
+
+  class TemporaryError < StandardError; end
+
+  def self.api_key = Rails.application.credentials.dig(:anthropic, :api_key) || ENV["ANTHROPIC_API_KEY"]
+
+  def self.available? = api_key.present?
+
+  # recipe: ExtractRecipeService's structured fields (or nil); text: page text or pasted text.
+  def initialize(user:, recipe:, text:, client: nil)
+    @user = user
+    @recipe = recipe
+    @text = text
+    @client = client
+  end
+
+  # Returns Draft data (see Draft) without source_name, which the caller knows best.
+  def call
+    cleanup = parse(request)
+    # A recipe needs steps; ingredients may be missing when the source has no ingredient list.
+    raise Error.new(:not_a_recipe) unless cleanup.is_recipe && cleanup.steps.any?
+
+    to_draft_data(cleanup)
+  end
+
+  private
+
+  def client = @client ||= Anthropic::Client.new(api_key: self.class.api_key)
+
+  def request
+    client.messages.create(
+      model: MODEL,
+      max_tokens: MAX_TOKENS,
+      system_: SYSTEM_PROMPT,
+      messages: [ { role: "user", content: user_message } ],
+      output_config: { format: RecipeCleanup }
+    )
+  rescue Anthropic::Errors::RateLimitError, Anthropic::Errors::InternalServerError, Anthropic::Errors::APIConnectionError => e
+    raise TemporaryError, "#{e.class}: #{e.message}"
+  rescue Anthropic::Errors::APIStatusError => e
+    raise Error.new(:cleanup_failed, "#{e.class}: #{e.message}")
+  end
+
+  def parse(message)
+    raise Error.new(:cleanup_failed, "stopped: #{message.stop_reason}") unless message.stop_reason == :end_turn
+
+    parsed = message.content.find { |block| block.type == :text }&.parsed
+    raise Error.new(:cleanup_failed, "unparsable output: #{parsed.inspect}") unless parsed.is_a?(RecipeCleanup)
+
+    parsed
+  end
+
+  def user_message
+    <<~MESSAGE
+      <aisles>
+      #{aisles.map { |id, name| "#{id}: #{name}" }.join("\n")}
+      </aisles>
+      <allowed_tags>
+      #{Tag.ordered.map { |tag| "#{tag.key}: #{tag.name}" }.join("\n")}
+      </allowed_tags>
+      <structured_recipe>
+      #{@recipe ? JSON.pretty_generate(capped_recipe) : "none"}
+      </structured_recipe>
+      <source_text>
+      #{@text.presence || "none"}
+      </source_text>
+    MESSAGE
+  end
+
+  def capped_recipe
+    @recipe.transform_values do |value|
+      value.is_a?(Array) ? value.first(MAX_ITEMS).map { _1.to_s.first(MAX_FIELD_CHARS) } : value.to_s.first(MAX_FIELD_CHARS)
+    end
+  end
+
+  def aisles = @aisles ||= @user.aisles.ordered.to_h { |aisle| [ aisle.id, aisle.name ] }
+
+  def to_draft_data(cleanup)
+    tag_keys = Tag.pluck(:key)
+    {
+      "name" => cleanup.name.strip,
+      "description" => cleanup.description.strip,
+      "ingredients" => cleanup.ingredients.map do |item|
+        { "name" => item.name.strip, "quantity" => item.quantity.strip, "unit" => item.unit.strip,
+          "aisle_id" => (item.aisle_id if aisles.key?(item.aisle_id)) }
+      end,
+      "steps" => cleanup.steps.map(&:strip).compact_blank,
+      "tags" => cleanup.tags & tag_keys
+    }
+  end
+end
