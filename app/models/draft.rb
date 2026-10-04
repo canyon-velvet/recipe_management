@@ -6,6 +6,8 @@
 #     "ingredients" => [{ "name" => "…", "quantity" => "…", "unit" => "…", "aisle_id" => 1 }],
 #     "steps" => ["…"], "tags" => ["tag_key"] }
 class Draft < ApplicationRecord
+  include DraftBoxBroadcasts
+
   belongs_to :user
 
   enum :status, { reading: "reading", ready: "ready", failed: "failed" }, validate: true
@@ -27,12 +29,15 @@ class Draft < ApplicationRecord
     nil
   end
 
-  def title = name || source_host || source_url || I18n.t("drafts.pasted_text")
+  # Until the recipe is read: a readable form of the link, or the first line of pasted text.
+  def title = name || RecipeLink.title(source_url) || source_url || pasted_title || I18n.t("drafts.pasted_text")
 
   # Unknown or missing reasons show the generic message.
   def failure_reason_key = failure_reason.presence || "generic"
 
   private
+
+  def pasted_title = source_text.to_s.lines.map(&:strip).find(&:present?)&.truncate(60)
 
   def data_must_be_an_object
     errors.add(:data, :invalid) unless data.is_a?(Hash)

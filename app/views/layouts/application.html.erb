@@ -29,6 +29,11 @@
       <%= yield %>
     </main>
 
-    <%= render "aisles/editor_dialog" if logged_in? %>
+    <% if logged_in? %>
+      <%= render "aisles/editor_dialog" %>
+      <%# Live Draft box updates (cards, menu count, "ready" toasts) on this user's own signed stream. %>
+      <%= turbo_stream_from current_user, :drafts %>
+      <div id="toasts" class="toast-stack" aria-live="polite"></div>
+    <% end %>
   <% end %>
 </html>

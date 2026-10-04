@@ -6,11 +6,14 @@ zh-CN:
     add: "添加"
     back: "返回"
     cancel: "取消"
+    close: "关闭"
     delete: "删除"
     edit: "编辑"
     save: "保存"
 
   flash:
+    import_rate_limited: "本小时导入次数过多，请稍后再试"
+    import_started: "正在导入，完成后菜谱会在草稿箱等你。"
     admin_required: "需要管理员权限"
     draft_discarded: "草稿已丢弃"
     invalid_login: "用户名或密码错误"
@@ -156,6 +159,7 @@ zh-CN:
       banner_alt: "所有菜谱"
       banner_title: "用美食开启美好的一天"
       empty: "没有找到符合条件的菜谱。"
+      import_recipe: "导入菜谱"
       new_recipe: "新建菜谱"
       search_placeholder: "搜索菜谱"
     new:
@@ -254,18 +258,44 @@ zh-CN:
       added: "%{time}前添加"
       confirm_discard: "丢弃“%{title}”？"
       discard: "丢弃"
+      paste_instead: "改为粘贴文字"
       review: "审阅"
     failures:
+      blocked: "网站阻止了自动读取（例如验证码）。请改为粘贴菜谱文字。"
+      cleanup_failed: "Claude 无法整理这个菜谱。请重试，或改为粘贴文字。"
+      fetch_failed: "无法打开这个网页。"
       generic: "无法从中读取菜谱"
+      needs_claude: "这个网页没有结构化的菜谱数据，读取它需要 Claude（未配置 API 密钥）。"
+      not_a_recipe: "这里没有找到菜谱。"
     index:
       empty: "还没有草稿"
       subtitle: "导入的菜谱会在这里等待，直到你保存或丢弃。"
       title: "草稿箱"
     pasted_text: "粘贴的文本"
+    ready_toast: "“%{title}”已读取完成，可以审阅了。"
     statuses:
       failed: "失败"
       reading: "读取中…"
       ready: "可审阅"
+
+  imports:
+    errors:
+      already_in_draft_box: "这个链接已经在你的草稿箱里。"
+      already_saved: "你已经保存过这个链接的菜谱。"
+      blank: "请填写菜谱链接，或粘贴菜谱文字。"
+      invalid_link: "这不像是网页链接（http 或 https）。"
+      needs_claude: "没有 Claude（未配置 Anthropic API 密钥）时无法读取粘贴的文字。"
+    new:
+      hint: "粘贴菜谱网页的链接。系统会在后台读取，完成后在草稿箱等你确认。"
+      link: "菜谱链接"
+      open_draft_box: "打开草稿箱"
+      paste_hint: "适用于无法直接导入的网站，例如小红书。如果有链接，也请填在上面，菜谱会保留它。"
+      paste_instead: "或者直接粘贴菜谱文字"
+      paste_needs_claude: "读取粘贴的文字需要 Claude，但尚未配置（缺少 Anthropic API 密钥）。"
+      paste_placeholder: "从网页复制用料和步骤，粘贴到这里"
+      submit: "导入"
+      title: "导入菜谱"
+      view_recipe: "查看菜谱"
 
   sessions:
     new:

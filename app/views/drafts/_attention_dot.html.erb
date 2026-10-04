@@ -1,0 +1,8 @@
+<%# locals: (counts:) %>
+<%# Always rendered (empty when nothing needs attention), so broadcasts have a target to replace. %>
+<span id="account_dot" class="inline-flex">
+  <% if counts.values_at("ready", "failed").compact.sum.positive? %>
+    <span class="account-dot" aria-hidden="true"></span>
+    <span class="sr-only"><%= t("shared.account_menu.drafts_need_attention") %></span>
+  <% end %>
+</span>
