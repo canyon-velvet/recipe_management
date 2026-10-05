@@ -2,8 +2,14 @@
 
 One place for all the recipes I've saved, and a weekly meal plan that writes my grocery list for me.
 
-https://github.com/user-attachments/assets/628aaba2-f09d-4c47-b458-a642517685ee
+**Plan the week and get the grocery list**
 
+[plan_the_week.webm](https://github.com/user-attachments/assets/da4b664c-0192-4e9a-9674-ef3162c98058)
+
+
+**Import a recipe from a link**
+
+[import_recipe.webm](https://github.com/user-attachments/assets/4f91e8ca-434b-446f-8be3-c96b4ce65d06)
 
 
 ## The problem
