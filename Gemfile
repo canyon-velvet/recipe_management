@@ -34,7 +34,7 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 # Redis backs background jobs (Sidekiq), Action Cable and Rails.cache; the redis gem is the client for the latter two
 gem "sidekiq", "~> 8.0"
-gem "redis", "~> 5.4"
+gem "redis", "~> 6.0"
 
 # Fetches imported recipe pages without letting a link reach private or internal addresses (SSRF)
 gem "ssrf_filter", "~> 1.6"
