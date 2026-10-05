@@ -5,7 +5,13 @@ class ExtractRecipeService
   MAX_TEXT_CHARS = 20_000
   NOISE = "script, style, noscript, template, svg, nav, header, footer, aside, form, iframe"
 
-  # recipe: { name:, description:, ingredients: [lines], steps: [texts], hints: [category/cuisine/keywords] } or nil
+  # How many people a yield says the recipe serves: "4", "4 servings", "Serves 4-6" (the lower end), "4人份".
+  # Yields that aren't people, like "1 loaf", don't match.
+  SERVINGS = /\A (?:serves\s*)? (\d+) (?:\s*(?:-|–|to)\s*\d+)?
+               \s* (?:servings?|people|persons?|portions?|人份|人|份)? \z/ix
+
+  # recipe: { name:, description:, ingredients: [lines], steps: [texts], hints: [category/cuisine/keywords],
+  #           servings:, prep_minutes:, cook_minutes:, total_minutes: } or nil (servings and times may be nil)
   # title: the recipe or page title, known as soon as the page is fetched (shown while Claude reads the rest)
   Result = Data.define(:recipe, :text, :site_name, :title) do
     def complete? = recipe.present? && recipe[:ingredients].any? && recipe[:steps].any?
@@ -32,8 +38,27 @@ class ExtractRecipeService
       description: plain(node["description"]),
       ingredients: Array(node["recipeIngredient"] || node["ingredients"]).map { plain(_1) }.compact_blank,
       steps: steps(node["recipeInstructions"]),
-      hints: [ node["recipeCategory"], node["recipeCuisine"], node["keywords"] ].flat_map { list(_1) }.uniq
+      hints: [ node["recipeCategory"], node["recipeCuisine"], node["keywords"] ].flat_map { list(_1) }.uniq,
+      servings: servings(node["recipeYield"]),
+      prep_minutes: minutes(node["prepTime"]),
+      cook_minutes: minutes(node["cookTime"]),
+      total_minutes: minutes(node["totalTime"])
     }
+  end
+
+  # recipeYield is a number, a string, or a list of them (often both "4" and "4 servings").
+  def servings(value)
+    Array(value).filter_map { |item| item.to_s.strip[SERVINGS, 1]&.to_i }.find(&:positive?)
+  end
+
+  # Times are ISO 8601 durations, e.g. "PT1H30M". Anything else, or zero, is unknown.
+  def minutes(value)
+    return unless value.is_a?(String)
+
+    minutes = ActiveSupport::Duration.parse(value.strip).in_minutes.round
+    minutes if minutes.positive?
+  rescue ActiveSupport::Duration::ISO8601Parser::ParsingError
+    nil
   end
 
   # Every JSON-LD object on the page, including those inside arrays and @graph.

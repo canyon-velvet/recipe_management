@@ -25,6 +25,11 @@ class CleanRecipeService
     required :steps, Anthropic::ArrayOf[String], doc: "One instruction per step, in order, without step numbers"
     required :tags, Anthropic::ArrayOf[String], doc: "Keys from the allowed tag list that clearly apply"
     required :tips, Anthropic::ArrayOf[String], doc: "The source's own tips or notes, each as written; empty if none"
+    required :servings, Integer,
+             doc: "How many people it serves, as the source states (the lower number of a range); 0 if not stated"
+    required :prep_minutes, Integer, doc: "Prep time in minutes, as the source states; 0 if not stated"
+    required :cook_minutes, Integer, doc: "Cooking time in minutes, as the source states; 0 if not stated"
+    required :total_minutes, Integer, doc: "Total time in minutes, as the source states; 0 if not stated"
   end
 
   SYSTEM_PROMPT = <<~PROMPT.freeze
@@ -42,6 +47,8 @@ class CleanRecipeService
     Suggest tags only from the allowed list, and only ones that clearly apply.
     Copy the source's own tips, tricks or notes (e.g. "Tips", "Notes", "小贴士") into tips, each as written;
     don't repeat steps or ingredients there, and leave tips empty if the source has none.
+    Fill servings and the prep, cook and total times only from what the source states, converting times to
+    minutes; use 0 for anything it doesn't state. Servings is a number of people: a yield such as "1 loaf" is 0.
     If the input doesn't contain a recipe, set is_recipe to false and leave the lists empty.
   PROMPT
 
@@ -134,7 +141,16 @@ class CleanRecipeService
       end,
       "steps" => cleanup.steps.map(&:strip).compact_blank,
       "tags" => cleanup.tags & tag_keys,
-      "tips" => cleanup.tips.map(&:strip).compact_blank
+      "tips" => cleanup.tips.map(&:strip).compact_blank,
+      **counts(cleanup)
     }
+  end
+
+  # The page's structured values are exact, so they win over Claude's reading; Claude's 0 means not stated.
+  def counts(cleanup)
+    Draft::COUNT_KEYS.to_h do |key|
+      claude_value = cleanup.public_send(key)
+      [ key, @recipe&.dig(key.to_sym) || (claude_value if claude_value.positive?) ]
+    end
   end
 end

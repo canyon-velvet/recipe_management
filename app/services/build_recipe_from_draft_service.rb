@@ -10,7 +10,7 @@ class BuildRecipeFromDraftService
 
   def call
     recipe = @user.recipes.build(name: text(@data["name"]), description: description_with_tips,
-                                 source_url: @draft.source_url)
+                                 source_url: @draft.source_url, **counts)
     assign_source(recipe)
     ingredient_rows.each { |attributes| recipe.recipe_ingredients.build(attributes) }
     list("steps").map { text(_1) }.compact_blank.each.with_index(1) { |body, i| recipe.steps.build(body: body, position: i) }
@@ -63,6 +63,12 @@ class BuildRecipeFromDraftService
 
     section = "**#{I18n.t("recipes.tips_heading")}**\n\n#{tips.map { "- #{_1}" }.join("\n")}"
     [ description.presence, section ].compact.join("\n\n")
+  end
+
+  # Servings and times, kept only when they're positive whole numbers.
+  def counts
+    Draft::COUNT_KEYS.to_h { |key| [ key.to_sym, @data[key] ] }
+                     .select { |_, value| value.is_a?(Integer) && value.positive? }
   end
 
   def list(key) = @data[key].is_a?(Array) ? @data[key] : []

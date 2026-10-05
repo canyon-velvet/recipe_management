@@ -1,0 +1,40 @@
+require "rails_helper"
+
+RSpec.describe CleanRecipeService do
+  let(:user) { create(:user) }
+
+  # Stands in for Anthropic::Client: replies with the given cleanup, as structured outputs would.
+  def fake_client(**cleanup)
+    reply = CleanRecipeService::RecipeCleanup.new(
+      is_recipe: true, name: "Apple cake", description: "", ingredients: [], steps: [ "Bake it." ], tags: [], tips: [],
+      servings: 0, prep_minutes: 0, cook_minutes: 0, total_minutes: 0, **cleanup
+    )
+    message = Struct.new(:stop_reason, :content).new(:end_turn, [ Struct.new(:type, :parsed).new(:text, reply) ])
+    messages = Struct.new(:message) { def create(**) = message }.new(message)
+    Struct.new(:messages).new(messages)
+  end
+
+  def clean(recipe: nil, **cleanup)
+    described_class.new(user: user, recipe: recipe, text: "Apple cake …", client: fake_client(**cleanup)).call
+  end
+
+  describe "servings and times" do
+    it "uses what Claude read from the text" do
+      data = clean(servings: 4, prep_minutes: 15, cook_minutes: 30)
+
+      expect(data.values_at("servings", "prep_minutes", "cook_minutes", "total_minutes")).to eq [ 4, 15, 30, nil ]
+    end
+
+    it "prefers the page's structured values over Claude's reading" do
+      data = clean(recipe: { servings: 6, total_minutes: 50 }, servings: 4, total_minutes: 45)
+
+      expect(data.values_at("servings", "total_minutes")).to eq [ 6, 50 ]
+    end
+
+    it "treats Claude's 0 as not stated" do
+      data = clean
+
+      expect(data.values_at("servings", "prep_minutes", "cook_minutes", "total_minutes")).to all(be_nil)
+    end
+  end
+end

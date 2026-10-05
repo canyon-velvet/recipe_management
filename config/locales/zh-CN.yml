@@ -86,13 +86,17 @@ zh-CN:
         recipe: "菜谱"
         recipe_id: "菜谱"
       recipe:
+        cook_minutes: "烹饪时间（分钟）"
         description: "描述"
         name: "菜名"
+        prep_minutes: "准备时间（分钟）"
+        servings: "份量（人）"
         source: "来源"
         source_id: "来源"
         source_url: "菜谱链接"
         steps: "制作步骤"
         tags: "标签"
+        total_minutes: "总时间（分钟）"
       recipe/recipe_ingredients:
         ingredient: "食材"
         ingredient_id: "食材"
@@ -152,6 +156,13 @@ zh-CN:
   recipes:
     confirm_delete: "确定要删除这个菜谱吗？"
     tips_heading: "小贴士"
+    facts:
+      cook: "烹饪 %{time}"
+      hours: "%{count} 小时"
+      minutes: "%{count} 分钟"
+      prep: "准备 %{time}"
+      servings: "%{count} 人份"
+      total: "共 %{time}"
     ingredient_fields:
       create: "创建食材"
       quantity: "数量"

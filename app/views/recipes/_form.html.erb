@@ -22,6 +22,9 @@
   <!-- Tags -->
   <%= render "recipes/tag_picker", form: f, tags: tags %>
 
+  <!-- Servings and times (optional) -->
+  <%= render "recipes/count_fields", form: f %>
+
   <!-- Description (markdown) -->
   <%= render "shared/markdown_editor", form: f, field: :description, label: Recipe.human_attribute_name(:description),
         rows: 6, min_height: "156px" %>

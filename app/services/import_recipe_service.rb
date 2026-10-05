@@ -51,7 +51,8 @@ class ImportRecipeService
       "description" => recipe[:description].to_s,
       "ingredients" => recipe[:ingredients].map { |line| { "name" => line } },
       "steps" => recipe[:steps],
-      "tags" => []
+      "tags" => [],
+      **Draft::COUNT_KEYS.to_h { |key| [ key, recipe[key.to_sym] ] }
     )
   end
 
