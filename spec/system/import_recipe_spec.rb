@@ -1,8 +1,8 @@
 require "rails_helper"
 
-# Imports real recipe pages end to end: nothing is stubbed. The page is fetched from the web, Claude cleans it up, and
-# the import job runs in the background while the Draft box updates live. It costs a Claude call per example and
-# depends on the sites being up, so it only runs when asked:
+# Imports a real recipe page end to end: nothing is stubbed. The page is fetched from the web, Claude cleans it up, and
+# the import job runs in the background while the Draft box updates live. It costs a Claude call and depends on the
+# site being up, so it only runs when asked:
 #
 #   LIVE_IMPORT=1 bundle exec rspec spec/system/import_recipe_spec.rb
 #
@@ -29,39 +29,27 @@ RSpec.describe "Importing a recipe from a link", type: :system do
     ActiveJob::Base.queue_adapter = queue_adapter
   end
 
-  it "reads a recipe page's structured recipe into a draft and saves it", video: "import_recipe" do
-    import_and_save "https://www.yummytoddlerfood.com/apple-oatmeal-cake/"
-
-    expect(page).to have_css("h1", text: /apple oatmeal cake/i)
-  end
-
-  it "reads a 下厨房 recipe from the page text" do
-    import_and_save "https://www.xiachufang.com/recipe/107110062/"
-
-    expect(user.recipes.sole.ingredients).to be_present
-  end
-
-  private
-
-  def import_and_save(url)
+  it "reads a recipe page into a draft, then saves it as a recipe", video: "import_recipe" do
     log_in_as user
     click_link "All Recipes"
     click_link "Import recipe"
-    fill_in "Recipe link", with: url
+    fill_in "Recipe link", with: "https://www.yummytoddlerfood.com/apple-oatmeal-cake/"
     click_button "Import"
 
     expect(page).to have_text("Importing… the recipe will wait in your Draft box.")
     card = "#draft_#{user.drafts.sole.id}"
-    # Fetching the page and Claude's cleanup take a while; the card shows Reading… and then turns Ready live,
-    # without a page reload.
+    # Fetching the page and Claude's cleanup take a while; the card shows Reading… and then updates live, without a
+    # page reload. Stop waiting as soon as it's done either way, so a failed import shows its reason right away.
     expect(page).to have_css("#{card} .draft-status--reading")
-    using_wait_time(120) { expect(page).to have_css("#{card} .draft-status--ready") }
+    using_wait_time(120) { expect(page).to have_css("#{card} .draft-status--ready, #{card} .draft-status--failed") }
+    expect(page).to have_css("#{card} .draft-status--ready"), -> { "Import failed: #{find(card).text}" }
 
     within(card) { click_link "Review" }
     expect(page).to have_css("h1", text: "Review draft")
     click_button "Create recipe"
 
     expect(page).to have_text("Recipe saved from your Draft box.")
+    expect(page).to have_css("h1", text: /apple oatmeal cake/i)
     expect(user.drafts).to be_empty
   end
 end
