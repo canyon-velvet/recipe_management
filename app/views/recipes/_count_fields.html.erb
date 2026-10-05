@@ -1,10 +1,12 @@
 <%# locals: (form:) %>
-<%# All optional. A blank total is filled from prep + cook when both are given. %>
-<div class="recipe-count-fields">
-  <% %i[servings prep_minutes cook_minutes total_minutes].each do |field| %>
-    <div class="field">
-      <%= form.label field, class: "form-label" %>
-      <%= form.number_field field, min: 1, step: 1, class: "form-input" %>
-    </div>
-  <% end %>
+<div class="field">
+  <div class="recipe-count-fields">
+    <% Recipe::COUNT_LIMITS.each do |field, max| %>
+      <div>
+        <%= form.label field, class: "form-label" %>
+        <%= form.number_field field, min: 1, max: max, step: 1, class: "form-input" %>
+      </div>
+    <% end %>
+  </div>
+  <p class="help-text mt-1"><%= t(".hint") %></p>
 </div>

@@ -12,8 +12,19 @@ RSpec.describe "Recipes", type: :request do
       steps_attributes: { "0" => { body: "Bake it.", position: "1" } }
     } }
 
-    expect(user.recipes.sole.attributes.values_at(*Draft::COUNT_KEYS)).to eq [ 4, 15, 30, 45 ]
+    recipe = user.recipes.sole
+    expect([ recipe.servings, recipe.prep_minutes, recipe.cook_minutes, recipe.total_minutes ]).to eq [ 4, 15, 30, 45 ]
     follow_redirect!
     expect(response.body).to include("Serves 4", "Prep 15 min", "Cook 30 min", "Total 45 min")
+  end
+
+  it "shows a validation error, not a crash, for a number too large to save" do
+    post recipes_path, params: { recipe: {
+      name: "Apple cake", source_id: create(:source, user: user).id, prep_minutes: "9999999999",
+      steps_attributes: { "0" => { body: "Bake it.", position: "1" } }
+    } }
+
+    expect(response).to have_http_status(:unprocessable_content)
+    expect(user.recipes).to be_empty
   end
 end

@@ -65,10 +65,10 @@ class BuildRecipeFromDraftService
     [ description.presence, section ].compact.join("\n\n")
   end
 
-  # Servings and times, kept only when they're positive whole numbers.
+  # Servings and times, kept only when they're whole numbers the recipe can save.
   def counts
-    Draft::COUNT_KEYS.to_h { |key| [ key.to_sym, @data[key] ] }
-                     .select { |_, value| value.is_a?(Integer) && value.positive? }
+    Recipe::COUNT_LIMITS.to_h { |key, _| [ key, @data[key.to_s] ] }
+                        .select { |key, value| value.is_a?(Integer) && value.between?(1, Recipe::COUNT_LIMITS[key]) }
   end
 
   def list(key) = @data[key].is_a?(Array) ? @data[key] : []

@@ -6,12 +6,9 @@
 #     "ingredients" => [{ "name" => "…", "quantity" => "…", "unit" => "…", "aisle_id" => 1 }],
 #     "steps" => ["…"], "tags" => ["tag_key"], "tips" => ["…"],
 #     "servings" => 4, "prep_minutes" => 15, "cook_minutes" => 30, "total_minutes" => 45 }
-#   (servings and the minutes are nil when the source doesn't say)
+#   (servings and the minutes, Recipe::COUNT_LIMITS, are nil when the source doesn't say)
 class Draft < ApplicationRecord
   include DraftBoxBroadcasts
-
-  # The data keys that are whole numbers (or nil), saved to the recipe's columns of the same names.
-  COUNT_KEYS = %w[servings prep_minutes cook_minutes total_minutes].freeze
 
   belongs_to :user
 

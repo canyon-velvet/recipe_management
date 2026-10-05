@@ -24,11 +24,11 @@ RSpec.describe Recipe do
       expect(build(:recipe)).to be_valid
     end
 
-    it "rejects zero, negative and fractional values" do
-      recipe = build(:recipe, servings: 0, prep_minutes: -5, cook_minutes: "1.5")
+    it "rejects zero, negative, fractional and too-large values" do
+      recipe = build(:recipe, servings: 0, prep_minutes: -5, cook_minutes: "1.5", total_minutes: 99_999)
 
       expect(recipe).not_to be_valid
-      expect(recipe.errors.attribute_names).to include(:servings, :prep_minutes, :cook_minutes)
+      expect(recipe.errors.attribute_names).to include(:servings, :prep_minutes, :cook_minutes, :total_minutes)
     end
   end
 end

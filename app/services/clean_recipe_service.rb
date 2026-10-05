@@ -148,9 +148,9 @@ class CleanRecipeService
 
   # The page's structured values are exact, so they win over Claude's reading; Claude's 0 means not stated.
   def counts(cleanup)
-    Draft::COUNT_KEYS.to_h do |key|
+    Recipe::COUNT_LIMITS.keys.to_h do |key|
       claude_value = cleanup.public_send(key)
-      [ key, @recipe&.dig(key.to_sym) || (claude_value if claude_value.positive?) ]
+      [ key.to_s, @recipe&.dig(key) || (claude_value if claude_value.positive?) ]
     end
   end
 end

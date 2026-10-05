@@ -5,9 +5,9 @@ class ExtractRecipeService
   MAX_TEXT_CHARS = 20_000
   NOISE = "script, style, noscript, template, svg, nav, header, footer, aside, form, iframe"
 
-  # How many people a yield says the recipe serves: "4", "4 servings", "Serves 4-6" (the lower end), "4人份".
+  # How many people a yield says the recipe serves: "4", "4 servings", "Serves: 4-6" (the lower end), "4人份".
   # Yields that aren't people, like "1 loaf", don't match.
-  SERVINGS = /\A (?:serves\s*)? (\d+) (?:\s*(?:-|–|to)\s*\d+)?
+  SERVINGS = /\A (?:serves:?\s*)? (\d+) (?:\s*(?:-|–|—|to)\s*\d+)?
                \s* (?:servings?|people|persons?|portions?|人份|人|份)? \z/ix
 
   # recipe: { name:, description:, ingredients: [lines], steps: [texts], hints: [category/cuisine/keywords],
@@ -46,18 +46,21 @@ class ExtractRecipeService
     }
   end
 
-  # recipeYield is a number, a string, or a list of them (often both "4" and "4 servings").
+  # recipeYield is a number, a string, or a list of them (often both "4" and "4 servings"). NFKC turns full-width
+  # digits and non-breaking spaces into plain ones.
   def servings(value)
-    Array(value).filter_map { |item| item.to_s.strip[SERVINGS, 1]&.to_i }.find(&:positive?)
+    Array(value).filter_map do |item|
+      item.to_s.unicode_normalize(:nfkc).squish.delete_suffix(".")[SERVINGS, 1]&.to_i
+    end.find { |count| count.between?(1, Recipe::COUNT_LIMITS[:servings]) }
   end
 
-  # Times are ISO 8601 durations, e.g. "PT1H30M". Anything else, or zero, is unknown.
+  # Times are ISO 8601 durations, e.g. "PT1H30M". Anything else, zero, or longer than a recipe can take is unknown.
   def minutes(value)
     return unless value.is_a?(String)
 
     minutes = ActiveSupport::Duration.parse(value.strip).in_minutes.round
-    minutes if minutes.positive?
-  rescue ActiveSupport::Duration::ISO8601Parser::ParsingError
+    minutes if minutes.between?(1, Recipe::COUNT_LIMITS[:total_minutes])
+  rescue ActiveSupport::Duration::ISO8601Parser::ParsingError, FloatDomainError
     nil
   end
 

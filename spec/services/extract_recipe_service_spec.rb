@@ -16,10 +16,17 @@ RSpec.describe ExtractRecipeService do
       "Serves 4-6" => 4,
       "4 – 6 people" => 4,
       "4人份" => 4,
+      "４人份" => 4,
+      "Serves: 4" => 4,
+      "4 Servings." => 4,
+      "4—6" => 4,
+      "4 servings" => 4,
       [ "12", "12 servings" ] => 12,
+      [ "1 loaf", "8 servings" ] => 8,
       "1 loaf" => nil,
       "12 muffins" => nil,
-      "0" => nil
+      "0" => nil,
+      "99999999999 servings" => nil
     }.each do |yield_value, servings|
       it "reads #{yield_value.inspect} as #{servings.inspect}" do
         expect(extract(recipeYield: yield_value)[:servings]).to eq servings
@@ -42,6 +49,12 @@ RSpec.describe ExtractRecipeService do
       recipe = extract(prepTime: "PT0M", cookTime: "about an hour")
 
       expect(recipe.values_at(:prep_minutes, :cook_minutes, :total_minutes)).to eq [ nil, nil, nil ]
+    end
+
+    it "ignores times too long for a recipe instead of failing the import" do
+      recipe = extract(prepTime: "PT9999999999H", cookTime: "PT#{'9' * 400}M")
+
+      expect(recipe.values_at(:prep_minutes, :cook_minutes)).to eq [ nil, nil ]
     end
   end
 end
