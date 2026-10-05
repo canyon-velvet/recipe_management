@@ -2,16 +2,13 @@
 # `npm install && npx playwright install chromium`. Rails registers the :playwright driver itself.
 #
 # `RECORD_VIDEO=1 bundle exec rspec spec/system` also records each spec tagged `video: "name"` to
-# tmp/videos/name.webm. The folder is emptied first, so it only ever holds the latest run's videos.
+# tmp/videos/name.webm, replacing that spec's last recording. Other specs' videos are kept.
 RSpec.configure do |config|
   video_dir = Rails.root.join("tmp/videos")
   screen = { width: 1280, height: 800 }
 
   config.before(:suite) do
-    if ENV["RECORD_VIDEO"]
-      FileUtils.rm_rf(video_dir)
-      FileUtils.mkdir_p(video_dir)
-    end
+    FileUtils.mkdir_p(video_dir) if ENV["RECORD_VIDEO"]
   end
 
   config.before(type: :system) do |example|
