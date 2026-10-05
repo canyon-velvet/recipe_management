@@ -14,6 +14,19 @@ RSpec.describe Recipe do
       expect(recipe.total_minutes).to eq 60
     end
 
+    it "doesn't fill the total when the save fails, so later changes still add up" do
+      recipe = build(:recipe, name: "", prep_minutes: 15, cook_minutes: 30)
+
+      expect(recipe.save).to be false
+      expect(recipe.total_minutes).to be_nil
+    end
+
+    it "leaves the total blank when prep and cook add up to more than the limit" do
+      recipe = create(:recipe, prep_minutes: 10_000, cook_minutes: 200)
+
+      expect(recipe.total_minutes).to be_nil
+    end
+
     it "leaves the total blank when prep or cook time is unknown" do
       recipe = create(:recipe, prep_minutes: 15)
 

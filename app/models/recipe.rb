@@ -36,8 +36,9 @@ class Recipe < ApplicationRecord
   # The form submits each step's position; renumber 1..n in that order so gaps or duplicates never persist.
   before_validation :renumber_steps
   before_validation :use_new_source, if: -> { source.nil? && new_source_name.present? }
-  # Sources often give prep and cook time without a total.
-  before_validation :fill_total_minutes, if: -> { total_minutes.nil? && prep_minutes && cook_minutes }
+  # Sources often give prep and cook time without a total. Filled only when saving, so a form that fails
+  # validation comes back with Total still blank and keeps adding up later changes.
+  before_save :fill_total_minutes, if: -> { total_minutes.nil? && prep_minutes && cook_minutes }
 
   scope :search_by_name, ->(query) { where("name ILIKE ?", "%#{query}%") if query.present? }
   scope :tagged, ->(tag_key) {
@@ -64,7 +65,8 @@ class Recipe < ApplicationRecord
   end
 
   def fill_total_minutes
-    self.total_minutes = prep_minutes + cook_minutes
+    total = prep_minutes + cook_minutes
+    self.total_minutes = total if total <= COUNT_LIMITS[:total_minutes]
   end
 
   def kept_steps
