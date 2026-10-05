@@ -3,24 +3,25 @@
 #
 # `RECORD_VIDEO=1 bundle exec rspec spec/system` also records each spec tagged `video: "name"` to
 # tmp/videos/name.webm. The folder is emptied first, so it only ever holds the latest run's videos.
-VIDEO_DIR = Rails.root.join("tmp/videos")
-SCREEN = { width: 1280, height: 800 }.freeze
-
 RSpec.configure do |config|
+  video_dir = Rails.root.join("tmp/videos")
+  screen = { width: 1280, height: 800 }
+
   config.before(:suite) do
     if ENV["RECORD_VIDEO"]
-      FileUtils.rm_rf(VIDEO_DIR)
-      FileUtils.mkdir_p(VIDEO_DIR)
+      FileUtils.rm_rf(video_dir)
+      FileUtils.mkdir_p(video_dir)
     end
   end
 
   config.before(type: :system) do |example|
-    driven_by :playwright, screen_size: SCREEN.values, options: { record_video_size: SCREEN }
+    # English regardless of the machine's language, which the app would otherwise pick up from Accept-Language.
+    driven_by :playwright, screen_size: screen.values, options: { locale: "en-US", record_video_size: screen }
 
     # The driver outlives each spec, so a spec that doesn't record clears the last one's callback.
     video = example.metadata[:video]
     if ENV["RECORD_VIDEO"] && video
-      page.driver.on_save_screenrecord { |path| FileUtils.mv(path, VIDEO_DIR.join("#{video}.webm")) }
+      page.driver.on_save_screenrecord { |path| FileUtils.mv(path, video_dir.join("#{video}.webm")) }
     else
       page.driver.on_save_screenrecord
     end

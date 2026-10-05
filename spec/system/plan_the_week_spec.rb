@@ -2,7 +2,7 @@ require "rails_helper"
 
 # The core loop, end to end: recipes → a week's meal plan → a grocery list grouped by aisle → skip what I have.
 # Also the README demo: `RECORD_VIDEO=1 bundle exec rspec spec/system/plan_the_week_spec.rb`.
-RSpec.describe "Planning the week", type: :system, video: "plan_the_week" do
+RSpec.describe "Planning the week", type: :system do
   let(:user) { create(:user, username: "home_cook", password: "secret123") }
 
   before do
@@ -21,8 +21,8 @@ RSpec.describe "Planning the week", type: :system, video: "plan_the_week" do
                   ingredients: { "Rolled oats" => "pantry", "Milk" => "dairy_eggs", "Blueberries" => "produce" }
   end
 
-  it "turns two dinners into a grocery list grouped by aisle" do
-    log_in
+  it "turns two dinners into a grocery list grouped by aisle", video: "plan_the_week" do
+    log_in_as user, password: "secret123"
 
     click_link "All Recipes"
     expect(page).to have_text("Tomato and egg stir-fry")
@@ -42,7 +42,7 @@ RSpec.describe "Planning the week", type: :system, video: "plan_the_week" do
     # Aisles in shopping order; the oats weren't planned, so none of their ingredients are listed.
     expect(page.all(".grocery-card-header", count: 4).map(&:text))
       .to eq [ "Produce", "Meat & Seafood", "Dairy & Eggs", "Spices & Seasonings" ]
-    expect(grocery_item("Scallions")).to have_css(".grocery-count-badge", text: "2")
+    expect(grocery_item("Scallions")).to have_css(".grocery-count-badge", exact_text: "2")
     expect(page).to have_no_text("Rolled oats")
 
     grocery_item("Soy sauce").check
@@ -62,14 +62,6 @@ RSpec.describe "Planning the week", type: :system, video: "plan_the_week" do
     recipe.save!
   end
 
-  def log_in
-    visit login_path
-    fill_in "Username", with: user.username
-    fill_in "Password", with: "secret123"
-    click_button "Log in"
-    expect(page).to have_text("Logged in.")
-  end
-
   # Adds the recipe to that day's dinner through the search pop-up, then ticks it for the grocery list.
   def plan_dinner(meal_plan, day, recipe_name, search:)
     slot = meal_plan.meal_slots.find_by!(day_of_week: day, meal_type: "dinner")
@@ -83,7 +75,8 @@ RSpec.describe "Planning the week", type: :system, video: "plan_the_week" do
     within("#meal_slot_#{slot.id}") do
       expect(page).to have_text(recipe_name)
       find("input[type=checkbox]").check
-      expect(page).to have_css("input[type=checkbox]:checked")
+      # The green row comes from the server's re-render, so the grocery list has been synced by now.
+      expect(page).to have_css(".bg-green-50 input[type=checkbox]:checked")
     end
   end
 

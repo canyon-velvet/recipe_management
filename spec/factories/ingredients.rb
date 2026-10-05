@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :ingredient do
-    user
+    # Saved, so the user has their default aisles (created after_create) to pick from.
+    user { association :user, strategy: :create }
     sequence(:name) { |n| "Ingredient #{n}" }
 
     # One of the user's default aisles, by key (see Aisle::DEFAULT_KEYS).
