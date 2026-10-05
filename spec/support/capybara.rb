@@ -18,7 +18,7 @@ RSpec.configure do |config|
     # English regardless of the machine's language, which the app would otherwise pick up from Accept-Language.
     # When recording, each browser action waits a moment first, so the video is slow enough to follow.
     driven_by :playwright, screen_size: screen.values,
-                           options: { locale: "en-US", record_video_size: screen, slowMo: (500 if ENV["RECORD_VIDEO"]) }
+                           options: { locale: "en-US", record_video_size: screen, slowMo: (1000 if ENV["RECORD_VIDEO"]) }
 
     # The driver outlives each spec, so a spec that doesn't record clears the last one's callback.
     video = example.metadata[:video]
