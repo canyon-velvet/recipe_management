@@ -63,6 +63,10 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # RSpec test framework and FactoryBot test data
+  gem "rspec-rails", "~> 8.0"
+  gem "factory_bot_rails", "~> 6.5"
 end
 
 group :development do
@@ -73,5 +77,7 @@ end
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
-  gem "selenium-webdriver"
+  # Drives system specs with Playwright; keep its version in step with "playwright" in package.json
+  gem "capybara-playwright-driver", "~> 0.5"
+  gem "playwright-ruby-client", "1.63.0"
 end
