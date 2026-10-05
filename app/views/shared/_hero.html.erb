@@ -1,6 +1,8 @@
 <div class="flex justify-center">
   <div class="relative h-[calc(100dvh-8rem)] w-auto">
-    <%= image_tag "egg.jpg", alt: t(".image_alt"), class: "w-full h-full object-cover" %>
+    <%# The photo's size lets the browser lay out the hero before it downloads; without it the tagline,
+        sized from the photo's width, briefly wraps one word per line. %>
+    <%= image_tag "egg.jpg", alt: t(".image_alt"), width: 3744, height: 4565, class: "w-full h-full object-cover" %>
     <div class="absolute inset-0 bg-black/25"></div>
 
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-[200%] flex flex-col items-center space-y-12">
