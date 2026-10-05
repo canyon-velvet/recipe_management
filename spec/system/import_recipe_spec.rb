@@ -24,6 +24,8 @@ RSpec.describe "Importing a recipe from a link", type: :system do
     ActiveJob::Base.queue_adapter = :async
     example.run
   ensure
+    # Let a job still running (say, after a failed wait) finish before the test data is rolled back.
+    ActiveJob::Base.queue_adapter.shutdown
     ActiveJob::Base.queue_adapter = queue_adapter
   end
 
@@ -50,7 +52,9 @@ RSpec.describe "Importing a recipe from a link", type: :system do
 
     expect(page).to have_text("Importing… the recipe will wait in your Draft box.")
     card = "#draft_#{user.drafts.sole.id}"
-    # Fetching the page and Claude's cleanup take a while; the card turns Ready without a page reload.
+    # Fetching the page and Claude's cleanup take a while; the card shows Reading… and then turns Ready live,
+    # without a page reload.
+    expect(page).to have_css("#{card} .draft-status--reading")
     using_wait_time(120) { expect(page).to have_css("#{card} .draft-status--ready") }
 
     within(card) { click_link "Review" }
