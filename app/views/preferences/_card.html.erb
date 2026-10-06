@@ -1,0 +1,35 @@
+<%# locals: (category:, preferences:, new_preference: nil) %>
+<%# One category's facts as removable chips, plus a box to add one. Household holds a single fact, so its box hides
+    once it's set. %>
+<%= turbo_frame_tag "preferences_#{category}", class: "block" do %>
+  <div class="section-card">
+    <h2 class="preference-title"><%= t("preferences.categories.#{category}.title") %></h2>
+    <p class="help-text mb-3"><%= t("preferences.categories.#{category}.hint") %></p>
+
+    <% if preferences.any? %>
+      <ul class="preference-list">
+        <% preferences.each do |preference| %>
+          <li class="preference-chip">
+            <span><%= preference.value %></span>
+            <%= button_to "×", preference_path(preference), method: :delete, class: "preference-remove",
+                          "aria-label": t("preferences.remove", value: preference.value) %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <% unless category == "household" && preferences.any? %>
+      <%= form_with model: new_preference || Preference.new(category: category), url: preferences_path,
+                    class: "preference-form" do |f| %>
+        <%= f.hidden_field :category %>
+        <%= f.text_field :value, class: "form-input", maxlength: 100, autocomplete: "off",
+                         placeholder: t("preferences.categories.#{category}.placeholder"),
+                         "aria-label": t("preferences.categories.#{category}.title") %>
+        <%= f.submit t("preferences.add"), class: "btn-secondary" %>
+      <% end %>
+      <% new_preference&.errors&.full_messages&.each do |message| %>
+        <p class="error-text mt-1"><%= message %></p>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

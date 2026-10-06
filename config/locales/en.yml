@@ -87,6 +87,8 @@ en:
       meal_slot_recipe:
         recipe: "Recipe"
         recipe_id: "Recipe"
+      preference:
+        value: "Preference"
       recipe:
         cook_minutes: "Cook time (min)"
         description: "Description"
@@ -113,6 +115,11 @@ en:
         username: "Username"
     errors:
       models:
+        preference:
+          household_taken: "Household already has a value. Remove it to add another."
+          attributes:
+            value:
+              taken: "is already listed"
         recipe:
           attributes:
             source_url:
@@ -137,6 +144,7 @@ en:
       draft_box: "Draft box"
       drafts_need_attention: "Some drafts need your attention"
       logout: "Log out"
+      preferences: "Preferences"
     hero:
       browse_recipes: "Browse recipes"
       image_alt: "Home meal planning"
@@ -275,6 +283,34 @@ en:
     new_aisle_placeholder: "New aisle name"
     other_hint: "%{other} always stays last and can't be deleted."
     title: "Edit aisles"
+
+  preferences:
+    add: "Add"
+    remove: "Remove %{value}"
+    index:
+      title: "Preferences"
+      subtitle: "The assistant follows these when it recommends recipes."
+    categories:
+      diet:
+        title: "Diet"
+        hint: "How you eat."
+        placeholder: "e.g. vegetarian"
+      likes:
+        title: "Likes"
+        hint: "Flavors, cuisines or ingredients you enjoy."
+        placeholder: "e.g. spicy food"
+      dislikes:
+        title: "Dislikes"
+        hint: "Things you'd rather not eat, but can."
+        placeholder: "e.g. cilantro"
+      avoid:
+        title: "Avoid"
+        hint: "Never recommended, for example an allergy."
+        placeholder: "e.g. peanuts"
+      household:
+        title: "Household"
+        hint: "Who you usually cook for."
+        placeholder: "e.g. 2 adults and a toddler"
 
   drafts:
     draft:

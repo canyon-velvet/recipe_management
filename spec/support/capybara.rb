@@ -3,6 +3,9 @@
 #
 # `RECORD_VIDEO=1 bundle exec rspec spec/system` also records each spec tagged `video: "name"` to
 # tmp/videos/name.webm, replacing that spec's last recording. Other specs' videos are kept.
+# Find fields and buttons by their aria-label too, the name a screen reader announces.
+Capybara.enable_aria_label = true
+
 RSpec.configure do |config|
   video_dir = Rails.root.join("tmp/videos")
   screen = { width: 1280, height: 800 }

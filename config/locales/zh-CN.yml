@@ -87,6 +87,8 @@ zh-CN:
       meal_slot_recipe:
         recipe: "菜谱"
         recipe_id: "菜谱"
+      preference:
+        value: "偏好"
       recipe:
         cook_minutes: "烹饪时间（分钟）"
         description: "描述"
@@ -113,6 +115,11 @@ zh-CN:
         username: "用户名"
     errors:
       models:
+        preference:
+          household_taken: "家庭信息已经填写，请先删除再添加。"
+          attributes:
+            value:
+              taken: "已经添加过了"
         recipe:
           attributes:
             source_url:
@@ -137,6 +144,7 @@ zh-CN:
       draft_box: "草稿箱"
       drafts_need_attention: "有草稿需要处理"
       logout: "退出"
+      preferences: "饮食偏好"
     hero:
       browse_recipes: "浏览菜谱"
       image_alt: "家庭餐食计划"
@@ -273,6 +281,34 @@ zh-CN:
     new_aisle_placeholder: "新货架区名称"
     other_hint: "“%{other}”始终排在最后，不能删除。"
     title: "编辑货架区"
+
+  preferences:
+    add: "添加"
+    remove: "删除%{value}"
+    index:
+      title: "饮食偏好"
+      subtitle: "助手推荐菜谱时会参考这些偏好。"
+    categories:
+      diet:
+        title: "饮食方式"
+        hint: "你平时怎么吃。"
+        placeholder: "例如：素食"
+      likes:
+        title: "喜欢"
+        hint: "喜欢的口味、菜系或食材。"
+        placeholder: "例如：辣"
+      dislikes:
+        title: "不喜欢"
+        hint: "不太想吃，但也能接受的。"
+        placeholder: "例如：香菜"
+      avoid:
+        title: "忌口"
+        hint: "绝不推荐，例如过敏的食物。"
+        placeholder: "例如：花生"
+      household:
+        title: "家庭"
+        hint: "通常为谁做饭。"
+        placeholder: "例如：两个大人和一个小孩"
 
   drafts:
     draft:

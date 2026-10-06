@@ -31,6 +31,9 @@ Rails.application.routes.draw do
   resources :imports, only: [ :new, :create ]
   resources :drafts, only: [ :index, :destroy ]
 
+  # What the user eats, for the assistant's recommendations
+  resources :preferences, only: [ :index, :create, :destroy ]
+
   # Meal Plans
   resources :meal_plans, only: [ :index, :show, :new, :create, :destroy ] do
     resource :grocery_list, only: [ :show ]
