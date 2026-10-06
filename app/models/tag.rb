@@ -1,7 +1,7 @@
 class Tag < ApplicationRecord
   include TranslatedName
 
-  KINDS = %w[meal cuisine diet convenience].freeze
+  KINDS = %w[meal cuisine diet flavor convenience].freeze
 
   # Shown on recipe cards. Plain emoji, drawn by the viewer's system font: nothing to download or credit.
   ICONS = {
@@ -9,6 +9,7 @@ class Tag < ApplicationRecord
     "appetizer" => "🍢", "soup" => "🍲", "salad" => "🥗", "drink" => "🧋",
     "chinese" => "🥟", "italian" => "🍝", "japanese" => "🍣", "mexican" => "🌮", "american" => "🍔",
     "vegetarian" => "🥦", "vegan" => "🥑", "gluten_free" => "🍚",
+    "spicy" => "🌶️",
     "quick" => "🍳", "kid_friendly" => "🧁", "make_ahead" => "🥫"
   }.freeze
 
