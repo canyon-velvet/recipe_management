@@ -282,6 +282,17 @@ zh-CN:
     other_hint: "“%{other}”始终排在最后，不能删除。"
     title: "编辑货架区"
 
+  assistant:
+    close: "关闭助手"
+    empty: "问我今晚做什么、冰箱里的食材能做什么，或者贴一个菜谱链接来导入。"
+    failed: "抱歉，出了点问题，请再试一次。"
+    new_chat: "新对话"
+    open: "打开助手"
+    placeholder: "问问菜谱…"
+    send: "发送"
+    thinking: "思考中…"
+    title: "助手"
+
   preferences:
     add: "添加"
     remove: "删除%{value}"

@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate_user!
 
-  helper_method :current_user, :logged_in?
+  helper_method :current_user, :logged_in?, :assistant_available?, :assistant_open?
 
   private
 
@@ -19,6 +19,16 @@ class ApplicationController < ActionController::Base
 
   def logged_in?
     current_user.present?
+  end
+
+  # The assistant needs Claude, so without an Anthropic API key it's left out entirely.
+  def assistant_available?
+    logged_in? && CleanRecipeService.available?
+  end
+
+  # The panel stays open from page to page and visit to visit; the assistant-panel controller keeps this cookie.
+  def assistant_open?
+    assistant_available? && cookies[:assistant_open] == "1"
   end
 
   # Starts a fresh session to prevent session fixation, keeping the chosen language.

@@ -34,6 +34,12 @@ Rails.application.routes.draw do
   # What the user eats, for the assistant's recommendations
   resources :preferences, only: [ :index, :create, :destroy ]
 
+  # The assistant side panel
+  namespace :assistant do
+    resources :conversations, only: [ :create ]
+    resources :messages, only: [ :create ]
+  end
+
   # Meal Plans
   resources :meal_plans, only: [ :index, :show, :new, :create, :destroy ] do
     resource :grocery_list, only: [ :show ]

@@ -20,8 +20,9 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <%# The Edit-aisles pop-up can be opened from any page (account menu, grocery list). %>
-  <%= tag.body class: "bg-gray-50 min-h-screen", data: ({ controller: "aisle-editor" } if logged_in?) do %>
+  <%# The Edit-aisles pop-up can be opened from any page (account menu, grocery list), and so can the assistant. %>
+  <%= tag.body class: [ "bg-gray-50 min-h-screen", ("assistant-open" if assistant_open?) ],
+               data: { controller: body_controllers } do %>
     <%= render "shared/navbar" %>
 
     <main class="container mx-auto px-5 py-6">
@@ -34,6 +35,10 @@
       <%# Live Draft box updates (cards, menu count, "ready" toasts) on this user's own signed stream. %>
       <%= turbo_stream_from current_user, :drafts %>
       <div id="toasts" class="toast-stack" aria-live="polite"></div>
+    <% end %>
+
+    <% if assistant_available? %>
+      <%= render "assistant/panel", conversation: current_user.current_conversation, open: assistant_open? %>
     <% end %>
   <% end %>
 </html>

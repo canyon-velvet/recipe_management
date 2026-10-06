@@ -17,4 +17,13 @@ module ApplicationHelper
     )
     markdown.render(text).html_safe
   end
+
+  # Stimulus controllers on <body>, for what any page can open: the Edit-aisles pop-up and the assistant panel.
+  def body_controllers
+    return unless logged_in?
+
+    [ "aisle-editor", ("assistant-panel" if assistant_available?) ].compact.join(" ")
+  end
+
+  def assistant_panel_id = dom_id(current_user, :assistant_panel)
 end
