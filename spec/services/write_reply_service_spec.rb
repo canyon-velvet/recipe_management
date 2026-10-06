@@ -155,6 +155,16 @@ RSpec.describe WriteReplyService do
       expect(JSON.parse(result[:content])).to include("name" => "Mapo tofu", "steps" => [ "Cook it." ])
     end
 
+    it "shows no cards when the specialist declines in the end" do
+      client = FakeClaude.new(tool_uses: [ transfer ])
+                         .and_then(tool_uses: [ { name: "show_recipes", input: { ids: [ tofu.id ] } } ])
+                         .and_then([], stop_reason: :refusal)
+
+      write(client)
+
+      expect(reply.reload).to have_attributes(content: "Sorry, I can't help with that one.", recipe_ids: [])
+    end
+
     it "shows what it's doing while a tool runs" do
       allow(Turbo::StreamsChannel).to receive(:broadcast_replace_to)
       client = FakeClaude.new(tool_uses: [ transfer ])

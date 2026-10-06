@@ -76,7 +76,7 @@ class RecommendSpecialist
       {
         name: "show_recipes",
         description: "Show recipes as cards under your reply, in this order, so the user can open them. Use the " \
-                     "ids search_recipes or get_recipe returned.",
+                     "ids search_recipes or get_recipe returned. Calling it again replaces the cards.",
         input_schema: {
           type: "object", properties: { ids: { type: "array", items: { type: "integer" } } }, required: [ "ids" ]
         }
@@ -135,7 +135,7 @@ class RecommendSpecialist
   def show_recipes(input)
     ids = Array(input[:ids]).grep(Integer)
     found = @user.recipes.where(id: ids).ids
-    @shown_recipe_ids = (@shown_recipe_ids + ids.select { |id| found.include?(id) }).uniq
+    @shown_recipe_ids = ids.select { |id| found.include?(id) }.uniq
     { shown: @shown_recipe_ids, not_found: ids - found }
   end
 

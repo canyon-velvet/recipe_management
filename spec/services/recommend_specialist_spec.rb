@@ -79,11 +79,12 @@ RSpec.describe RecommendSpecialist do
       rice = recipe("Egg fried rice")
       other = create(:recipe)
 
-      expect(specialist.run_tool("show_recipes", { ids: [ rice.id, other.id ] }))
-        .to eq(shown: [ rice.id ], not_found: [ other.id ])
-      specialist.run_tool("show_recipes", { ids: [ tofu.id, rice.id ] })
+      expect(specialist.run_tool("show_recipes", { ids: [ rice.id, other.id, tofu.id, rice.id ] }))
+        .to eq(shown: [ rice.id, tofu.id ], not_found: [ other.id ])
 
-      expect(specialist.shown_recipe_ids).to eq [ rice.id, tofu.id ]
+      # Another call replaces the cards
+      specialist.run_tool("show_recipes", { ids: [ tofu.id ] })
+      expect(specialist.shown_recipe_ids).to eq [ tofu.id ]
     end
   end
 

@@ -62,7 +62,9 @@ class WriteReplyService
     if transfer?(messages.first)
       @run.update!(model: RecommendSpecialist::MODEL)
       @reply.agent = :recommend
-      @text = +"" # anything the router wrote before handing over is dropped
+      # Anything the router wrote before handing over is dropped, and the panel goes back to "Thinking…".
+      @text = +""
+      broadcast(@reply.tap { _1.content = @text })
       messages = recommend
     else
       @reply.agent = :router
@@ -70,6 +72,7 @@ class WriteReplyService
     text = messages.map { |message| final_text(message) }.compact_blank.join("\n\n")
 
     if messages.last.stop_reason == :refusal
+      @reply.recipe_ids = []
       finish(I18n.t("assistant.declined"))
       @run.fail!("refusal: #{messages.last.stop_details&.category}")
     elsif text.blank?

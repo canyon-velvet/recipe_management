@@ -15,8 +15,17 @@ class Message < ApplicationRecord
 
   validates :content, presence: true, length: { maximum: MAX_LENGTH }, if: :user?
 
+  attr_writer :recipes
+
+  # Loads the cards of many messages in one query (the panel shows up to 50), instead of one query each.
+  def self.load_recipes(messages, user)
+    recipes = user.recipes.includes(:tags).where(id: messages.flat_map(&:recipe_ids)).index_by(&:id)
+    messages.each { |message| message.recipes = recipes.values_at(*message.recipe_ids).compact }
+  end
+
   # The recipes shown as cards under a reply, in the order shown. Ones deleted since are left out.
   def recipes
+    return @recipes if @recipes
     return [] if recipe_ids.empty?
 
     conversation.user.recipes.includes(:tags).where(id: recipe_ids).sort_by { |recipe| recipe_ids.index(recipe.id) }

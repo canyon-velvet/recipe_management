@@ -1,6 +1,12 @@
 require "rails_helper"
 
 RSpec.describe Message do
+  def count_queries(&)
+    count = 0
+    ActiveSupport::Notifications.subscribed(->(*) { count += 1 }, "sql.active_record", &)
+    count
+  end
+
   it "only takes the known roles and statuses, in the model and the database" do
     expect(build(:message, role: "system")).not_to be_valid
     expect(build(:message, status: "lost")).not_to be_valid
@@ -26,6 +32,11 @@ RSpec.describe Message do
 
       expect(reply.recipes).to eq [ noodles, tofu ]
       expect(create(:message, conversation: conversation).recipes).to eq []
+
+      # The panel loads every message's cards in one go
+      question = create(:message, conversation: conversation)
+      expect(count_queries { Message.load_recipes([ reply, question ], conversation.user) }).to eq 2 # recipes, tags
+      expect(count_queries { expect([ reply.recipes, question.recipes ]).to eq [ [ noodles, tofu ], [] ] }).to eq 0
     end
   end
 
