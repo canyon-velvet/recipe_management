@@ -6,6 +6,11 @@
     text-shadow: 0 2px 4px rgb(0 0 0 / 0.6), 0 0 18px rgb(0 0 0 / 0.45);
   }
 
+  /* The bordered, tinted card used for recipe sections, recipe facts and meal plan cards */
+  .section-card {
+    @apply rounded-xl border border-gray-200 bg-sectionbackground p-5;
+  }
+
   .main            { flex: 1; }
   .main-wrapper    { @apply py-6 px-8; }
   .main-header     { @apply flex flex-col mb-2; }

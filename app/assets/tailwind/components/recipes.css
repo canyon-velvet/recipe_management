@@ -36,9 +36,9 @@
   .recipe-count-fields {
     @apply grid grid-cols-2 md:grid-cols-4 gap-4;
   }
-  /* ...and on the recipe page, a card like the section cards with one column per known fact, filling its width */
+  /* ...and on the recipe page, inside a .section-card: one column per known fact, filling its width */
   .recipe-facts {
-    @apply grid grid-cols-2 md:grid-flow-col md:auto-cols-fr gap-4 rounded-xl border border-gray-200 bg-sectionbackground p-5;
+    @apply grid grid-cols-2 md:grid-flow-col md:auto-cols-fr gap-4;
   }
   .recipe-fact-label {
     @apply text-sm font-semibold text-sectiontext;
