@@ -20,7 +20,7 @@
 
   <!-- Servings and times, when known -->
   <% if (facts = recipe_facts(@recipe)).any? %>
-    <dl class="recipe-facts mt-8">
+    <dl class="section-card recipe-facts mt-8">
       <% facts.each do |label, value| %>
         <div>
           <dt class="recipe-fact-label"><%= label %></dt>
