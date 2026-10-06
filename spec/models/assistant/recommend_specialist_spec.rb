@@ -25,7 +25,8 @@ RSpec.describe Assistant::RecommendSpecialist do
   it "ends with the language rule, after the user's data, falling back to the app's language" do
     create(:ingredient, user: user, name: "生抽")
 
-    expect(specialist.system_prompt).to include("生抽\n\nWrite your reply in the language of the user's latest message")
+    expect(specialist.system_prompt)
+      .to include("生抽\n\nWrite your reply in the language of the user's latest message")
     expect(specialist.system_prompt.strip).to end_with("use English, the app's language.")
     I18n.with_locale(:"zh-CN") { expect(specialist.system_prompt).to include("use 中文, the app's language.") }
   end

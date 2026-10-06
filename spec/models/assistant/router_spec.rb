@@ -31,7 +31,8 @@ RSpec.describe Assistant::Router do
 
   it "keeps follow-ups with the specialist that wrote the last reply" do
     pinned = described_class.new(user, last_agent: "recommend").system_prompt
-    expect(pinned).to include("The last reply in this chat came from the Recommend specialist", "call transfer_to_recommend.")
+    expect(pinned).to include("The last reply in this chat came from the Recommend specialist",
+                              "call transfer_to_recommend.")
     expect(pinned.strip).to end_with("use English, the app's language.")
     expect(described_class.new(user, last_agent: "router").system_prompt).not_to include("The last reply")
     expect(described_class.new(user).system_prompt).not_to include("The last reply")
