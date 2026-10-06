@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_06_023228) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_06_023938) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -99,6 +99,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_023228) do
     t.datetime "updated_at", null: false
     t.index ["meal_plan_id", "day_of_week", "meal_type"], name: "index_meal_slots_uniqueness", unique: true
     t.index ["meal_plan_id"], name: "index_meal_slots_on_meal_plan_id"
+  end
+
+  create_table "preferences", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "category", null: false
+    t.string "value", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index "user_id, category, lower((value)::text)", name: "index_preferences_on_user_category_and_value", unique: true
+    t.index ["user_id"], name: "index_preferences_on_user_household", unique: true, where: "((category)::text = 'household'::text)"
+    t.check_constraint "category::text = ANY (ARRAY['diet'::character varying, 'likes'::character varying, 'dislikes'::character varying, 'avoid'::character varying, 'household'::character varying]::text[])", name: "preferences_category_known"
   end
 
   create_table "recipe_ingredients", force: :cascade do |t|
@@ -192,6 +203,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_023228) do
   add_foreign_key "meal_slot_recipes", "meal_slots"
   add_foreign_key "meal_slot_recipes", "recipes"
   add_foreign_key "meal_slots", "meal_plans"
+  add_foreign_key "preferences", "users"
   add_foreign_key "recipe_ingredients", "ingredients"
   add_foreign_key "recipe_ingredients", "recipes"
   add_foreign_key "recipe_steps", "recipes"

@@ -13,6 +13,7 @@
       <%= t(".draft_box") %>
       <%= render "drafts/menu_count", counts: draft_counts %>
     <% end %>
+    <%= link_to t(".preferences"), preferences_path, class: "account-menu-item", role: "menuitem" %>
     <button type="button" class="account-menu-item" role="menuitem" data-action="dropdown#hide aisle-editor#open">
       <%= t("aisle_editor.title") %>
     </button>

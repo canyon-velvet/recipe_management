@@ -39,3 +39,9 @@ _Avoid_: Preview, pending recipe
 **Draft box**:
 The place where a user's drafts wait until each one is saved as a recipe or discarded.
 _Avoid_: Inbox, imports page, queue
+
+## Assistant
+
+**Preference**:
+A short fact about what a user eats, in one of five categories: diet, likes, dislikes, avoid, or household (who they cook for). The assistant follows preferences when it recommends recipes. "Avoid" is strict: a recipe containing it is never recommended.
+_Avoid_: Profile, setting, restriction
