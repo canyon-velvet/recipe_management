@@ -35,8 +35,8 @@ RSpec.describe Assistant::RecommendSpecialist do
     recipe = create(:recipe, user: user)
 
     specialist.tool("search_recipes").call({})
-    specialist.tool("show_recipes").call({ ids: [ recipe.id ] })
+    specialist.tool("show_recipes").call({ recipes: [ { id: recipe.id, why: "Quick." } ] })
 
-    expect(specialist.shown_recipe_ids).to eq [ recipe.id ]
+    expect(specialist.shown_cards).to eq(recipe.id => "Quick.")
   end
 end

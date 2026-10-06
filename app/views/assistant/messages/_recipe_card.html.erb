@@ -1,6 +1,7 @@
-<%# locals: (recipe:, avoided: []) %>
+<%# locals: (recipe:, avoided: [], why: nil) %>
 <%# A recipe the assistant recommends: its emoji, name, total time and servings, linking to the recipe. avoided: the
-    items on the user's avoid list it contains, shown as a warning so the user decides. %>
+    items on the user's avoid list it contains, shown as a warning so the user decides. why: the assistant's reason
+    for recommending it (older replies have none). Only chat cards have these; the recipe index's cards stay short. %>
 <% facts = [ (duration_label(recipe.total_minutes) if recipe.total_minutes),
              (t("assistant.servings", count: recipe.servings) if recipe.servings) ].compact %>
 <%= link_to recipe_path(recipe), class: "assistant-recipe" do %>
@@ -18,6 +19,9 @@
     <% end %>
     <% if avoided.any? %>
       <span class="assistant-recipe-warning"><%= t("assistant.contains_avoided", items: avoided.to_sentence) %></span>
+    <% end %>
+    <% if why.present? %>
+      <span class="assistant-recipe-why"><%= why %></span>
     <% end %>
   </span>
 <% end %>

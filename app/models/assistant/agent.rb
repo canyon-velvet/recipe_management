@@ -30,8 +30,8 @@ module Assistant
         **request_options }
     end
 
-    # The recipes the agent chose to show as cards under its reply.
-    def shown_recipe_ids = tools.grep(Tools::ShowRecipes).flat_map(&:recipe_ids)
+    # The recipes the agent chose to show as cards under its reply, with why: { recipe id => reason }.
+    def shown_cards = tools.grep(Tools::ShowRecipes).map(&:cards).reduce({}, :merge)
 
     private
 
