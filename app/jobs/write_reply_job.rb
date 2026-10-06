@@ -2,6 +2,7 @@
 # that failed is shown as failed, and the user can simply ask again.
 class WriteReplyJob < ApplicationJob
   queue_as :default
+  sidekiq_options retry: false
 
   # The conversation was deleted before the reply was written.
   discard_on ActiveJob::DeserializationError

@@ -74,6 +74,39 @@ RSpec.describe WriteReplyService do
     expect(reply.run).to have_attributes(status: "failed", error: "refusal: cyber")
   end
 
+  it "keeps only the fallback model's answer when the first model declined part-way, and records who answered" do
+    write(FakeClaude.new([ "Sure, here is how to ", "Here is a safe answer." ], fallback_at: 1))
+
+    expect(reply.reload.content).to eq "Here is a safe answer."
+    expect(reply.run).to have_attributes(status: "succeeded", model: "claude-opus-5-5")
+  end
+
+  it "fails an empty reply instead of saving it, and never sends an empty message back" do
+    write(FakeClaude.new([ "  " ]))
+    expect(reply.reload.status).to eq "failed"
+    expect(reply.run.error).to eq "empty reply"
+
+    # Even an empty finished message from before (e.g. older data) is left out of the history.
+    reply.update!(status: :done, content: "")
+    next_reply = conversation.ask("Next?").last
+    client = FakeClaude.new([ "Sure." ])
+    described_class.new(next_reply, client: client).call
+
+    expect(client.requests.sole[:messages].pluck(:content)).to eq [ "What can I make with eggs?", "Next?" ]
+  end
+
+  it "does nothing when the job runs twice for the same reply" do
+    write(FakeClaude.new([ "First answer." ]))
+    reply.update!(status: :pending) # as if a second copy of the job picked it up mid-way
+    client = FakeClaude.new([ "Second answer." ])
+
+    write(client)
+
+    expect(client.requests).to be_empty
+    expect(reply.reload.status).to eq "pending"
+    expect(Run.where(message: reply).count).to eq 1
+  end
+
   it "leaves a reply that's already written alone" do
     reply.update!(status: :done, content: "Done already")
     client = FakeClaude.new([ "Again" ])

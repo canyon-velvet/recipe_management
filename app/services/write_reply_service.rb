@@ -29,15 +29,23 @@ class WriteReplyService
   end
 
   def call
-    return unless @reply.pending?
+    # A job delivered twice (e.g. re-queued on a Sidekiq restart) leaves a reply that's written or being written alone.
+    return unless @reply.pending? && @reply.run.nil?
 
     run = @reply.create_run!(model: MODEL)
     message = stream_reply
+    # A fallback model may have answered instead; record which one did.
+    run.update!(model: message.model.to_s) if message.model.present?
+    text = final_text(message)
+
     if message.stop_reason == :refusal
       finish(I18n.t("assistant.declined"))
       run.fail!("refusal: #{message.stop_details&.category}")
+    elsif text.blank?
+      # An empty reply would be sent back as history, which the API rejects, breaking the rest of the chat.
+      fail_reply(run, "empty reply")
     else
-      finish(@text)
+      finish(text)
       run.succeed!(message.usage)
     end
   rescue Anthropic::Errors::APIError => e
@@ -73,9 +81,19 @@ class WriteReplyService
     stream.accumulated_message
   end
 
-  # The recent finished messages, oldest first, starting with one of the user's (the API requires that).
+  # The reply's text. If the model declined part-way and a fallback model took over, only the fallback's answer
+  # counts: the text before the last fallback block was abandoned.
+  def final_text(message)
+    blocks = message.content
+    last_fallback = blocks.rindex { |block| block.type == :fallback }
+    blocks.drop(last_fallback ? last_fallback + 1 : 0).select { |block| block.type == :text }.map(&:text).join
+  end
+
+  # The recent finished messages, oldest first, starting with one of the user's (the API requires that). Empty
+  # ones are left out: the API rejects empty text.
   def history
-    messages = @reply.conversation.recent_messages(CONTEXT_MESSAGES + 1).select(&:done?)
+    messages = @reply.conversation.recent_messages(CONTEXT_MESSAGES + 1)
+                     .select { |message| message.done? && message.content.present? }
     messages = messages.drop_while(&:assistant?)
     messages.map { |message| { role: message.role, content: message.content } }
   end
@@ -87,7 +105,7 @@ class WriteReplyService
 
   def fail_reply(run, error)
     @reply.update!(status: :failed)
-    run&.fail!("#{error.class}: #{error.message}")
+    run&.fail!(error.is_a?(Exception) ? "#{error.class}: #{error.message}" : error)
     broadcast(@reply)
   end
 
