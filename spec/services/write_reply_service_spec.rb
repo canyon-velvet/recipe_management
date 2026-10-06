@@ -111,16 +111,18 @@ RSpec.describe WriteReplyService do
     let(:user) { conversation.user }
     let!(:tofu) { create(:recipe, user: user, name: "Mapo tofu") }
     let(:transfer) { { name: "transfer_to_recommend", input: {} } }
+    let(:show_tofu) { { name: "show_recipes", input: { recipes: [ { id: tofu.id, why: "Spicy." } ] } } }
 
     it "searches the user's recipes, answers with the ones it recommends and shows them as cards" do
       client = FakeClaude.new([ "Let me hand you over." ], tool_uses: [ transfer ])
                          .and_then([ "I'll search." ], tool_uses: [ { name: "search_recipes", input: { name: "tofu" } } ])
-                         .and_then([ "Try the **Mapo tofu**." ], tool_uses: [ { name: "show_recipes", input: { ids: [ tofu.id ] } } ])
+                         .and_then([ "Try the **Mapo tofu**." ], tool_uses: [ show_tofu ])
                          .and_then([])
 
       write(client)
 
       expect(reply.reload).to have_attributes(status: "done", agent: "recommend", recipe_ids: [ tofu.id ],
+                                              card_reasons: { tofu.id.to_s => "Spicy." },
                                               content: "I'll search.\n\nTry the **Mapo tofu**.")
       expect(reply.run).to have_attributes(status: "succeeded", model: "claude-sonnet-5-5", input_tokens: 480,
                                            output_tokens: 3)
@@ -132,19 +134,32 @@ RSpec.describe WriteReplyService do
       expect(reply.run.steps.third.output["recipes"].sole).to include("id" => tofu.id, "name" => "Mapo tofu")
     end
 
+    it "saves a reply that's only cards, as each card says why" do
+      client = FakeClaude.new(tool_uses: [ transfer ])
+                         .and_then(tool_uses: [ { name: "get_recipe", input: { id: tofu.id } } ])
+                         .and_then(tool_uses: [ show_tofu ])
+                         .and_then([])
+
+      write(client)
+
+      expect(reply.reload).to have_attributes(status: "done", content: "", recipe_ids: [ tofu.id ])
+    end
+
     it "shows no cards when the specialist declines in the end" do
       client = FakeClaude.new(tool_uses: [ transfer ])
-                         .and_then(tool_uses: [ { name: "show_recipes", input: { ids: [ tofu.id ] } } ])
+                         .and_then(tool_uses: [ { name: "get_recipe", input: { id: tofu.id } } ])
+                         .and_then(tool_uses: [ show_tofu ])
                          .and_then([], stop_reason: :refusal)
 
       write(client)
 
-      expect(reply.reload).to have_attributes(content: "Sorry, I can't help with that one.", recipe_ids: [])
+      expect(reply.reload).to have_attributes(content: "Sorry, I can't help with that one.", recipe_ids: [],
+                                              card_reasons: {})
     end
 
     it "keeps follow-ups with the specialist, and notes the cards it showed" do
       earlier = conversation.ask("Something with tofu?").last
-      earlier.update!(content: "Try this.", status: :done, agent: :recommend, recipe_ids: [ tofu.id ])
+      earlier.update!(content: "Try this.", status: :done, agent: :recommend, cards: { tofu.id => "Spicy." })
       followup = conversation.ask("How spicy is it?").last
       client = FakeClaude.new([ "Quite." ])
 
@@ -152,8 +167,8 @@ RSpec.describe WriteReplyService do
 
       request = client.requests.sole
       expect(request[:system_]).to include("The last reply in this chat came from the Recommend specialist")
-      expect(request[:messages]).to include(role: "assistant",
-                                            content: "Try this.\n\n(Recipe cards shown: Mapo tofu (id #{tofu.id}))")
+      cards = "(Recipe cards shown: Mapo tofu (id #{tofu.id}): Spicy.)"
+      expect(request[:messages]).to include(role: "assistant", content: "Try this.\n\n#{cards}")
       expect(followup.reload.agent).to eq "router"
     end
   end

@@ -78,5 +78,14 @@ RSpec.describe Conversation do
       ]
       expect(conversation.last_agent).to eq "recommend"
     end
+
+    it "notes each card's reason, and keeps a reply that's only cards" do
+      tofu, rice = create_list(:recipe, 2, user: user)
+      reply = conversation.ask("Dinner?").last
+      reply.update!(content: "", status: :done, cards: { tofu.id => "Spicy.", rice.id => nil })
+
+      cards = "#{tofu.name} (id #{tofu.id}): Spicy.; #{rice.name} (id #{rice.id})"
+      expect(conversation.context(20).last).to eq(role: "assistant", content: "(Recipe cards shown: #{cards})")
+    end
   end
 end

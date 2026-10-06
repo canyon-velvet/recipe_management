@@ -88,6 +88,10 @@
   .assistant-recipe-facts {
     @apply block text-xs text-gray-500;
   }
+  /* Why the assistant recommends it */
+  .assistant-recipe-why {
+    @apply mt-1 block text-xs text-gray-700;
+  }
   /* The recipe has something the user avoids */
   .assistant-recipe-warning {
     @apply mt-0.5 block text-xs font-semibold text-red-700;

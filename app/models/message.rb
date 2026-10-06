@@ -23,6 +23,15 @@ class Message < ApplicationRecord
     messages.each { |message| message.recipes = recipes.values_at(*message.recipe_ids).compact }
   end
 
+  # Sets the reply's recipe cards from { recipe id => why it fits }, in order.
+  def cards=(cards)
+    self.recipe_ids = cards.keys
+    self.card_reasons = cards.transform_keys(&:to_s)
+  end
+
+  # Why the assistant recommends the recipe, shown on its card. Nil for older replies.
+  def card_reason(recipe) = card_reasons[recipe.id.to_s]
+
   # The recipes shown as cards under a reply, in the order shown. Ones deleted since are left out.
   def recipes
     return @recipes if @recipes

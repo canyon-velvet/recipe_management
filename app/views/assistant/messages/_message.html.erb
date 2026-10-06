@@ -21,7 +21,8 @@
       <ul class="assistant-recipes">
         <% recipes.each do |recipe| %>
           <li>
-            <%= render "assistant/messages/recipe_card", recipe: recipe, avoided: recipe.avoided_items(avoided) %>
+            <%= render "assistant/messages/recipe_card", recipe: recipe, avoided: recipe.avoided_items(avoided),
+                                                         why: message.card_reason(recipe) %>
           </li>
         <% end %>
       </ul>

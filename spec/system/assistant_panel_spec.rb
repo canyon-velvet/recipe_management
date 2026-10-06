@@ -108,7 +108,8 @@ RSpec.describe "Assistant panel", type: :system do
       claude = FakeClaude.new(tool_uses: [ { name: "transfer_to_recommend", input: {} } ])
                          .and_then(tool_uses: [ { name: "search_recipes", input: { tags: [ "spicy" ] } } ])
                          .and_then([ "Try the ", "**Mapo tofu**." ], delay: 0.4,
-                                   tool_uses: [ { name: "show_recipes", input: { ids: [ tofu.id ] } } ])
+                                   tool_uses: [ { name: "show_recipes",
+                                                  input: { recipes: [ { id: tofu.id, why: "Numbing and hot." } ] } } ])
                          .and_then([])
       allow(Anthropic::Client).to receive(:new).and_return(claude)
 
@@ -120,7 +121,7 @@ RSpec.describe "Assistant panel", type: :system do
       reply = ".assistant-message--assistant"
       expect(page).to have_css(reply, text: "Searching your recipes…")
       expect(page).to have_css("#{reply}[aria-busy='false']", text: "Try the Mapo tofu.")
-      within(reply) { click_link "Mapo tofu 30 min · Serves 4 ⚠️ Contains chili" }
+      within(reply) { click_link "Mapo tofu 30 min · Serves 4 ⚠️ Contains chili Numbing and hot." }
 
       expect(page).to have_current_path(recipe_path(tofu))
       expect(page).to have_css(".assistant-panel", text: "Try the Mapo tofu.")
