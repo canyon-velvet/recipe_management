@@ -86,13 +86,17 @@ en:
         recipe: "Recipe"
         recipe_id: "Recipe"
       recipe:
+        cook_minutes: "Cook time (min)"
         description: "Description"
         name: "Name"
+        prep_minutes: "Prep time (min)"
+        servings: "Servings"
         source: "Source"
         source_id: "Source"
         source_url: "Recipe link"
         steps: "Steps"
         tags: "Tags"
+        total_minutes: "Total time (min)"
       recipe/recipe_ingredients:
         ingredient: "Ingredient"
         ingredient_id: "Ingredient"
@@ -152,6 +156,16 @@ en:
   recipes:
     confirm_delete: "Delete this recipe?"
     tips_heading: "Tips"
+    facts:
+      cook: "Cook"
+      hours: "%{count} hr"
+      minutes: "%{count} min"
+      prep: "Prep"
+      servings: "Servings"
+      servings_value: "%{count}"
+      total: "Total"
+    count_fields:
+      hint: "All optional. Leave Total blank to add up prep and cook time."
     ingredient_fields:
       create: "Create ingredient"
       quantity: "Quantity"

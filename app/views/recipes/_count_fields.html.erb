@@ -1,0 +1,12 @@
+<%# locals: (form:) %>
+<div class="field">
+  <div class="recipe-count-fields">
+    <% Recipe::COUNT_LIMITS.each do |field, max| %>
+      <div>
+        <%= form.label field, class: "form-label" %>
+        <%= form.number_field field, min: 1, max: max, step: 1, class: "form-input" %>
+      </div>
+    <% end %>
+  </div>
+  <p class="help-text mt-1"><%= t(".hint") %></p>
+</div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_04_003641) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_05_181130) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -141,9 +141,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_04_003641) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.string "source_url"
+    t.integer "servings"
+    t.integer "prep_minutes"
+    t.integer "cook_minutes"
+    t.integer "total_minutes"
     t.index ["source_id"], name: "index_recipes_on_source_id"
     t.index ["user_id", "source_url"], name: "index_recipes_on_user_id_and_source_url", unique: true, where: "(source_url IS NOT NULL)"
     t.index ["user_id"], name: "index_recipes_on_user_id"
+    t.check_constraint "cook_minutes > 0", name: "recipes_cook_minutes_positive"
+    t.check_constraint "prep_minutes > 0", name: "recipes_prep_minutes_positive"
+    t.check_constraint "servings > 0", name: "recipes_servings_positive"
+    t.check_constraint "total_minutes > 0", name: "recipes_total_minutes_positive"
   end
 
   create_table "sources", force: :cascade do |t|

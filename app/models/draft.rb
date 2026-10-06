@@ -4,7 +4,9 @@
 # `data` is what the importer read, in this shape:
 #   { "name" => "…", "description" => "…", "source_name" => "…",
 #     "ingredients" => [{ "name" => "…", "quantity" => "…", "unit" => "…", "aisle_id" => 1 }],
-#     "steps" => ["…"], "tags" => ["tag_key"], "tips" => ["…"] }
+#     "steps" => ["…"], "tags" => ["tag_key"], "tips" => ["…"],
+#     "servings" => 4, "prep_minutes" => 15, "cook_minutes" => 30, "total_minutes" => 45 }
+#   (servings and the minutes, Recipe::COUNT_LIMITS, are nil when the source doesn't say)
 class Draft < ApplicationRecord
   include DraftBoxBroadcasts
 

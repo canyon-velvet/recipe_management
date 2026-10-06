@@ -18,6 +18,18 @@
     <%= render "shared/tag_badges", tags: @recipe.tags %>
   </div>
 
+  <!-- Servings and times, when known -->
+  <% if (facts = recipe_facts(@recipe)).any? %>
+    <dl class="recipe-facts mt-8">
+      <% facts.each do |label, value| %>
+        <div>
+          <dt class="recipe-fact-label"><%= label %></dt>
+          <dd class="recipe-fact-value"><%= value %></dd>
+        </div>
+      <% end %>
+    </dl>
+  <% end %>
+
   <!-- Description -->
   <% if @recipe.description.present? %>
     <div class="mt-16">

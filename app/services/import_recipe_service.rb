@@ -51,7 +51,8 @@ class ImportRecipeService
       "description" => recipe[:description].to_s,
       "ingredients" => recipe[:ingredients].map { |line| { "name" => line } },
       "steps" => recipe[:steps],
-      "tags" => []
+      "tags" => [],
+      **Recipe::COUNT_LIMITS.keys.to_h { |key| [ key.to_s, recipe[key] ] }
     )
   end
 
