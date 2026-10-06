@@ -23,26 +23,15 @@ module Assistant
           "again replaces the cards."
       end
 
-      def input_schema
-        {
-          type: "object",
-          properties: {
-            recipes: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  id: { type: "integer" },
-                  why: { type: "string",
-                         description: "One short sentence, in the language of the user's latest message, on why " \
-                                      "this recipe fits what they asked. Mention any avoided item it contains." }
-                },
-                required: [ "id", "why" ]
-              }
-            }
-          },
-          required: [ "recipes" ]
-        }
+      # One recipe to show, and why it fits.
+      class Pick < Anthropic::BaseModel
+        required :id, Integer
+        required :why, String, doc: "One short sentence, in the language of the user's latest message, on why this " \
+                                    "recipe fits what they asked. Mention any avoided item it contains."
+      end
+
+      class Input < Anthropic::BaseModel
+        required :recipes, Anthropic::ArrayOf[Pick]
       end
 
       private

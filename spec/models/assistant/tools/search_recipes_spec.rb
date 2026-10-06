@@ -64,8 +64,14 @@ RSpec.describe Assistant::Tools::SearchRecipes do
     expect(tool.call({})[:more]).to be true
   end
 
-  it "offers the tags as the choices, and says so while it runs" do
-    expect(tool.definition.dig(:input_schema, :properties, :tags, :items, :enum)).to eq %w[dinner spicy]
+  it "describes its optional filters to Claude, and says it's searching while it runs" do
+    schema = tool.definition[:input_schema]
+
+    expect(schema).to include(type: "object", required: [], additionalProperties: false)
+    expect(schema[:properties].keys).to eq %i[tags ingredients max_total_minutes min_servings name]
+    expect(schema[:properties][:tags]).to eq(type: "array", items: { type: "string" },
+                                             description: "Tag keys the recipe must all have.")
+    expect(schema[:properties][:max_total_minutes]).to include(type: "integer")
     expect(tool.activity).to eq "Searching your recipes…"
   end
 

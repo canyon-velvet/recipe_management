@@ -19,6 +19,14 @@ RSpec.describe Assistant::Tools::ShowRecipes do
     expect(tool.cards).to eq(tofu.id => "Spicier.")
   end
 
+  it "tells Claude every recipe needs an id and a why" do
+    pick = tool.definition.dig(:input_schema, :properties, :recipes, :items)
+
+    expect(tool.definition[:input_schema][:required]).to eq [ "recipes" ]
+    expect(pick).to include(required: %w[id why], additionalProperties: false)
+    expect(pick.dig(:properties, :why, :description)).to start_with("One short sentence")
+  end
+
   it "needs a why for every recipe" do
     recipe = create(:recipe, user: user)
     turn.found([ recipe ])
