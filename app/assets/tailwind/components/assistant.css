@@ -35,7 +35,7 @@
   }
 
   .assistant-header {
-    @apply flex h-20 flex-none items-center justify-between bg-background px-4 text-white;
+    @apply flex h-20 flex-none items-center justify-between bg-sectiontext-light px-4 text-white;
   }
   .assistant-title {
     @apply font-semibold tracking-wide;
@@ -58,10 +58,10 @@
     @apply max-w-[85%] rounded-xl px-3 py-2 text-sm;
   }
   .assistant-message--user {
-    @apply self-end bg-sectiontext-light text-white;
+    @apply self-end bg-sectionbackground text-gray-800;
   }
   .assistant-message--assistant {
-    @apply self-start bg-sectionbackground text-gray-800;
+    @apply self-start border border-gray-200 bg-white text-gray-800;
   }
   .assistant-thinking {
     @apply italic text-gray-500 animate-pulse;
