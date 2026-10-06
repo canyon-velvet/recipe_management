@@ -15,7 +15,8 @@ RSpec.describe "Recipes", type: :request do
     recipe = user.recipes.sole
     expect([ recipe.servings, recipe.prep_minutes, recipe.cook_minutes, recipe.total_minutes ]).to eq [ 4, 15, 30, 45 ]
     follow_redirect!
-    expect(response.body).to include("Serves 4", "Prep 15 min", "Cook 30 min", "Total 45 min")
+    facts = Nokogiri::HTML(response.body).css(".recipe-facts > div").map { |fact| fact.css("dt, dd").map(&:text) }
+    expect(facts).to eq [ [ "Servings", "4" ], [ "Prep", "15 min" ], [ "Cook", "30 min" ], [ "Total", "45 min" ] ]
   end
 
   it "shows a validation error, not a crash, for a number too large to save" do

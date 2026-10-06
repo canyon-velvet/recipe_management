@@ -157,12 +157,13 @@ zh-CN:
     confirm_delete: "确定要删除这个菜谱吗？"
     tips_heading: "小贴士"
     facts:
-      cook: "烹饪 %{time}"
+      cook: "烹饪"
       hours: "%{count} 小时"
       minutes: "%{count} 分钟"
-      prep: "准备 %{time}"
-      servings: "%{count} 人份"
-      total: "共 %{time}"
+      prep: "准备"
+      servings: "份量"
+      servings_value: "%{count} 人份"
+      total: "总时间"
     count_fields:
       hint: "均为选填。总时间留空时，会按准备时间和烹饪时间相加。"
     ingredient_fields:

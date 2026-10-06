@@ -32,11 +32,18 @@
     @apply text-gray-300 hover:bg-transparent cursor-default;
   }
 
-  /* Servings and times: four small number fields side by side in the form, one line on the recipe page */
+  /* Servings and times: four small number fields side by side in the form */
   .recipe-count-fields {
     @apply grid grid-cols-2 md:grid-cols-4 gap-4;
   }
+  /* ...and on the recipe page, a card like the section cards with one column per known fact, filling its width */
   .recipe-facts {
-    @apply flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600;
+    @apply grid grid-cols-2 md:grid-flow-col md:auto-cols-fr gap-4 rounded-xl border border-gray-200 bg-sectionbackground p-5;
+  }
+  .recipe-fact-label {
+    @apply text-sm font-semibold text-sectiontext;
+  }
+  .recipe-fact-value {
+    @apply mt-1 text-lg text-gray-800;
   }
 }

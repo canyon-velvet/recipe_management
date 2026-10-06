@@ -20,11 +20,14 @@
 
   <!-- Servings and times, when known -->
   <% if (facts = recipe_facts(@recipe)).any? %>
-    <p class="recipe-facts">
-      <% facts.each do |fact| %>
-        <span><%= fact %></span>
+    <dl class="recipe-facts mt-8">
+      <% facts.each do |label, value| %>
+        <div>
+          <dt class="recipe-fact-label"><%= label %></dt>
+          <dd class="recipe-fact-value"><%= value %></dd>
+        </div>
       <% end %>
-    </p>
+    </dl>
   <% end %>
 
   <!-- Description -->
