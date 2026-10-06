@@ -44,6 +44,6 @@
     @apply text-sm font-semibold text-sectiontext;
   }
   .recipe-fact-value {
-    @apply mt-1 text-lg text-gray-800;
+    @apply mt-1 text-sm text-gray-700;
   }
 }
