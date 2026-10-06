@@ -2,7 +2,8 @@ require "rails_helper"
 
 RSpec.describe Assistant::Tools::SearchRecipes do
   let(:user) { create(:user) }
-  let(:tool) { described_class.new(user) }
+  let(:turn) { Assistant::Turn.new }
+  let(:tool) { described_class.new(user, turn) }
   let!(:dinner) { create(:tag, key: "dinner", kind: "meal") }
   let!(:spicy) { create(:tag, key: "spicy", kind: "flavor") }
 
@@ -31,14 +32,25 @@ RSpec.describe Assistant::Tools::SearchRecipes do
     expect(names(name: "STEW")).to eq [ "Slow beef stew" ]
   end
 
-  it "never returns a recipe with an ingredient the user avoids" do
-    recipe("Satay", ingredients: [ "Peanut butter" ])
+  it "still returns recipes with an ingredient the user avoids, flagging the avoided items" do
+    recipe("Satay", ingredients: [ "Peanut butter", "Chicken" ])
     recipe("花生汤", ingredients: [ "花生" ])
     recipe("Omelette", ingredients: [ "Eggs" ])
     create(:preference, user: user, category: "avoid", value: "peanut")
     create(:preference, user: user, category: "avoid", value: "花生")
 
-    expect(names).to eq [ "Omelette" ]
+    expect(tool.call({})[:recipes].to_h { [ _1[:name], _1[:avoided] ] })
+      .to eq("Satay" => [ "peanut" ], "花生汤" => [ "花生" ], "Omelette" => nil)
+  end
+
+  it "notes the recipes it returned, so they can be shown as cards" do
+    found = recipe("Mapo tofu")
+    other = recipe("Omelette")
+
+    tool.call({ name: "tofu" })
+
+    expect(turn.found?(found.id)).to be true
+    expect(turn.found?(other.id)).to be false
   end
 
   it "returns each recipe's tags, time, servings and ingredients, and whether there were more" do

@@ -19,7 +19,7 @@ class Message < ApplicationRecord
 
   # Loads the cards of many messages in one query (the panel shows up to 50), instead of one query each.
   def self.load_recipes(messages, user)
-    recipes = user.recipes.includes(:tags).where(id: messages.flat_map(&:recipe_ids)).index_by(&:id)
+    recipes = user.recipes.for_cards.where(id: messages.flat_map(&:recipe_ids)).index_by(&:id)
     messages.each { |message| message.recipes = recipes.values_at(*message.recipe_ids).compact }
   end
 
@@ -28,7 +28,7 @@ class Message < ApplicationRecord
     return @recipes if @recipes
     return [] if recipe_ids.empty?
 
-    conversation.user.recipes.includes(:tags).where(id: recipe_ids).sort_by { |recipe| recipe_ids.index(recipe.id) }
+    conversation.user.recipes.for_cards.where(id: recipe_ids).sort_by { |recipe| recipe_ids.index(recipe.id) }
   end
 
   # Replaces the message in the user's open panel (any page, any tab) with its current state, and what the assistant

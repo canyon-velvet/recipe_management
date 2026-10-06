@@ -1,7 +1,8 @@
-<%# locals: (message:, activity: nil) %>
+<%# locals: (message:, activity: nil, avoided: nil) %>
 <%# A reply is pending while it's written: "Thinking…" until the first words arrive, then the text so far, plus what
     the assistant is doing between words (activity, e.g. searching recipes). aria-busy keeps screen readers from
-    announcing every streamed update. Recipes it recommends follow as cards. %>
+    announcing every streamed update. Recipes it recommends follow as cards, flagged when they contain something the
+    user avoids (avoided: their avoid list, passed in when many messages are rendered at once). %>
 <div id="<%= dom_id(message) %>" class="assistant-message assistant-message--<%= message.role %>"
      data-assistant-panel-target="message" aria-busy="<%= message.pending? %>">
   <% if message.failed? %>
@@ -16,9 +17,12 @@
       <span class="assistant-thinking"><%= activity || t("assistant.thinking") %></span>
     <% end %>
     <% if (recipes = message.recipes).any? %>
+      <% avoided ||= message.conversation.user.avoided_ingredients %>
       <ul class="assistant-recipes">
         <% recipes.each do |recipe| %>
-          <li><%= render "assistant/messages/recipe_card", recipe: recipe %></li>
+          <li>
+            <%= render "assistant/messages/recipe_card", recipe: recipe, avoided: recipe.avoided_items(avoided) %>
+          </li>
         <% end %>
       </ul>
     <% end %>

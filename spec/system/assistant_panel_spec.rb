@@ -100,9 +100,11 @@ RSpec.describe "Assistant panel", type: :system do
       expect(page).to have_css("#{reply}[aria-busy='false']", text: "Try a tomato and egg stir-fry tonight.")
     end
 
-    it "recommends the user's recipes as cards that open the recipe" do
+    it "recommends the user's recipes as cards that open the recipe, flagging what the user avoids" do
       tofu = create(:recipe, user: user, name: "Mapo tofu", total_minutes: 30, servings: 4,
                              tags: [ create(:tag, key: "spicy", kind: "flavor") ])
+      tofu.recipe_ingredients.create!(ingredient: create(:ingredient, user: user, name: "Chili oil"))
+      create(:preference, user: user, category: "avoid", value: "chili")
       claude = FakeClaude.new(tool_uses: [ { name: "transfer_to_recommend", input: {} } ])
                          .and_then(tool_uses: [ { name: "search_recipes", input: { tags: [ "spicy" ] } } ])
                          .and_then([ "Try the ", "**Mapo tofu**." ], delay: 0.4,
@@ -118,7 +120,7 @@ RSpec.describe "Assistant panel", type: :system do
       reply = ".assistant-message--assistant"
       expect(page).to have_css(reply, text: "Searching your recipes…")
       expect(page).to have_css("#{reply}[aria-busy='false']", text: "Try the Mapo tofu.")
-      within(reply) { click_link "Mapo tofu 30 min · Serves 4" }
+      within(reply) { click_link "Mapo tofu 30 min · Serves 4 ⚠️ Contains chili" }
 
       expect(page).to have_current_path(recipe_path(tofu))
       expect(page).to have_css(".assistant-panel", text: "Try the Mapo tofu.")

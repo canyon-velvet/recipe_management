@@ -18,8 +18,9 @@ module Assistant
       languages when one finds nothing. Then call show_recipes with the recipes you recommend, so they appear as
       cards under your reply. Only recommend recipes a tool returned while you wrote this reply.
 
-      Follow the user's preferences. "Avoid" is strict: search_recipes already leaves out recipes whose ingredients
-      contain an avoided item, and never recommend a recipe you know has one. The others are soft: lean towards
+      Follow the user's preferences. Prefer recipes without any of their "avoid" items; the tools list the ones a
+      recipe contains under "avoided". If such a recipe is the best or only fit, you may still recommend it, but say
+      clearly which avoided item it contains (its card is marked too). The other preferences are soft: lean towards
       their diet and likes, away from dislikes, and suit the household.
 
       Your reply is a sentence about each recipe you recommend, by name, and why it fits. The cards only link to
@@ -46,7 +47,9 @@ module Assistant
 
     private
 
-    def build_tools = [ Tools::SearchRecipes, Tools::GetRecipe, Tools::ShowRecipes ].map { |tool| tool.new(@user) }
+    def build_tools
+      [ Tools::SearchRecipes, Tools::GetRecipe, Tools::ShowRecipes ].map { |tool| tool.new(@user, turn) }
+    end
 
     def request_options
       {

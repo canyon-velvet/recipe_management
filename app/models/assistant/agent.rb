@@ -19,6 +19,9 @@ module Assistant
     # Made once per reply: a tool can keep what it was asked, such as the recipes to show.
     def tools = @tools ||= build_tools
 
+    # What the tools have found during this reply, shared between them.
+    def turn = @turn ||= Turn.new
+
     def tool(name) = tools.find { |tool| tool.name == name }
 
     # What every request for this agent sends, apart from the conversation.

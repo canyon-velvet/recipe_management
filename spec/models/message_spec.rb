@@ -35,7 +35,8 @@ RSpec.describe Message do
 
       # The panel loads every message's cards in one go
       question = create(:message, conversation: conversation)
-      expect(count_queries { Message.load_recipes([ reply, question ], conversation.user) }).to eq 2 # recipes, tags
+      # recipes, tags, recipe_ingredients (and their ingredients, when there are any)
+      expect(count_queries { Message.load_recipes([ reply, question ], conversation.user) }).to eq 3
       expect(count_queries { expect([ reply.recipes, question.recipes ]).to eq [ [ noodles, tofu ], [] ] }).to eq 0
     end
   end

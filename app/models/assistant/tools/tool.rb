@@ -5,8 +5,10 @@ module Assistant
     #
     # A tool sets NAME and defines description, input_schema and execute(input). Any agent can use any tool.
     class Tool
-      def initialize(user)
+      # turn: what the reply's tools have found so far (see Turn), shared by all the agent's tools.
+      def initialize(user, turn)
         @user = user
+        @turn = turn
       end
 
       def name = self.class::NAME
