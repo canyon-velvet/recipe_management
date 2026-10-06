@@ -22,6 +22,7 @@ RSpec.describe Assistant::Tools::ShowRecipes do
   it "needs a why for every recipe" do
     recipe = create(:recipe, user: user)
     turn.found([ recipe ])
+    tool.call({ recipes: [ { id: recipe.id, why: "Quick." } ] })
 
     expect(tool.call({ recipes: [ { id: recipe.id, why: " " } ] })).to eq(error: "Give each recipe a short why.")
     expect(tool.call({ recipes: [ { id: recipe.id } ] })).to eq(error: "Give each recipe a short why.")

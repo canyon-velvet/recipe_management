@@ -49,7 +49,10 @@ module Assistant
 
       def execute(input)
         picks = Array(input[:recipes]).select { |pick| pick.is_a?(Hash) && pick[:id].is_a?(Integer) }
-        return { error: "Give each recipe a short why." } if picks.any? { |pick| pick[:why].to_s.strip.empty? }
+        if picks.any? { |pick| pick[:why].to_s.strip.empty? }
+          @cards = {} # the last call wins, even a failed one
+          return { error: "Give each recipe a short why." }
+        end
 
         ids = picks.map { |pick| pick[:id] }.uniq
         @cards = picks.select { |pick| @turn.found?(pick[:id]) }.to_h { |pick| [ pick[:id], pick[:why].to_s.strip ] }
