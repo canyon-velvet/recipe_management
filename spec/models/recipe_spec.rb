@@ -1,6 +1,18 @@
 require "rails_helper"
 
 RSpec.describe Recipe do
+  describe "#avoided_items" do
+    it "is the avoid list's items that its ingredients contain, ignoring case" do
+      recipe = create(:recipe)
+      [ "Peanut butter", "花生油", "Rice" ].each do |name|
+        recipe.recipe_ingredients.create!(ingredient: create(:ingredient, user: recipe.user, name: name))
+      end
+
+      expect(recipe.reload.avoided_items([ "PEANUT", "花生", "shrimp" ])).to eq [ "PEANUT", "花生" ]
+      expect(recipe.avoided_items([])).to eq []
+    end
+  end
+
   describe "servings and times" do
     it "fills a blank total from prep and cook time" do
       recipe = create(:recipe, prep_minutes: 15, cook_minutes: 30)

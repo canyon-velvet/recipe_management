@@ -1,7 +1,7 @@
 module Assistant
   module Tools
-    # Searches the user's recipes by tags, ingredients, time, servings and name. Recipes with an ingredient on the
-    # user's avoid list are never returned.
+    # Searches the user's recipes by tags, ingredients, time, servings and name. A recipe with an ingredient on the
+    # user's avoid list is still returned, with the avoided items flagged, so it can be recommended with a warning.
     class SearchRecipes < Tool
       NAME = "search_recipes"
       # Recipes one search returns at most: plenty to choose from without filling Claude's context.
@@ -9,8 +9,8 @@ module Assistant
 
       def description
         "Search the user's saved recipes. Every filter is optional, and a recipe must match all the ones given. " \
-          "Recipes with an ingredient on the user's avoid list are never returned. Returns at most #{LIMIT} " \
-          "recipes, most recently changed first, with their tags and ingredients."
+          "Returns at most #{LIMIT} recipes, most recently changed first, with their tags and ingredients. A " \
+          "recipe with an ingredient on the user's avoid list lists those items under \"avoided\"."
       end
 
       def input_schema
@@ -34,20 +34,25 @@ module Assistant
       private
 
       def execute(input)
-        recipes = @user.recipes.without_ingredients(@user.preferences.avoid.pluck(:value))
+        recipes = @user.recipes
         Array(input[:tags]).each { |key| recipes = recipes.tagged(key.to_s) }
         Array(input[:ingredients]).each { |text| recipes = recipes.with_ingredient(text.to_s) }
         recipes = recipes.where(total_minutes: ..input[:max_total_minutes]) if input[:max_total_minutes].is_a?(Integer)
         recipes = recipes.where(servings: input[:min_servings]..) if input[:min_servings].is_a?(Integer)
         recipes = recipes.search_by_name(input[:name].to_s)
 
-        found = recipes.includes(:tags, :ingredients).order(updated_at: :desc).limit(LIMIT + 1).to_a
-        { recipes: found.first(LIMIT).map { |recipe| summary(recipe) }, more: found.size > LIMIT }
+        found = recipes.includes(:tags, recipe_ingredients: :ingredient).order(updated_at: :desc)
+                       .limit(LIMIT + 1).to_a
+        returned = found.first(LIMIT)
+        @turn.found(returned)
+        avoid_list = @user.avoided_ingredients
+        { recipes: returned.map { |recipe| summary(recipe, avoid_list) }, more: found.size > LIMIT }
       end
 
-      def summary(recipe)
+      def summary(recipe, avoid_list)
         { id: recipe.id, name: recipe.name, tags: recipe.tags.map(&:key), total_minutes: recipe.total_minutes,
-          servings: recipe.servings, ingredients: recipe.ingredients.map(&:name) }
+          servings: recipe.servings, ingredients: recipe.recipe_ingredients.map { _1.ingredient.name },
+          avoided: recipe.avoided_items(avoid_list).presence }.compact
       end
     end
   end

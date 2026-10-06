@@ -284,6 +284,7 @@ zh-CN:
 
   assistant:
     close: "关闭助手"
+    contains_avoided: "⚠️ 含有%{items}"
     declined: "抱歉，这个我帮不上忙。"
     empty: "问我今晚做什么、冰箱里的食材能做什么，或者贴一个菜谱链接来导入。"
     failed: "抱歉，出了点问题，请再试一次。"
@@ -318,7 +319,7 @@ zh-CN:
         placeholder: "例如：香菜"
       avoid:
         title: "忌口"
-        hint: "绝不推荐，例如过敏的食物。请按菜谱里食材的写法填写，或中英文各加一条（例如：花生、peanut）。"
+        hint: "你要避开的食物，例如过敏的食物。助手推荐含有它们的菜谱时会特别标出。请按菜谱里食材的写法填写，或中英文各加一条（例如：花生、peanut）。"
         placeholder: "例如：花生"
       household:
         title: "家庭"

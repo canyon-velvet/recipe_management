@@ -46,10 +46,8 @@ class Recipe < ApplicationRecord
   }
   # Recipes with an ingredient whose name contains the text, e.g. "egg" finds "eggs" and "egg yolk".
   scope :with_ingredient, ->(text) { where(id: RecipeIngredient.named_like(text).select(:recipe_id)) }
-  # Recipes with none of the ingredients, matched the same way: the assistant's strict "avoid" preferences.
-  scope :without_ingredients, ->(texts) {
-    where.not(id: RecipeIngredient.named_like(*texts).select(:recipe_id)) if texts.any?
-  }
+  # What a card in the assistant's chat reads: the tags for its emoji, the ingredients for avoided items.
+  scope :for_cards, -> { includes(:tags, recipe_ingredients: :ingredient) }
 
   # Shown with a "new" badge in the form until the recipe saves.
   def new_source? = new_source_name.present? && (source.nil? || source.new_record?)
@@ -59,6 +57,14 @@ class Recipe < ApplicationRecord
   def card_icon
     with_icons = tags.select(&:icon)
     with_icons[id.to_i % with_icons.size].icon if with_icons.any?
+  end
+
+  # The items of a user's avoid list (see User#avoided_ingredients) that this recipe's ingredients contain, ignoring
+  # case: "peanut" matches "Peanut butter". Uses the loaded ingredients, so a list that includes
+  # recipe_ingredients: :ingredient adds no queries.
+  def avoided_items(avoid_list)
+    names = recipe_ingredients.map { |row| row.ingredient.name.downcase }
+    avoid_list.select { |item| names.any? { |name| name.include?(item.downcase) } }
   end
 
   private

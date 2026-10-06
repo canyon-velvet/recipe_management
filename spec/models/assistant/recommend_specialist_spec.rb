@@ -31,9 +31,10 @@ RSpec.describe Assistant::RecommendSpecialist do
     I18n.with_locale(:"zh-CN") { expect(specialist.system_prompt).to include("use 中文, the app's language.") }
   end
 
-  it "shows the recipes its show_recipes tool picked" do
+  it "shows the recipes its show_recipes tool picked from what its other tools found" do
     recipe = create(:recipe, user: user)
 
+    specialist.tool("search_recipes").call({})
     specialist.tool("show_recipes").call({ ids: [ recipe.id ] })
 
     expect(specialist.shown_recipe_ids).to eq [ recipe.id ]

@@ -1,5 +1,6 @@
 # A small fact about what a user eats, such as "vegetarian" (diet) or "peanuts" (avoid). The assistant reads them when
-# it recommends recipes: "avoid" is strict (never recommend a recipe with it), the rest are soft preferences.
+# it recommends recipes: a recipe with an "avoid" item is flagged with a warning, so the user decides; the rest are
+# soft preferences.
 class Preference < ApplicationRecord
   CATEGORIES = %w[diet likes dislikes avoid household].freeze
 

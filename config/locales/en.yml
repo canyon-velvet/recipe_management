@@ -286,6 +286,7 @@ en:
 
   assistant:
     close: "Close assistant"
+    contains_avoided: "⚠️ Contains %{items}"
     declined: "Sorry, I can't help with that one."
     empty: "Ask me what to cook tonight, what you can make with what's in the fridge, or paste a recipe link to import."
     failed: "Sorry, something went wrong. Please try again."
@@ -320,7 +321,7 @@ en:
         placeholder: "e.g. cilantro"
       avoid:
         title: "Avoid"
-        hint: "Never recommended, for example an allergy. Write it as your recipes name the ingredient, or add it in both languages (e.g. peanut, 花生)."
+        hint: "Things you avoid, for example an allergy. Recipes with them are flagged when the assistant recommends them. Write it as your recipes name the ingredient, or add it in both languages (e.g. peanut, 花生)."
         placeholder: "e.g. peanuts"
       household:
         title: "Household"

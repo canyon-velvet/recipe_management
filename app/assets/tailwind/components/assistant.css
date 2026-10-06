@@ -88,6 +88,10 @@
   .assistant-recipe-facts {
     @apply block text-xs text-gray-500;
   }
+  /* The recipe has something the user avoids */
+  .assistant-recipe-warning {
+    @apply mt-0.5 block text-xs font-semibold text-red-700;
+  }
 
   .assistant-form {
     @apply flex flex-none items-end gap-2 border-t border-gray-200 p-3;

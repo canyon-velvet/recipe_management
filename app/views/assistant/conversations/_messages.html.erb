@@ -5,6 +5,7 @@
   <p class="assistant-empty"><%= t("assistant.empty") %></p>
   <% if conversation %>
     <% messages = Message.load_recipes(conversation.recent_messages(50), conversation.user) %>
-    <%= render partial: "assistant/messages/message", collection: messages, as: :message %>
+    <%= render partial: "assistant/messages/message", collection: messages, as: :message,
+               locals: { avoided: conversation.user.avoided_ingredients } %>
   <% end %>
 </div>
