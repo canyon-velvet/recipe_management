@@ -10,6 +10,25 @@ RSpec.describe Message do
     expect(build(:message, role: "assistant", content: "", status: "pending")).to be_valid
   end
 
+  it "only takes the known agents" do
+    expect(build(:message, role: "assistant", agent: "chef")).not_to be_valid
+    expect(build(:message, role: "assistant", agent: "recommend")).to be_valid
+  end
+
+  describe "#recipes" do
+    it "is the recipes shown under the reply, in the order shown, leaving out deleted ones and other users'" do
+      conversation = create(:conversation)
+      tofu, noodles, deleted = create_list(:recipe, 3, user: conversation.user)
+      someone_elses = create(:recipe)
+      reply = create(:message, conversation: conversation, role: "assistant",
+                               recipe_ids: [ noodles.id, deleted.id, someone_elses.id, tofu.id ])
+      deleted.destroy!
+
+      expect(reply.recipes).to eq [ noodles, tofu ]
+      expect(create(:message, conversation: conversation).recipes).to eq []
+    end
+  end
+
   describe "database constraints" do
     let(:conversation) { create(:conversation) }
 
@@ -21,6 +40,11 @@ RSpec.describe Message do
     it "rejects an unknown status" do
       expect { Message.insert_all!([ { conversation_id: conversation.id, role: "user", status: "lost" } ]) }
         .to raise_error(ActiveRecord::StatementInvalid, /messages_status_known/)
+    end
+
+    it "rejects an unknown agent" do
+      expect { Message.insert_all!([ { conversation_id: conversation.id, role: "assistant", agent: "chef" } ]) }
+        .to raise_error(ActiveRecord::StatementInvalid, /messages_agent_known/)
     end
   end
 end

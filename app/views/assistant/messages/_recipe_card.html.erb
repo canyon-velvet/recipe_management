@@ -1,0 +1,19 @@
+<%# locals: (recipe:) %>
+<%# A recipe the assistant recommends: its emoji, name, total time and servings, linking to the recipe. %>
+<% facts = [ (duration_label(recipe.total_minutes) if recipe.total_minutes),
+             (t("assistant.servings", count: recipe.servings) if recipe.servings) ].compact %>
+<%= link_to recipe_path(recipe), class: "assistant-recipe" do %>
+  <span class="assistant-recipe-icon" aria-hidden="true">
+    <% if (icon = recipe.card_icon) %>
+      <%= icon %>
+    <% else %>
+      <%= image_tag "icons/recipe-placeholder.svg", alt: "", class: "h-6 w-6" %>
+    <% end %>
+  </span>
+  <span class="min-w-0">
+    <span class="assistant-recipe-name"><%= recipe.name %></span>
+    <% if facts.any? %>
+      <span class="assistant-recipe-facts"><%= facts.join(" · ") %></span>
+    <% end %>
+  </span>
+<% end %>

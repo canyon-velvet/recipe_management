@@ -10,6 +10,15 @@ class Message < ApplicationRecord
 
   enum :role, { user: "user", assistant: "assistant" }, validate: true
   enum :status, { pending: "pending", done: "done", failed: "failed" }, validate: true
+  # Who wrote a reply: the router, or the specialist it handed the message to.
+  enum :agent, { router: "router", recommend: "recommend" }, validate: { allow_nil: true }
 
   validates :content, presence: true, length: { maximum: MAX_LENGTH }, if: :user?
+
+  # The recipes shown as cards under a reply, in the order shown. Ones deleted since are left out.
+  def recipes
+    return [] if recipe_ids.empty?
+
+    conversation.user.recipes.includes(:tags).where(id: recipe_ids).sort_by { |recipe| recipe_ids.index(recipe.id) }
+  end
 end

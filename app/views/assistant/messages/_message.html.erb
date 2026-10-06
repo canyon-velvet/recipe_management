@@ -1,15 +1,26 @@
-<%# locals: (message:) %>
-<%# A reply is pending while it's written: "Thinking…" until the first words arrive, then the text so far. aria-busy
-    keeps screen readers from announcing every streamed update. %>
+<%# locals: (message:, activity: nil) %>
+<%# A reply is pending while it's written: "Thinking…" until the first words arrive, then the text so far, plus what
+    the assistant is doing between words (activity, e.g. searching recipes). aria-busy keeps screen readers from
+    announcing every streamed update. Recipes it recommends follow as cards. %>
 <div id="<%= dom_id(message) %>" class="assistant-message assistant-message--<%= message.role %>"
      data-assistant-panel-target="message" aria-busy="<%= message.pending? %>">
-  <% if message.pending? && message.content.blank? %>
-    <span class="assistant-thinking"><%= t("assistant.thinking") %></span>
-  <% elsif message.failed? %>
+  <% if message.failed? %>
     <span class="error-text"><%= t("assistant.failed") %></span>
   <% elsif message.user? %>
     <%= simple_format(message.content, {}, wrapper_tag: "p") %>
   <% else %>
-    <div class="prose prose-sm max-w-none"><%= render_markdown(message.content) %></div>
+    <% if message.content.present? %>
+      <div class="prose prose-sm max-w-none"><%= render_markdown(message.content) %></div>
+    <% end %>
+    <% if message.pending? && (activity || message.content.blank?) %>
+      <span class="assistant-thinking"><%= activity || t("assistant.thinking") %></span>
+    <% end %>
+    <% if (recipes = message.recipes).any? %>
+      <ul class="assistant-recipes">
+        <% recipes.each do |recipe| %>
+          <li><%= render "assistant/messages/recipe_card", recipe: recipe %></li>
+        <% end %>
+      </ul>
+    <% end %>
   <% end %>
 </div>

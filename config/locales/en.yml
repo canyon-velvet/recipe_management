@@ -293,7 +293,9 @@ en:
     new_chat: "New chat"
     open: "Open assistant"
     placeholder: "Ask about recipes…"
+    searching: "Searching your recipes…"
     send: "Send"
+    servings: "Serves %{count}"
     thinking: "Thinking…"
     title: "Assistant"
 
@@ -318,7 +320,7 @@ en:
         placeholder: "e.g. cilantro"
       avoid:
         title: "Avoid"
-        hint: "Never recommended, for example an allergy."
+        hint: "Never recommended, for example an allergy. Write it as your recipes name the ingredient, or add it in both languages (e.g. peanut, 花生)."
         placeholder: "e.g. peanuts"
       household:
         title: "Household"

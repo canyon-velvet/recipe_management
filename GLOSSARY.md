@@ -50,6 +50,10 @@ _Avoid_: Chatbot, bot, AI
 One chat between a user and the assistant, made of messages from both. The panel shows the newest; "New chat" starts another.
 _Avoid_: Thread, session, chat log
 
+**Specialist**:
+The part of the assistant that handles one kind of request, such as recommending recipes. The assistant hands a message to a specialist when it needs one, and keeps the follow-ups with it.
+_Avoid_: Sub-agent, bot
+
 **Preference**:
 A short fact about what a user eats, in one of five categories: diet, likes, dislikes, avoid, or household (who they cook for). The assistant follows preferences when it recommends recipes. "Avoid" is strict: a recipe containing it is never recommended.
 _Avoid_: Profile, setting, restriction

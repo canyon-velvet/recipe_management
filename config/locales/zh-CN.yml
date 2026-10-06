@@ -291,7 +291,9 @@ zh-CN:
     new_chat: "新对话"
     open: "打开助手"
     placeholder: "问问菜谱…"
+    searching: "正在查找你的菜谱…"
     send: "发送"
+    servings: "%{count} 人份"
     thinking: "思考中…"
     title: "助手"
 
@@ -316,7 +318,7 @@ zh-CN:
         placeholder: "例如：香菜"
       avoid:
         title: "忌口"
-        hint: "绝不推荐，例如过敏的食物。"
+        hint: "绝不推荐，例如过敏的食物。请按菜谱里食材的写法填写，或中英文各加一条（例如：花生、peanut）。"
         placeholder: "例如：花生"
       household:
         title: "家庭"
