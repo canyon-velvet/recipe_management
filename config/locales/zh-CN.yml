@@ -34,6 +34,7 @@ zh-CN:
     meal: "餐点"
     cuisine: "菜系"
     diet: "饮食"
+    flavor: "口味"
     convenience: "便捷"
 
   tags:
@@ -54,6 +55,7 @@ zh-CN:
     vegetarian: "素食"
     vegan: "纯素"
     gluten_free: "无麸质"
+    spicy: "辣"
     quick: "快手菜"
     kid_friendly: "儿童友好"
     make_ahead: "可提前准备"
