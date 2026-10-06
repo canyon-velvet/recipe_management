@@ -41,9 +41,10 @@ RSpec.describe "Preferences", type: :request do
   end
 
   it "shows the usual error, not a crash, when another tab saved the same fact first" do
-    allow_any_instance_of(Preference).to receive(:save) do
-      create(:preference, user: user, category: "avoid", value: "peanuts") # the other tab wins the race
-      raise ActiveRecord::RecordNotUnique
+    # The other tab wins the race after this request's validation passed; the real insert then hits the unique index.
+    allow_any_instance_of(Preference).to receive(:save).and_wrap_original do |save, *|
+      create(:preference, user: user, category: "avoid", value: "peanuts")
+      save.call(validate: false)
     end
 
     post preferences_path, params: { preference: { category: "avoid", value: "Peanuts" } }

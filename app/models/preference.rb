@@ -15,6 +15,16 @@ class Preference < ApplicationRecord
 
   scope :ordered, -> { order(:created_at, :id) }
 
+  # Like save, but when two requests add the same fact at once and the unique index stops the second, it gets the
+  # usual "already listed" error instead of an exception.
+  def save_once
+    save
+  rescue ActiveRecord::RecordNotUnique
+    valid?
+    errors.add(:value, :taken) if errors.empty? # the other row was removed again before the re-check
+    false
+  end
+
   private
 
   # A household is one fact, e.g. "4 people".

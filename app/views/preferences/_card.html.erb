@@ -13,7 +13,9 @@
         <% preferences.each do |preference| %>
           <li class="preference-chip">
             <span><%= preference.value %></span>
+            <%# With the household box hidden, the keyboard goes to its fact's remove button instead. %>
             <%= button_to "×", preference_path(preference), method: :delete, class: "preference-remove",
+                          autofocus: (focus && category == "household"),
                           "aria-label": t("preferences.remove", value: preference.value) %>
           </li>
         <% end %>

@@ -21,8 +21,9 @@ RSpec.describe "Preferences", type: :system do
       fill_in "Household", with: "2 adults and a toddler"
       click_button "Add"
       expect(page).to have_css(".preference-chip", text: "2 adults and a toddler")
-      # One household fact: the box hides until it's removed
+      # One household fact: the box hides until it's removed, and the keyboard goes to the fact's remove button
       expect(page).to have_no_field("Household")
+      expect(page).to have_css(".preference-remove:focus")
 
       click_button "Remove 2 adults and a toddler"
       expect(page).to have_no_css(".preference-chip")
