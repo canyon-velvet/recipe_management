@@ -4,7 +4,8 @@ module Assistant
   class Router < Agent
     MODEL = "claude-haiku-4-5"
     NAME = "router"
-    # Adding a specialist here gives the router its transfer tool.
+    # Adding a specialist here gives the router its transfer tool. A specialist sets TITLE and HANDLES (when to hand
+    # over) for it, and its NAME must be one of Message's agents (with the messages_agent_known check constraint).
     SPECIALISTS = [ RecommendSpecialist ].freeze
 
     PROMPT = <<~PROMPT.freeze
@@ -30,12 +31,16 @@ module Assistant
       @last_agent = last_agent
     end
 
+    # The instructions, when to call each transfer tool, and which specialist to keep follow-ups with.
     def system_prompt
+      handoffs = SPECIALISTS.map { |specialist| "- transfer_to_#{specialist::NAME}: the #{specialist::TITLE} " \
+                                                "specialist #{specialist::HANDLES}." }
+      prompt = "#{PROMPT}\nYour transfer tools:\n#{handoffs.join("\n")}\n"
       pinned = SPECIALISTS.find { |specialist| specialist::NAME == @last_agent }
-      return PROMPT unless pinned
+      return prompt unless pinned
 
-      "#{PROMPT}\nThe last reply in this chat came from the #{pinned::TITLE} specialist. If the user's latest " \
-        "message follows up on it (for example \"anything quicker?\" or \"what about the second one?\"), call " \
+      "#{prompt}\nThe last reply in this chat came from the #{pinned::TITLE} specialist. If the user's latest " \
+        "message follows up on it (for example \"anything quicker?\" or \"how spicy is the second one?\"), call " \
         "transfer_to_#{pinned::NAME}.\n"
     end
 

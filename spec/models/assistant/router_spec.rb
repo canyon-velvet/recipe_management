@@ -19,7 +19,14 @@ RSpec.describe Assistant::Router do
                      "tonight, something with eggs, a quick dinner, a dish for guests.",
         input_schema: { type: "object", properties: {} } }
     ]
-    expect(router.system_prompt).to include("language of the user's latest message", "can't take actions in the app yet")
+    expect(router.system_prompt).to include(
+      "language of the user's latest message", "can't take actions in the app yet",
+      "- transfer_to_recommend: the Recommend specialist searches the user's saved recipes"
+    )
+  end
+
+  it "only hands over to specialists a reply can record as its writer" do
+    expect(Message.agents.keys).to include(*described_class::SPECIALISTS.map { _1::NAME })
   end
 
   it "keeps follow-ups with the specialist that wrote the last reply" do

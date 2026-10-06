@@ -33,7 +33,7 @@ class Message < ApplicationRecord
 
   # Replaces the message in the user's open panel (any page, any tab) with its current state, and what the assistant
   # is doing while it isn't writing, such as searching recipes.
-  def broadcast_update(activity: nil)
+  def broadcast_to_panel(activity: nil)
     Turbo::StreamsChannel.broadcast_replace_to(
       [ conversation.user, :assistant ], target: self,
       partial: "assistant/messages/message", locals: { message: self, activity: activity }

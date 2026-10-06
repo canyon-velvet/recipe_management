@@ -29,7 +29,7 @@ class WriteReplyService
       agent = specialist.new(conversation.user)
       @run.update!(model: agent.model)
       # Anything the router wrote before handing over is dropped, and the panel goes back to "Thinking…".
-      @reply.tap { _1.content = "" }.broadcast_update
+      @reply.tap { _1.content = "" }.broadcast_to_panel
       responses = run(agent)
     end
     save(agent, responses)
@@ -45,13 +45,14 @@ class WriteReplyService
 
   def client = @client ||= Anthropic::Client.new(api_key: CleanRecipeService.api_key)
 
+  # Runs the agent's turn. The reply records who wrote it, even if it fails.
   def run(agent)
+    @reply.agent = agent.name
     context = @context ||= @reply.conversation.context(CONTEXT_MESSAGES + 1)
     RunAgentService.new(agent, reply: @reply, run: @run, context: context, client: client).call
   end
 
   def save(agent, responses)
-    @reply.agent = agent.name
     text = responses.map { |response| final_text(response) }.compact_blank.join("\n\n")
 
     if responses.last.stop_reason == :refusal
@@ -77,13 +78,13 @@ class WriteReplyService
 
   def finish(content)
     @reply.update!(content: content, status: :done)
-    @reply.broadcast_update
+    @reply.broadcast_to_panel
   end
 
   def fail_reply(error)
     message = error.is_a?(Exception) ? "#{error.class}: #{error.message}" : error
     @reply.update!(status: :failed)
     @run&.fail!(message)
-    @reply.broadcast_update
+    @reply.broadcast_to_panel
   end
 end

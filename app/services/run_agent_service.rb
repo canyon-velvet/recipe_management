@@ -60,7 +60,7 @@ class RunAgentService
       next if now - last_broadcast < BROADCAST_INTERVAL
 
       last_broadcast = now
-      @reply.tap { _1.content = @text }.broadcast_update
+      @reply.tap { _1.content = @text }.broadcast_to_panel
     end
     stream.accumulated_message.tap { |message| step.succeed!(message.usage) }
   end
@@ -69,7 +69,7 @@ class RunAgentService
   def run_tool(tool_use, over_limit:)
     tool = @agent.tool(tool_use.name)
     step = @run.steps.create!(name: tool_use.name, input: tool_use.input)
-    @reply.tap { _1.content = @text }.broadcast_update(activity: tool&.activity)
+    @reply.tap { _1.content = @text }.broadcast_to_panel(activity: tool&.activity)
     result =
       if over_limit
         { error: "You've used all #{MAX_TOOL_CALLS} tool calls for this reply. Answer with what you have." }
