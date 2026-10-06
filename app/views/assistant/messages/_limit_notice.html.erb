@@ -1,0 +1,4 @@
+<%# The fixed id makes Turbo replace an earlier notice instead of stacking another on each blocked send. %>
+<p id="assistant_limit_notice" class="assistant-notice" role="status">
+  <%= t("assistant.limit_reached", count: Message::DAILY_LIMIT) %>
+</p>

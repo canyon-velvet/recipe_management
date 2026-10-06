@@ -101,6 +101,23 @@ RSpec.describe "Assistant panel", type: :system do
     end
   end
 
+  it "shows the daily limit notice and keeps what was typed" do
+    conversation = user.current_conversation!
+    Message::DAILY_LIMIT.times { conversation.messages.create!(role: :user, content: "Hi") }
+    log_in_as user
+    click_button "Open assistant"
+
+    fill_in "Ask about recipes…", with: "One more?"
+    find_field("Ask about recipes…").send_keys(:enter)
+
+    expect(page).to have_css(".assistant-notice", text: "today's 50 messages")
+    expect(page).to have_field("Ask about recipes…", with: "One more?")
+
+    # Trying again moves the notice rather than stacking another
+    find_field("Ask about recipes…").send_keys(:enter)
+    expect(page).to have_css(".assistant-notice", count: 1)
+  end
+
   it "sends on Enter but adds a line on Shift+Enter" do
     log_in_as user
     click_button "Open assistant"

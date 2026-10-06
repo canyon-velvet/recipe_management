@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_06_152054) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_06_155143) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -207,6 +207,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_152054) do
     t.index ["user_id"], name: "index_sources_on_user_id"
   end
 
+  create_table "steps", force: :cascade do |t|
+    t.bigint "run_id", null: false
+    t.string "name", null: false
+    t.string "model"
+    t.integer "input_tokens"
+    t.integer "output_tokens"
+    t.string "error"
+    t.datetime "finished_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["run_id"], name: "index_steps_on_run_id"
+  end
+
   create_table "tags", force: :cascade do |t|
     t.string "key", null: false
     t.string "kind", null: false
@@ -248,4 +261,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_152054) do
   add_foreign_key "recipes", "users"
   add_foreign_key "runs", "messages"
   add_foreign_key "sources", "users"
+  add_foreign_key "steps", "runs"
 end
