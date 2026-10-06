@@ -25,6 +25,21 @@ RSpec.describe Conversation do
     end
   end
 
+  describe "the daily limit" do
+    it "counts only what the user sent today, across conversations" do
+      first = user.current_conversation!
+      second = user.conversations.create!
+      travel_to(1.day.ago) { 5.times { first.messages.create!(role: :user, content: "Yesterday") } }
+      (Message::DAILY_LIMIT - 1).times { |i| [ first, second ][i % 2].messages.create!(role: :user, content: "Hi") }
+      first.messages.create!(role: :assistant, content: "Replies don't count")
+
+      expect(user.assistant_limit_reached?).to be false
+
+      second.messages.create!(role: :user, content: "The last one")
+      expect(user.assistant_limit_reached?).to be true
+    end
+  end
+
   describe "the user's current conversation" do
     it "is the newest one, started with the first message" do
       expect(user.current_conversation).to be_nil

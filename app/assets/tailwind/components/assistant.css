@@ -63,6 +63,10 @@
   .assistant-message--assistant {
     @apply self-start border border-gray-200 bg-white text-gray-800;
   }
+  /* A note from the app in the chat, not a message (e.g. the daily limit) */
+  .assistant-notice {
+    @apply self-center px-3 text-center text-xs text-gray-500;
+  }
   .assistant-thinking {
     @apply italic text-gray-500 animate-pulse;
   }

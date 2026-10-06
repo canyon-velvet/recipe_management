@@ -2,6 +2,8 @@
 class Message < ApplicationRecord
   # Long enough for a recipe pasted in to import; the assistant only needs the last few messages' worth.
   MAX_LENGTH = 4_000
+  # How many messages a user can send the assistant per day (UTC). Each costs a Claude call.
+  DAILY_LIMIT = 50
 
   belongs_to :conversation
   has_one :run, dependent: :destroy

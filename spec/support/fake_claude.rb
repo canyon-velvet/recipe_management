@@ -1,29 +1,22 @@
-# Stands in for Anthropic::Client in specs, so no real Claude calls are made. client.beta.messages.stream(**params)
+# Stands in for Anthropic::Client in specs, so no real Claude calls are made. client.messages.stream(**params)
 # records the request and returns a stream that yields the given text pieces (optionally slowly, or raising part-way),
-# then reports the finished message like the SDK's MessageStream: stop reason, content blocks, model and token usage.
-#
-# fallback_at: n simulates a server-side fallback: the first n pieces came from the model that declined part-way, the
-# rest from fallback_model, with a fallback block between them.
+# then reports the finished message like the SDK's MessageStream: stop reason, content blocks and token usage.
 class FakeClaude
   Usage = Data.define(:input_tokens, :output_tokens)
   StopDetails = Data.define(:category)
   Block = Data.define(:type, :text)
-  Reply = Data.define(:stop_reason, :stop_details, :usage, :model, :content)
+  Reply = Data.define(:stop_reason, :stop_details, :usage, :content)
 
   attr_reader :requests
 
-  def initialize(deltas = [], stop_reason: :end_turn, error: nil, delay: 0, fallback_at: nil,
-                 fallback_model: "claude-opus-5-5")
+  def initialize(deltas = [], stop_reason: :end_turn, error: nil, delay: 0)
     @deltas = deltas
     @stop_reason = stop_reason
     @error = error
     @delay = delay
-    @fallback_at = fallback_at
-    @fallback_model = fallback_model
     @requests = []
   end
 
-  def beta = self
   def messages = self
 
   def stream(**params)
@@ -44,17 +37,7 @@ class FakeClaude
   def accumulated_message
     stop_details = StopDetails.new(category: :cyber) if @stop_reason == :refusal
     Reply.new(stop_reason: @stop_reason, stop_details: stop_details,
-              usage: Usage.new(input_tokens: 120, output_tokens: @deltas.size), model: model, content: content)
-  end
-
-  private
-
-  def model = @fallback_at ? @fallback_model : @requests.last&.fetch(:model)
-
-  def content
-    return [ Block.new(type: :text, text: @deltas.join) ] unless @fallback_at
-
-    [ Block.new(type: :text, text: @deltas.first(@fallback_at).join), Block.new(type: :fallback, text: nil),
-      Block.new(type: :text, text: @deltas.drop(@fallback_at).join) ]
+              usage: Usage.new(input_tokens: 120, output_tokens: @deltas.size),
+              content: [ Block.new(type: :text, text: @deltas.join) ])
   end
 end

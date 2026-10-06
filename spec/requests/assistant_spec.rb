@@ -43,6 +43,18 @@ RSpec.describe "Assistant panel", type: :request do
       expect(WriteReplyJob).to have_been_enqueued.with(reply, "en")
     end
 
+    it "stops at the daily limit with a notice, without saving or calling Claude" do
+      conversation = user.current_conversation!
+      Message::DAILY_LIMIT.times { conversation.messages.create!(role: :user, content: "Hi") }
+
+      expect { post assistant_messages_path, params: { message: { content: "One more?" } }, headers: turbo_stream }
+        .not_to change(Message, :count)
+
+      expect(response).to have_http_status(:too_many_requests)
+      expect(response.body).to include('target="assistant_messages"', "today&#39;s 50 messages")
+      expect(WriteReplyJob).not_to have_been_enqueued
+    end
+
     it "rejects a blank message" do
       post assistant_messages_path, params: { message: { content: " " } }, headers: turbo_stream
 

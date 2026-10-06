@@ -1,9 +1,12 @@
-# Writes the assistant's pending reply (WriteReplyJob runs this in the background): sends the conversation so far to
-# Claude, streams the answer into the user's open panel as it's written, then saves it. Each attempt is recorded as a
-# Run with its token usage. If Claude fails, the reply is marked failed so the panel shows an error instead of
-# "Thinking…" forever.
+# Writes the assistant's pending reply (WriteReplyJob runs this in the background): the router (Haiku) reads the
+# conversation so far and answers, streamed into the user's open panel as it's written, then the reply is saved.
+# Each attempt is recorded as a Run, and each model call in it as a Step, with token usage. If Claude fails, the reply
+# is marked failed so the panel shows an error instead of "Thinking…" forever.
+#
+# The router answers general and cooking questions itself; it gets hand-off tools as the Recommend and Import
+# specialists arrive.
 class WriteReplyService
-  MODEL = "claude-sonnet-5-5"
+  MODEL = "claude-haiku-4-5"
   # Plenty for a chat answer; a reply that hits it is cut off rather than failing.
   MAX_TOKENS = 8_000
   # How much of the conversation Claude reads.
@@ -21,6 +24,9 @@ class WriteReplyService
 
     You can't see the user's saved recipes, meal plans or grocery lists yet. Never claim a recipe is in their
     collection; you can suggest dishes in general and say that searching their own recipes is coming soon.
+
+    You can't take actions in the app yet, such as importing a recipe link, saving a recipe or changing a meal plan.
+    Never say you did; point the user to the app instead (for a link, the Import recipe button on All Recipes).
   PROMPT
 
   def initialize(reply, client: nil)
@@ -32,13 +38,16 @@ class WriteReplyService
     return unless @reply.pending?
     # A pending reply that already has a run was interrupted: Sidekiq re-queues a job it kills on shutdown, and the
     # kill skips the rescues below. Ending it as failed beats "Thinking…" forever; the user can ask again.
-    return fail_reply(@reply.run, "interrupted") if @reply.run
+    if @reply.run
+      @step = @reply.run.steps.last
+      return fail_reply(@reply.run, "interrupted")
+    end
 
     run = @reply.create_run!(model: MODEL)
+    @step = run.steps.create!(name: "router", model: MODEL)
     message = stream_reply
-    # A fallback model may have answered instead; record which one did.
-    run.update!(model: message.model.to_s) if message.model.present?
-    text = final_text(message)
+    @step.succeed!(message.usage)
+    text = message.content.select { |block| block.type == :text }.map(&:text).join
 
     if message.stop_reason == :refusal
       finish(I18n.t("assistant.declined"))
@@ -66,12 +75,7 @@ class WriteReplyService
   def stream_reply
     @text = +""
     last_broadcast = 0
-    stream = client.beta.messages.stream(
-      model: MODEL, max_tokens: MAX_TOKENS, system_: SYSTEM_PROMPT, messages: history,
-      output_config: { effort: :low },
-      # If the model declines, the API retries on a suitable fallback model within the same call.
-      betas: [ "server-side-fallback-2026-07-01" ], fallbacks: :default
-    )
+    stream = client.messages.stream(model: MODEL, max_tokens: MAX_TOKENS, system_: SYSTEM_PROMPT, messages: history)
     stream.text.each do |delta|
       @text << delta
       now = Process.clock_gettime(Process::CLOCK_MONOTONIC)
@@ -81,14 +85,6 @@ class WriteReplyService
       broadcast(@reply.tap { _1.content = @text })
     end
     stream.accumulated_message
-  end
-
-  # The reply's text. If the model declined part-way and a fallback model took over, only the fallback's answer
-  # counts: the text before the last fallback block was abandoned.
-  def final_text(message)
-    blocks = message.content
-    last_fallback = blocks.rindex { |block| block.type == :fallback }
-    blocks.drop(last_fallback ? last_fallback + 1 : 0).select { |block| block.type == :text }.map(&:text).join
   end
 
   # The recent finished messages, oldest first, starting with one of the user's (the API requires that). Empty
@@ -106,8 +102,10 @@ class WriteReplyService
   end
 
   def fail_reply(run, error)
+    message = error.is_a?(Exception) ? "#{error.class}: #{error.message}" : error
     @reply.update!(status: :failed)
-    run&.fail!(error.is_a?(Exception) ? "#{error.class}: #{error.message}" : error)
+    @step.fail!(message) if @step && !@step.finished?
+    run&.fail!(message)
     broadcast(@reply)
   end
 

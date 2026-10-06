@@ -6,18 +6,21 @@ RSpec.describe WriteReplyService do
 
   def write(client) = described_class.new(reply, client: client).call
 
-  it "streams the reply, saves it and records the run" do
+  it "streams the reply, saves it and records the run and the router's step" do
     client = FakeClaude.new([ "Try ", "a **tomato ", "and egg** stir-fry." ])
 
     write(client)
 
     expect(reply.reload).to have_attributes(status: "done", content: "Try a **tomato and egg** stir-fry.")
-    expect(reply.run).to have_attributes(status: "succeeded", model: "claude-sonnet-5-5", input_tokens: 120,
+    expect(reply.run).to have_attributes(status: "succeeded", model: "claude-haiku-4-5", input_tokens: 120,
                                          output_tokens: 3, error: nil)
     expect(reply.run.finished_at).to be_present
+    expect(reply.run.steps.sole).to have_attributes(name: "router", model: "claude-haiku-4-5", input_tokens: 120,
+                                                    output_tokens: 3, error: nil)
+    expect(reply.run.steps.sole.finished_at).to be_present
   end
 
-  it "sends the recent finished messages, starting with the user's, with low effort and refusal fallbacks" do
+  it "sends the recent finished messages, starting with the user's, to the router" do
     earlier = conversation.ask("Hi").last
     earlier.update!(content: "Hello! What are we cooking?", status: :done)
     failed = conversation.ask("Anything?").last
@@ -33,8 +36,8 @@ RSpec.describe WriteReplyService do
       { role: "user", content: "Anything?" },
       { role: "user", content: "What can I make with eggs?" }
     ]
-    expect(request).to include(model: "claude-sonnet-5-5", output_config: { effort: :low }, fallbacks: :default)
-    expect(request[:system_]).to include("language of the user's latest message")
+    expect(request[:model]).to eq "claude-haiku-4-5"
+    expect(request[:system_]).to include("language of the user's latest message", "can't take actions in the app yet")
   end
 
   it "reads only the last messages of a long chat" do
@@ -64,21 +67,16 @@ RSpec.describe WriteReplyService do
     write(FakeClaude.new([ "Try " ], error: error))
 
     expect(reply.reload.status).to eq "failed"
-    expect(reply.run).to have_attributes(status: "failed", error: "Anthropic::Errors::APIConnectionError: Connection error.")
+    error = "Anthropic::Errors::APIConnectionError: Connection error."
+    expect(reply.run).to have_attributes(status: "failed", error: error)
+    expect(reply.run.steps.sole).to have_attributes(error: error, finished_at: be_present)
   end
 
-  it "says it can't help when every model declines" do
+  it "says it can't help when the model declines" do
     write(FakeClaude.new([], stop_reason: :refusal))
 
     expect(reply.reload).to have_attributes(status: "done", content: "Sorry, I can't help with that one.")
     expect(reply.run).to have_attributes(status: "failed", error: "refusal: cyber")
-  end
-
-  it "keeps only the fallback model's answer when the first model declined part-way, and records who answered" do
-    write(FakeClaude.new([ "Sure, here is how to ", "Here is a safe answer." ], fallback_at: 1))
-
-    expect(reply.reload.content).to eq "Here is a safe answer."
-    expect(reply.run).to have_attributes(status: "succeeded", model: "claude-opus-5-5")
   end
 
   it "fails an empty reply instead of saving it, and never sends an empty message back" do
@@ -106,6 +104,7 @@ RSpec.describe WriteReplyService do
     expect(client.requests).to be_empty
     expect(reply.reload.status).to eq "failed"
     expect(reply.run).to have_attributes(status: "failed", error: "interrupted")
+    expect(reply.run.steps.sole).to have_attributes(error: "interrupted", finished_at: be_present)
   end
 
   it "leaves a reply that's already written alone" do
