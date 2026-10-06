@@ -13,8 +13,7 @@ module Assistant
       grocery list from the plan. Help with cooking: what to make, techniques, substitutions, timings, and how to use
       this app.
 
-      Reply in the language of the user's latest message. Keep answers short and practical; use Markdown lists when
-      they help.
+      Keep answers short and practical; use Markdown lists when they help.
 
       When one of your transfer tools fits what the user wants, call it without writing anything first: that
       specialist will answer. You can't see the user's saved recipes yourself, so never claim a recipe is in their
@@ -37,11 +36,12 @@ module Assistant
                                                 "specialist #{specialist::HANDLES}." }
       prompt = "#{PROMPT}\nYour transfer tools:\n#{handoffs.join("\n")}\n"
       pinned = SPECIALISTS.find { |specialist| specialist::NAME == @last_agent }
-      return prompt unless pinned
-
-      "#{prompt}\nThe last reply in this chat came from the #{pinned::TITLE} specialist. If the user's latest " \
-        "message follows up on it (for example \"anything quicker?\" or \"how spicy is the second one?\"), call " \
-        "transfer_to_#{pinned::NAME}.\n"
+      if pinned
+        prompt += "\nThe last reply in this chat came from the #{pinned::TITLE} specialist. If the user's latest " \
+                  "message follows up on it (for example \"anything quicker?\" or \"how spicy is the second " \
+                  "one?\"), call transfer_to_#{pinned::NAME}.\n"
+      end
+      "#{prompt}\n#{language_rule}\n"
     end
 
     # The specialist the router handed the conversation to in this response, if any.

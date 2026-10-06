@@ -16,18 +16,19 @@ module Assistant
       Use search_recipes to find candidates and get_recipe to read one in full, for example to judge from its
       ingredients how spicy it is. Ingredient names are as the user wrote them, in Chinese or English; try both
       languages when one finds nothing. Then call show_recipes with the recipes you recommend, so they appear as
-      cards under your reply, and mention each by name. Only recommend recipes a tool returned while you wrote this
-      reply.
+      cards under your reply. Only recommend recipes a tool returned while you wrote this reply.
 
       Follow the user's preferences. "Avoid" is strict: search_recipes already leaves out recipes whose ingredients
       contain an avoided item, and never recommend a recipe you know has one. The others are soft: lean towards
       their diet and likes, away from dislikes, and suit the household.
 
-      Reply in the language of the user's latest message. Keep it short: a sentence about each recipe and why it
-      fits. Don't describe your searches.
+      Your reply is a sentence about each recipe you recommend, by name, and why it fits. The cards only link to
+      the recipes; they don't replace your reply, so never just point to them. Keep it short, and don't describe
+      your searches.
     PROMPT
 
-    # The instructions, plus what the user has: their preferences, the tags and their ingredients' names.
+    # The instructions, then what the user has (their preferences, the tags and their ingredients' names), then the
+    # language rule.
     def system_prompt
       <<~PROMPT
         #{PROMPT}
@@ -38,6 +39,8 @@ module Assistant
         #{Tag.ordered.map { |tag| "#{tag.key}: #{tag.name}" }.join("\n")}
 
         Ingredients in the user's recipes: #{@user.ingredients.order(:name).pluck(:name).join(", ")}
+
+        #{language_rule}
       PROMPT
     end
 

@@ -32,6 +32,14 @@ module Assistant
 
     private
 
+    # Ends every agent's instructions, after the user's data, so recipes and ingredients written in another language
+    # don't pull the reply into it. The app's language (the job runs in the user's locale) settles any doubt.
+    def language_rule
+      "Write your reply in the language of the user's latest message, even when their recipes, ingredients or " \
+        "earlier replies are in another language; keep recipe names as they are. If you can't tell its language, " \
+        "use #{I18n.t('locale_name')}, the app's language."
+    end
+
     def request_options = {}
   end
 end
