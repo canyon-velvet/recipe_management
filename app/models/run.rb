@@ -14,7 +14,9 @@ class Run < ApplicationRecord
             finished_at: Time.current)
   end
 
+  # Also fails the step that was under way, if any.
   def fail!(error)
+    steps.where(finished_at: nil).each { |step| step.fail!(error) }
     update!(status: :failed, error: error.to_s.truncate(255), finished_at: Time.current)
   end
 end

@@ -30,4 +30,13 @@ class Message < ApplicationRecord
 
     conversation.user.recipes.includes(:tags).where(id: recipe_ids).sort_by { |recipe| recipe_ids.index(recipe.id) }
   end
+
+  # Replaces the message in the user's open panel (any page, any tab) with its current state, and what the assistant
+  # is doing while it isn't writing, such as searching recipes.
+  def broadcast_update(activity: nil)
+    Turbo::StreamsChannel.broadcast_replace_to(
+      [ conversation.user, :assistant ], target: self,
+      partial: "assistant/messages/message", locals: { message: self, activity: activity }
+    )
+  end
 end

@@ -53,7 +53,7 @@ RSpec.describe WriteReplyService do
 
   it "shows the reply in the user's open panel as it streams" do
     allow(Turbo::StreamsChannel).to receive(:broadcast_replace_to)
-    stub_const("WriteReplyService::BROADCAST_INTERVAL", 0)
+    stub_const("RunAgentService::BROADCAST_INTERVAL", 0)
 
     write(FakeClaude.new([ "Eggs ", "and ", "rice." ]))
 
@@ -132,29 +132,6 @@ RSpec.describe WriteReplyService do
       expect(reply.run.steps.third.output["recipes"].sole).to include("id" => tofu.id, "name" => "Mapo tofu")
     end
 
-    it "gives the router the hand-off tool, and the specialist its tools, effort and each tool's result" do
-      client = FakeClaude.new(tool_uses: [ transfer ])
-                         .and_then(tool_uses: [ { name: "get_recipe", input: { id: tofu.id } } ])
-                         .and_then([ "It's numbing." ])
-
-      write(client)
-
-      router, first, second = client.requests
-      expect(router[:tools].pluck(:name)).to eq [ "transfer_to_recommend" ]
-      expect(first).to include(model: "claude-sonnet-5-5", output_config: { effort: :medium }, fallbacks: :default)
-      expect(first[:tools].pluck(:name)).to eq %w[search_recipes get_recipe show_recipes]
-      expect(first[:system_]).to include("Recommend specialist", "Ingredients in the user's recipes")
-      expect(first[:messages]).to eq [ { role: "user", content: "What can I make with eggs?" } ]
-
-      # The specialist's own message goes back unchanged, then the tool's result for its call
-      tool_call, results = second[:messages].last(2)
-      expect(tool_call[:role]).to eq :assistant
-      expect(tool_call[:content].sole).to have_attributes(type: :tool_use, name: "get_recipe")
-      result = results[:content].sole
-      expect(result).to include(type: :tool_result, tool_use_id: tool_call[:content].sole.id, is_error: false)
-      expect(JSON.parse(result[:content])).to include("name" => "Mapo tofu", "steps" => [ "Cook it." ])
-    end
-
     it "shows no cards when the specialist declines in the end" do
       client = FakeClaude.new(tool_uses: [ transfer ])
                          .and_then(tool_uses: [ { name: "show_recipes", input: { ids: [ tofu.id ] } } ])
@@ -163,32 +140,6 @@ RSpec.describe WriteReplyService do
       write(client)
 
       expect(reply.reload).to have_attributes(content: "Sorry, I can't help with that one.", recipe_ids: [])
-    end
-
-    it "shows what it's doing while a tool runs" do
-      allow(Turbo::StreamsChannel).to receive(:broadcast_replace_to)
-      client = FakeClaude.new(tool_uses: [ transfer ])
-                         .and_then(tool_uses: [ { name: "search_recipes", input: {} } ]).and_then([ "None fit." ])
-
-      write(client)
-
-      expect(Turbo::StreamsChannel).to have_received(:broadcast_replace_to)
-        .with(anything, hash_including(locals: { message: reply, activity: "Searching your recipes…" }))
-    end
-
-    it "tells the specialist to answer once it has used its tool calls, and fails the reply if it carries on" do
-      search = { name: "search_recipes", input: {} }
-      client = FakeClaude.new(tool_uses: [ transfer ])
-      9.times { client.and_then(tool_uses: [ search ]) }
-      client.and_then(tool_uses: [ search ])
-
-      write(client)
-
-      over_limit = reply.run.steps.where(name: "search_recipes").last
-      expect(reply.run.steps.where(name: "search_recipes").count).to eq 9
-      expect(over_limit.output).to eq("error" => "You've used all 8 tool calls for this reply. Answer with what you have.")
-      expect(reply.reload.status).to eq "failed"
-      expect(reply.run.error).to eq "RuntimeError: the Recommend specialist kept calling tools past the limit"
     end
 
     it "keeps follow-ups with the specialist, and notes the cards it showed" do

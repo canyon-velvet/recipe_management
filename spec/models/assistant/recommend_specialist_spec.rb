@@ -1,0 +1,32 @@
+require "rails_helper"
+
+RSpec.describe Assistant::RecommendSpecialist do
+  let(:user) { create(:user) }
+  let(:specialist) { described_class.new(user) }
+
+  it "runs on Sonnet at medium effort, with fallbacks, and the recipe tools" do
+    expect(specialist.request).to include(model: "claude-sonnet-5-5", output_config: { effort: :medium },
+                                          betas: [ "server-side-fallback-2026-07-01" ], fallbacks: :default)
+    expect(specialist.request[:tools].pluck(:name)).to eq %w[search_recipes get_recipe show_recipes]
+  end
+
+  it "tells Claude the user's preferences, the tags and their ingredients" do
+    create(:tag, key: "spicy", kind: "flavor")
+    create(:ingredient, user: user, name: "Tofu")
+    create(:preference, user: user, category: "avoid", value: "peanut")
+    create(:preference, user: user, category: "household", value: "2 adults")
+
+    expect(specialist.system_prompt).to include(
+      "- avoid: peanut\n- household: 2 adults", "spicy: Spicy", "Ingredients in the user's recipes: Tofu"
+    )
+    expect(described_class.new(create(:user)).system_prompt).to include("(none yet)")
+  end
+
+  it "shows the recipes its show_recipes tool picked" do
+    recipe = create(:recipe, user: user)
+
+    specialist.tool("show_recipes").call({ ids: [ recipe.id ] })
+
+    expect(specialist.shown_recipe_ids).to eq [ recipe.id ]
+  end
+end
