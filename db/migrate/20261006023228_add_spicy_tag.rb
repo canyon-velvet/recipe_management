@@ -1,5 +1,5 @@
 # Adds the Spicy tag, in a new Flavor group between Diet and Convenience, to databases that already have tags.
-# New databases get it from db/seeds.rb.
+# Databases built from schema.rb (db:prepare) get it from db/seeds.rb.
 class AddSpicyTag < ActiveRecord::Migration[8.1]
   class Tag < ActiveRecord::Base
     self.table_name = "tags"
