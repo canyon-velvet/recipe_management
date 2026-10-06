@@ -5,8 +5,15 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ["panel", "toggle", "messages", "message", "form", "input"]
 
+  // The panel is permanent but <body> isn't: a page restored from Turbo's cache (Back/Forward), or rendered while
+  // another tab changed the cookie, follows the panel's own state. This runs when the panel arrives, because Turbo
+  // moves the kept panel into the new <body> only after the controller has connected.
+  panelTargetConnected() {
+    this.sync(this.isOpen)
+  }
+
   toggle() {
-    this.panelTarget.classList.contains("hidden") ? this.open() : this.close()
+    this.isOpen ? this.close() : this.open()
   }
 
   open() {
@@ -16,7 +23,9 @@ export default class extends Controller {
   }
 
   close() {
+    const hadFocus = this.panelTarget.contains(document.activeElement)
     this.show(false)
+    if (hadFocus && this.hasToggleTarget) this.toggleTarget.focus()
   }
 
   // A new message (sent or received) scrolls the chat to it.
@@ -24,12 +33,14 @@ export default class extends Controller {
     this.scrollToEnd()
   }
 
-  // Enter sends; Shift+Enter is a new line. Enter while an input method is still composing (e.g. Chinese) isn't a send.
+  // Enter sends; Shift+Enter is a new line. The Enter that confirms an input method's text (e.g. Pinyin) isn't a
+  // send: isComposing in most browsers, keyCode 229 in Safari, which ends the composition first.
   send(event) {
-    if (event.key !== "Enter" || event.shiftKey || event.isComposing) return
+    if (event.key !== "Enter" || event.shiftKey || event.isComposing || event.keyCode === 229) return
 
     event.preventDefault()
-    if (this.inputTarget.value.trim()) this.formTarget.requestSubmit()
+    const busy = this.formTarget.getAttribute("aria-busy") === "true" // still sending the last one
+    if (!busy && this.inputTarget.value.trim()) this.formTarget.requestSubmit()
   }
 
   sent(event) {
@@ -38,11 +49,19 @@ export default class extends Controller {
 
   // private
 
+  get isOpen() {
+    return this.hasPanelTarget && !this.panelTarget.classList.contains("hidden")
+  }
+
   show(open) {
     this.panelTarget.classList.toggle("hidden", !open)
+    this.sync(open)
+    document.cookie = `assistant_open=${open ? 1 : 0}; path=/; max-age=31536000; SameSite=Lax`
+  }
+
+  sync(open) {
     document.body.classList.toggle("assistant-open", open)
     this.toggleTargets.forEach(button => button.setAttribute("aria-expanded", open))
-    document.cookie = `assistant_open=${open ? 1 : 0}; path=/; max-age=31536000; SameSite=Lax`
   }
 
   scrollToEnd() {

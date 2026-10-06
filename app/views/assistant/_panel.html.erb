@@ -1,7 +1,8 @@
 <%# locals: (conversation:, open:) %>
 <%# The assistant side panel. Turbo keeps it (data-turbo-permanent) as the user moves between pages, so the chat and
-    what's being typed survive navigation. The assistant-panel controller on <body> opens and closes it. %>
-<aside id="assistant-panel" class="assistant-panel <%= 'hidden' unless open %>" data-turbo-permanent
+    what's being typed survive navigation. Turbo matches it by id, so the id is per user: after logging in as someone
+    else, the old panel is replaced. The assistant-panel controller on <body> opens and closes it. %>
+<aside id="<%= assistant_panel_id %>" class="assistant-panel <%= 'hidden' unless open %>" data-turbo-permanent
        data-assistant-panel-target="panel" aria-label="<%= t("assistant.title") %>">
   <div class="assistant-header">
     <h2 class="assistant-title"><span aria-hidden="true">✦</span> <%= t("assistant.title") %></h2>

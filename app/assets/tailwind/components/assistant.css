@@ -1,10 +1,10 @@
 @layer components {
-  /* The width the open panel takes beside the page: none on phones, where it covers the page instead. Anything sized
-     to the whole window (full-bleed banners, toasts) subtracts it. */
+  /* The width the open panel takes beside the page. Only wide screens (xl) have room to share; on narrower ones the
+     panel covers the page instead. Anything sized to the whole window (full-bleed banners, toasts) subtracts it. */
   :root {
     --assistant-width: 0px;
   }
-  @media (width >= 48rem) {
+  @media (width >= 80rem) {
     .assistant-open {
       --assistant-width: 400px;
     }
@@ -15,11 +15,11 @@
     @apply mr-2 flex h-8 w-8 items-center justify-center rounded text-lg text-white opacity-80 hover:opacity-100;
   }
 
-  /* The side panel: full height on the right. On wider screens the page narrows beside it, like VS Code's chat;
-     on phones it covers the page. */
+  /* The side panel: full height on the right. On wide screens the page narrows beside it, like VS Code's chat;
+     on narrower ones it covers the page (all of it on phones). */
   .assistant-panel {
     @apply fixed inset-y-0 right-0 z-40 flex w-full flex-col border-l border-gray-200 bg-white shadow-xl
-           md:w-[400px] md:shadow-none;
+           md:w-[400px] xl:shadow-none;
   }
   .assistant-open {
     padding-right: var(--assistant-width);

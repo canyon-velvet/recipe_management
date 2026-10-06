@@ -24,7 +24,7 @@
   <div class="flex items-center px-6 ml-auto">
     <% if assistant_available? %>
       <button type="button" class="assistant-toggle" data-assistant-panel-target="toggle"
-              data-action="assistant-panel#toggle" aria-controls="assistant-panel"
+              data-action="assistant-panel#toggle" aria-controls="<%= assistant_panel_id %>"
               aria-expanded="<%= assistant_open? %>" aria-label="<%= t("assistant.open") %>">✦</button>
     <% end %>
     <%= render "shared/locale_switcher" %>

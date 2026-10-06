@@ -24,4 +24,6 @@ module ApplicationHelper
 
     [ "aisle-editor", ("assistant-panel" if assistant_available?) ].compact.join(" ")
   end
+
+  def assistant_panel_id = dom_id(current_user, :assistant_panel)
 end

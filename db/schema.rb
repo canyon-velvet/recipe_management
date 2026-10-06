@@ -128,7 +128,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_032514) do
     t.datetime "updated_at", null: false
     t.index "user_id, category, lower((value)::text)", name: "index_preferences_on_user_category_and_value", unique: true
     t.index ["user_id"], name: "index_preferences_on_user_household", unique: true, where: "((category)::text = 'household'::text)"
-    t.check_constraint "category::text = ANY (ARRAY['diet'::character varying::text, 'likes'::character varying::text, 'dislikes'::character varying::text, 'avoid'::character varying::text, 'household'::character varying::text])", name: "preferences_category_known"
+    t.check_constraint "category::text = ANY (ARRAY['diet'::character varying, 'likes'::character varying, 'dislikes'::character varying, 'avoid'::character varying, 'household'::character varying]::text[])", name: "preferences_category_known"
   end
 
   create_table "recipe_ingredients", force: :cascade do |t|

@@ -14,7 +14,10 @@ RSpec.describe "Assistant panel", type: :request do
 
     it "shows the ✦ button and the panel, closed until the cookie says it's open" do
       get recipes_path
-      expect(response.body).to include('class="assistant-toggle"', 'id="assistant-panel"', 'aria-expanded="false"')
+      # Per-user id, so a panel kept by Turbo is replaced after logging in as someone else
+      panel_id = "assistant_panel_user_#{user.id}"
+      expect(response.body).to include('class="assistant-toggle"', %(id="#{panel_id}"), %(aria-controls="#{panel_id}"),
+                                       'aria-expanded="false"')
       expect(response.body).not_to include("assistant-open")
 
       cookies[:assistant_open] = "1"
@@ -36,6 +39,13 @@ RSpec.describe "Assistant panel", type: :request do
       post assistant_messages_path, params: { message: { content: " " } }, headers: turbo_stream
 
       expect(response).to have_http_status(:unprocessable_content)
+      expect(Message.count).to eq 0
+    end
+
+    it "rejects a malformed message instead of failing" do
+      post assistant_messages_path, params: { message: "hi" }, headers: turbo_stream
+
+      expect(response).to have_http_status(:bad_request)
       expect(Message.count).to eq 0
     end
 
