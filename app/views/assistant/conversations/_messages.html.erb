@@ -1,0 +1,8 @@
+<%# locals: (conversation:) %>
+<%# The chat so far. The hint shows only while it's empty (CSS hides it once a message is added). %>
+<div id="assistant_messages" class="assistant-messages" data-assistant-panel-target="messages" aria-live="polite">
+  <p class="assistant-empty"><%= t("assistant.empty") %></p>
+  <% if conversation %>
+    <%= render partial: "assistant/messages/message", collection: conversation.messages, as: :message %>
+  <% end %>
+</div>

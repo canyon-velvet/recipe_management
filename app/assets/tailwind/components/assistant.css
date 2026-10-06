@@ -1,0 +1,71 @@
+@layer components {
+  /* The width the open panel takes beside the page: none on phones, where it covers the page instead. Anything sized
+     to the whole window (full-bleed banners, toasts) subtracts it. */
+  :root {
+    --assistant-width: 0px;
+  }
+  @media (width >= 48rem) {
+    .assistant-open {
+      --assistant-width: 400px;
+    }
+  }
+
+  /* The ✦ button in the navbar */
+  .assistant-toggle {
+    @apply mr-2 flex h-8 w-8 items-center justify-center rounded text-lg text-white opacity-80 hover:opacity-100;
+  }
+
+  /* The side panel: full height on the right. On wider screens the page narrows beside it, like VS Code's chat;
+     on phones it covers the page. */
+  .assistant-panel {
+    @apply fixed inset-y-0 right-0 z-40 flex w-full flex-col border-l border-gray-200 bg-white shadow-xl
+           md:w-[400px] md:shadow-none;
+  }
+  .assistant-open {
+    padding-right: var(--assistant-width);
+  }
+  /* "Recipe ready" toasts stay beside the panel instead of covering its Send button */
+  .assistant-open .toast-stack {
+    right: calc(var(--assistant-width) + 1rem);
+  }
+
+  .assistant-header {
+    @apply flex h-20 flex-none items-center justify-between bg-background px-4 text-white;
+  }
+  .assistant-title {
+    @apply font-semibold tracking-wide;
+  }
+  .assistant-header-button {
+    @apply rounded px-2 py-1 text-sm opacity-80 hover:opacity-100 cursor-pointer;
+  }
+
+  /* The chat: the user's messages on the right, the assistant's on the left */
+  .assistant-messages {
+    @apply flex flex-1 flex-col gap-3 overflow-y-auto p-4;
+  }
+  .assistant-empty {
+    @apply text-sm text-gray-500;
+  }
+  .assistant-empty:not(:only-child) {
+    @apply hidden;
+  }
+  .assistant-message {
+    @apply max-w-[85%] rounded-xl px-3 py-2 text-sm;
+  }
+  .assistant-message--user {
+    @apply self-end bg-sectiontext-light text-white;
+  }
+  .assistant-message--assistant {
+    @apply self-start bg-sectionbackground text-gray-800;
+  }
+  .assistant-thinking {
+    @apply italic text-gray-500 animate-pulse;
+  }
+
+  .assistant-form {
+    @apply flex flex-none items-end gap-2 border-t border-gray-200 p-3;
+  }
+  .assistant-form .form-textarea {
+    @apply flex-1 resize-none text-sm;
+  }
+}

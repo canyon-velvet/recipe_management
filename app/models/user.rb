@@ -8,6 +8,7 @@ class User < ApplicationRecord
   has_many :aisles, dependent: :destroy
   has_many :drafts, dependent: :destroy
   has_many :preferences, dependent: :destroy
+  has_many :conversations, dependent: :destroy
 
   validates :username, presence: true,
                        uniqueness: { case_sensitive: false },
@@ -21,5 +22,17 @@ class User < ApplicationRecord
 
   def admin?
     admin
+  end
+
+  # The conversation the assistant panel shows: the newest one (nil until the first message).
+  def current_conversation = conversations.newest_first.first
+
+  # Where the next message goes: the current conversation, started on the first message.
+  def current_conversation! = current_conversation || conversations.create!
+
+  # "New chat": a fresh conversation, unless the current one is still empty.
+  def start_conversation
+    current = current_conversation
+    current && current.messages.none? ? current : conversations.create!
   end
 end

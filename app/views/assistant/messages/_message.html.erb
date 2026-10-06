@@ -1,0 +1,13 @@
+<%# locals: (message:) %>
+<div id="<%= dom_id(message) %>" class="assistant-message assistant-message--<%= message.role %>"
+     data-assistant-panel-target="message">
+  <% if message.pending? %>
+    <span class="assistant-thinking"><%= t("assistant.thinking") %></span>
+  <% elsif message.failed? %>
+    <span class="error-text"><%= t("assistant.failed") %></span>
+  <% elsif message.user? %>
+    <%= simple_format(message.content, {}, wrapper_tag: "p") %>
+  <% else %>
+    <div class="prose prose-sm max-w-none"><%= render_markdown(message.content) %></div>
+  <% end %>
+</div>

@@ -284,6 +284,17 @@ en:
     other_hint: "%{other} always stays last and can't be deleted."
     title: "Edit aisles"
 
+  assistant:
+    close: "Close assistant"
+    empty: "Ask me what to cook tonight, what you can make with what's in the fridge, or paste a recipe link to import."
+    failed: "Sorry, something went wrong. Please try again."
+    new_chat: "New chat"
+    open: "Open assistant"
+    placeholder: "Ask about recipes…"
+    send: "Send"
+    thinking: "Thinking…"
+    title: "Assistant"
+
   preferences:
     add: "Add"
     remove: "Remove %{value}"

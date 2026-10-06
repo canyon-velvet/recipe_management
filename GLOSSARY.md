@@ -42,6 +42,14 @@ _Avoid_: Inbox, imports page, queue
 
 ## Assistant
 
+**Assistant**:
+The chat helper in the side panel that recommends recipes from the user's own collection and imports recipe links.
+_Avoid_: Chatbot, bot, AI
+
+**Conversation**:
+One chat between a user and the assistant, made of messages from both. The panel shows the newest; "New chat" starts another.
+_Avoid_: Thread, session, chat log
+
 **Preference**:
 A short fact about what a user eats, in one of five categories: diet, likes, dislikes, avoid, or household (who they cook for). The assistant follows preferences when it recommends recipes. "Avoid" is strict: a recipe containing it is never recommended.
 _Avoid_: Profile, setting, restriction

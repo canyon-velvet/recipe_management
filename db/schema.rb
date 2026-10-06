@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_06_023938) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_06_032514) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -25,6 +25,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_023938) do
     t.index ["user_id", "key"], name: "index_aisles_on_user_id_and_key", unique: true
     t.index ["user_id", "position"], name: "index_aisles_on_user_id_and_position"
     t.index ["user_id"], name: "index_aisles_on_user_id"
+  end
+
+  create_table "conversations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "created_at"], name: "index_conversations_on_user_id_and_created_at"
   end
 
   create_table "drafts", force: :cascade do |t|
@@ -101,6 +108,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_023938) do
     t.index ["meal_plan_id"], name: "index_meal_slots_on_meal_plan_id"
   end
 
+  create_table "messages", force: :cascade do |t|
+    t.bigint "conversation_id", null: false
+    t.string "role", null: false
+    t.text "content", default: "", null: false
+    t.string "status", default: "done", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["conversation_id", "created_at"], name: "index_messages_on_conversation_id_and_created_at"
+    t.check_constraint "role::text = ANY (ARRAY['user'::character varying, 'assistant'::character varying]::text[])", name: "messages_role_known"
+    t.check_constraint "status::text = ANY (ARRAY['pending'::character varying, 'done'::character varying, 'failed'::character varying]::text[])", name: "messages_status_known"
+  end
+
   create_table "preferences", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "category", null: false
@@ -109,7 +128,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_023938) do
     t.datetime "updated_at", null: false
     t.index "user_id, category, lower((value)::text)", name: "index_preferences_on_user_category_and_value", unique: true
     t.index ["user_id"], name: "index_preferences_on_user_household", unique: true, where: "((category)::text = 'household'::text)"
-    t.check_constraint "category::text = ANY (ARRAY['diet'::character varying, 'likes'::character varying, 'dislikes'::character varying, 'avoid'::character varying, 'household'::character varying]::text[])", name: "preferences_category_known"
+    t.check_constraint "category::text = ANY (ARRAY['diet'::character varying::text, 'likes'::character varying::text, 'dislikes'::character varying::text, 'avoid'::character varying::text, 'household'::character varying::text])", name: "preferences_category_known"
   end
 
   create_table "recipe_ingredients", force: :cascade do |t|
@@ -193,6 +212,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_023938) do
   end
 
   add_foreign_key "aisles", "users"
+  add_foreign_key "conversations", "users"
   add_foreign_key "drafts", "users"
   add_foreign_key "grocery_list_items", "grocery_lists"
   add_foreign_key "grocery_list_items", "ingredients"
@@ -203,6 +223,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_023938) do
   add_foreign_key "meal_slot_recipes", "meal_slots"
   add_foreign_key "meal_slot_recipes", "recipes"
   add_foreign_key "meal_slots", "meal_plans"
+  add_foreign_key "messages", "conversations"
   add_foreign_key "preferences", "users"
   add_foreign_key "recipe_ingredients", "ingredients"
   add_foreign_key "recipe_ingredients", "recipes"

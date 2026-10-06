@@ -1,0 +1,8 @@
+<%# Enter sends, Shift+Enter adds a line (see assistant_panel_controller.js). %>
+<%= form_with scope: :message, url: assistant_messages_path, class: "assistant-form",
+              data: { assistant_panel_target: "form", action: "turbo:submit-end->assistant-panel#sent" } do |f| %>
+  <%= f.text_area :content, rows: 2, required: true, maxlength: Message::MAX_LENGTH, class: "form-textarea",
+                  placeholder: t("assistant.placeholder"), "aria-label": t("assistant.placeholder"),
+                  data: { assistant_panel_target: "input", action: "keydown->assistant-panel#send" } %>
+  <%= f.submit t("assistant.send"), class: "btn-primary" %>
+<% end %>

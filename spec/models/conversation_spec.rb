@@ -1,0 +1,46 @@
+require "rails_helper"
+
+RSpec.describe Conversation do
+  let(:user) { create(:user) }
+
+  describe "#ask" do
+    let(:conversation) { create(:conversation, user: user) }
+
+    it "adds the user's message and a pending reply" do
+      question, reply = conversation.ask("Dinner for 4?")
+
+      expect(question).to have_attributes(role: "user", content: "Dinner for 4?", status: "done")
+      expect(reply).to have_attributes(role: "assistant", content: "", status: "pending")
+      expect(conversation.messages.reload).to eq [ question, reply ]
+    end
+
+    it "saves nothing for a blank or too long message" do
+      [ " ", "x" * (Message::MAX_LENGTH + 1) ].each do |content|
+        question, reply = conversation.ask(content)
+
+        expect(question).not_to be_valid
+        expect(reply).to be_nil
+      end
+      expect(conversation.messages.count).to eq 0
+    end
+  end
+
+  describe "the user's current conversation" do
+    it "is the newest one, started with the first message" do
+      expect(user.current_conversation).to be_nil
+
+      first = user.current_conversation!
+      expect(user.current_conversation!).to eq first
+    end
+
+    it "starts afresh on New chat, unless the current one is still empty" do
+      current = user.current_conversation!
+      expect(user.start_conversation).to eq current
+
+      current.ask("Hello")
+      fresh = user.start_conversation
+      expect(fresh).not_to eq current
+      expect(user.current_conversation).to eq fresh
+    end
+  end
+end
