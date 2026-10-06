@@ -44,6 +44,12 @@ class Recipe < ApplicationRecord
   scope :tagged, ->(tag_key) {
     where(id: RecipeTag.joins(:tag).where(tags: { key: tag_key }).select(:recipe_id)) if tag_key.present?
   }
+  # Recipes with an ingredient whose name contains the text, e.g. "egg" finds "eggs" and "egg yolk".
+  scope :with_ingredient, ->(text) { where(id: RecipeIngredient.named_like(text).select(:recipe_id)) }
+  # Recipes with none of the ingredients, matched the same way: the assistant's strict "avoid" preferences.
+  scope :without_ingredients, ->(texts) {
+    where.not(id: RecipeIngredient.named_like(*texts).select(:recipe_id)) if texts.any?
+  }
 
   # Shown with a "new" badge in the form until the recipe saves.
   def new_source? = new_source_name.present? && (source.nil? || source.new_record?)

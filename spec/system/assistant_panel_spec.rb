@@ -99,6 +99,30 @@ RSpec.describe "Assistant panel", type: :system do
       expect(page).to have_css("#{reply} strong", text: "tomato and egg")
       expect(page).to have_css("#{reply}[aria-busy='false']", text: "Try a tomato and egg stir-fry tonight.")
     end
+
+    it "recommends the user's recipes as cards that open the recipe" do
+      tofu = create(:recipe, user: user, name: "Mapo tofu", total_minutes: 30, servings: 4,
+                             tags: [ create(:tag, key: "spicy", kind: "flavor") ])
+      claude = FakeClaude.new(tool_uses: [ { name: "transfer_to_recommend", input: {} } ])
+                         .and_then(tool_uses: [ { name: "search_recipes", input: { tags: [ "spicy" ] } } ])
+                         .and_then([ "Try the ", "**Mapo tofu**." ], delay: 0.4,
+                                   tool_uses: [ { name: "show_recipes", input: { ids: [ tofu.id ] } } ])
+                         .and_then([])
+      allow(Anthropic::Client).to receive(:new).and_return(claude)
+
+      log_in_as user
+      click_button "Open assistant"
+      fill_in "Ask about recipes…", with: "Something spicy?"
+      find_field("Ask about recipes…").send_keys(:enter)
+
+      reply = ".assistant-message--assistant"
+      expect(page).to have_css(reply, text: "Searching your recipes…")
+      expect(page).to have_css("#{reply}[aria-busy='false']", text: "Try the Mapo tofu.")
+      within(reply) { click_link "Mapo tofu 30 min · Serves 4" }
+
+      expect(page).to have_current_path(recipe_path(tofu))
+      expect(page).to have_css(".assistant-panel", text: "Try the Mapo tofu.")
+    end
   end
 
   it "shows the daily limit notice and keeps what was typed" do

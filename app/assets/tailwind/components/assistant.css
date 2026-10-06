@@ -71,6 +71,24 @@
     @apply italic text-gray-500 animate-pulse;
   }
 
+  /* Recipes the assistant recommends, as cards under its reply */
+  .assistant-recipes {
+    @apply mt-2 flex flex-col gap-2;
+  }
+  .assistant-recipe {
+    @apply flex items-center gap-3 rounded-lg border border-gray-200 bg-sectionbackground/40 px-3 py-2
+           hover:border-gray-400;
+  }
+  .assistant-recipe-icon {
+    @apply flex h-8 w-8 flex-none items-center justify-center text-2xl;
+  }
+  .assistant-recipe-name {
+    @apply block truncate font-semibold;
+  }
+  .assistant-recipe-facts {
+    @apply block text-xs text-gray-500;
+  }
+
   .assistant-form {
     @apply flex flex-none items-end gap-2 border-t border-gray-200 p-3;
   }

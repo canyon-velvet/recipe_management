@@ -12,6 +12,12 @@ class RecipeIngredient < ApplicationRecord
 
   before_validation :use_new_ingredient, if: -> { ingredient.nil? && new_ingredient_name.present? }
 
+  # Rows whose ingredient's name contains any of the texts, ignoring case.
+  scope :named_like, ->(*texts) {
+    patterns = texts.map { |text| "%#{sanitize_sql_like(text)}%" }
+    joins(:ingredient).where("ingredients.name ILIKE ANY (ARRAY[?])", patterns)
+  }
+
   # Shown as a "new" row in the form until the recipe saves.
   def new_ingredient? = new_ingredient_name.present? && (ingredient.nil? || ingredient.new_record?)
 

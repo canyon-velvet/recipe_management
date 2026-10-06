@@ -58,4 +58,25 @@ RSpec.describe Conversation do
       expect(user.current_conversation).to eq fresh
     end
   end
+
+  describe "what the assistant reads" do
+    let(:conversation) { create(:conversation, user: user) }
+
+    it "is the finished messages from the user's first on, with each reply's recipe cards noted" do
+      tofu = create(:recipe, user: user, name: "Mapo tofu")
+      conversation.messages.create!(role: :assistant, content: "Welcome!")
+      conversation.ask("Tofu?").last.update!(content: "Try this.", status: :done, agent: :recommend,
+                                             recipe_ids: [ tofu.id ])
+      conversation.ask("Hot?").last.update!(status: :failed)
+      conversation.ask("Hello?")
+
+      expect(conversation.context(20)).to eq [
+        { role: "user", content: "Tofu?" },
+        { role: "assistant", content: "Try this.\n\n(Recipe cards shown: Mapo tofu (id #{tofu.id}))" },
+        { role: "user", content: "Hot?" },
+        { role: "user", content: "Hello?" }
+      ]
+      expect(conversation.last_agent).to eq "recommend"
+    end
+  end
 end
