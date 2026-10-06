@@ -62,7 +62,14 @@ class RunAgentService
       last_broadcast = now
       @reply.tap { _1.content = @text }.broadcast_to_panel
     end
-    stream.accumulated_message.tap { |message| step.succeed!(message.usage) }
+    stream.accumulated_message.tap { |message| step.succeed!(message.usage, summary(message)) }
+  end
+
+  # What a model call wrote, kept on its step for looking into a reply later: its kinds of blocks (thinking, text,
+  # tool calls), its text and why it stopped.
+  def summary(message)
+    { stop_reason: message.stop_reason, blocks: message.content.map(&:type),
+      text: message.content.select { |block| block.type == :text }.map(&:text).join }
   end
 
   # Runs one tool call, recorded as a step, and returns its result for the model.

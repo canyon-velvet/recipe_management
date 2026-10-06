@@ -9,8 +9,11 @@ RSpec.describe Assistant::Tools::ShowRecipes do
     other = create(:recipe)
 
     expect(tool.call({ ids: [ rice.id, other.id, tofu.id, rice.id ] }))
-      .to eq(shown: [ rice.id, tofu.id ], not_found: [ other.id ])
+      .to include(shown: [ rice.id, tofu.id ], not_found: [ other.id ])
     expect(tool.recipe_ids).to eq [ rice.id, tofu.id ]
+
+    # The result tells the model the cards don't replace its reply
+    expect(tool.call({ ids: [ rice.id ] })[:next]).to include("Now write your reply: a sentence about each recipe")
 
     # Another call replaces the cards
     tool.call({ ids: [ tofu.id ] })

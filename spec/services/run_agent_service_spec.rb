@@ -37,6 +37,8 @@ RSpec.describe RunAgentService do
     expect(run.steps.map { [ _1.name, _1.model, _1.input_tokens ] }).to eq [
       [ "recommend", "claude-sonnet-5-5", 120 ], [ "search_recipes", nil, nil ], [ "recommend", "claude-sonnet-5-5", 120 ]
     ]
+    expect(run.steps.first.output).to eq("stop_reason" => "tool_use", "blocks" => [ "tool_use" ], "text" => "")
+    expect(run.steps.last.output).to eq("stop_reason" => "end_turn", "blocks" => [ "text" ], "text" => "Tofu!")
     expect(run.steps.second).to have_attributes(input: { "name" => "tofu" }, finished_at: be_present)
     expect(run.steps.second.output["recipes"].sole).to include("id" => tofu.id, "name" => "Mapo tofu")
   end

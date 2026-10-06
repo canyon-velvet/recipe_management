@@ -5,8 +5,10 @@ class Step < ApplicationRecord
 
   validates :name, presence: true
 
-  def succeed!(usage)
-    update!(input_tokens: usage.input_tokens, output_tokens: usage.output_tokens, finished_at: Time.current)
+  # Ends a model call with its token usage and what it wrote.
+  def succeed!(usage, output = nil)
+    update!(input_tokens: usage.input_tokens, output_tokens: usage.output_tokens, output: output,
+            finished_at: Time.current)
   end
 
   # Ends a tool call with what it returned.
