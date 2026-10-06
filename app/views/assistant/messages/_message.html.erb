@@ -1,7 +1,9 @@
 <%# locals: (message:) %>
+<%# A reply is pending while it's written: "Thinking…" until the first words arrive, then the text so far. aria-busy
+    keeps screen readers from announcing every streamed update. %>
 <div id="<%= dom_id(message) %>" class="assistant-message assistant-message--<%= message.role %>"
-     data-assistant-panel-target="message">
-  <% if message.pending? %>
+     data-assistant-panel-target="message" aria-busy="<%= message.pending? %>">
+  <% if message.pending? && message.content.blank? %>
     <span class="assistant-thinking"><%= t("assistant.thinking") %></span>
   <% elsif message.failed? %>
     <span class="error-text"><%= t("assistant.failed") %></span>

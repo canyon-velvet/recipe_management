@@ -73,6 +73,34 @@ RSpec.describe "Assistant panel", type: :system do
     expect(page.evaluate_script("document.getElementById('toasts').getBoundingClientRect().right")).to be <= 1024 - 400
   end
 
+  context "with replies written in the background" do
+    # Run WriteReplyJob in this process (the test env only records jobs), with a fake Claude that streams slowly.
+    around do |example|
+      queue_adapter = ActiveJob::Base.queue_adapter
+      ActiveJob::Base.queue_adapter = :async
+      example.run
+    ensure
+      ActiveJob::Base.queue_adapter.shutdown
+      ActiveJob::Base.queue_adapter = queue_adapter
+    end
+
+    it "streams the reply into the panel, word by word" do
+      claude = FakeClaude.new([ "Try ", "a **tomato ", "and egg** stir-fry", " tonight." ], delay: 0.4)
+      allow(Anthropic::Client).to receive(:new).and_return(claude)
+
+      log_in_as user
+      click_button "Open assistant"
+      fill_in "Ask about recipes…", with: "Dinner idea?"
+      find_field("Ask about recipes…").send_keys(:enter)
+
+      reply = ".assistant-message--assistant"
+      expect(page).to have_css(reply, text: "Try a tomato")
+      expect(page).to have_no_css(reply, text: "tonight.") # still streaming
+      expect(page).to have_css("#{reply} strong", text: "tomato and egg")
+      expect(page).to have_css("#{reply}[aria-busy='false']", text: "Try a tomato and egg stir-fry tonight.")
+    end
+  end
+
   it "sends on Enter but adds a line on Shift+Enter" do
     log_in_as user
     click_button "Open assistant"

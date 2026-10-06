@@ -286,6 +286,7 @@ en:
 
   assistant:
     close: "Close assistant"
+    declined: "Sorry, I can't help with that one."
     empty: "Ask me what to cook tonight, what you can make with what's in the fridge, or paste a recipe link to import."
     failed: "Sorry, something went wrong. Please try again."
     new_chat: "New chat"

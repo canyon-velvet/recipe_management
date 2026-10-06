@@ -284,6 +284,7 @@ zh-CN:
 
   assistant:
     close: "关闭助手"
+    declined: "抱歉，这个我帮不上忙。"
     empty: "问我今晚做什么、冰箱里的食材能做什么，或者贴一个菜谱链接来导入。"
     failed: "抱歉，出了点问题，请再试一次。"
     new_chat: "新对话"
