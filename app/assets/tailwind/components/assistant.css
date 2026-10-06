@@ -41,7 +41,7 @@
     @apply font-semibold tracking-wide;
   }
   .assistant-header-button {
-    @apply rounded px-2 py-1 text-sm opacity-80 hover:opacity-100 cursor-pointer;
+    @apply rounded px-2 py-1 text-sm hover:bg-white/10 cursor-pointer;
   }
 
   /* The chat: the user's messages on the right, the assistant's on the left */
