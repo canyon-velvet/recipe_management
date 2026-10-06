@@ -20,13 +20,15 @@ module Assistant
         return { error: "There's no recipe with id #{input[:id]}." } unless recipe
 
         @turn.found([ recipe ])
-        { id: recipe.id, name: recipe.name, description: recipe.description, tags: recipe.tags.map(&:key),
-          servings: recipe.servings, prep_minutes: recipe.prep_minutes, cook_minutes: recipe.cook_minutes,
-          total_minutes: recipe.total_minutes,
-          ingredients: recipe.recipe_ingredients.map { |row|
-            [ row.quantity, row.unit, row.ingredient.name ].compact_blank.join(" ")
-          },
-          steps: recipe.steps.map(&:body), avoided: recipe.avoided_items(@user.avoided_ingredients).presence }.compact
+        details = { id: recipe.id, name: recipe.name, description: recipe.description, tags: recipe.tags.map(&:key),
+                    servings: recipe.servings, prep_minutes: recipe.prep_minutes, cook_minutes: recipe.cook_minutes,
+                    total_minutes: recipe.total_minutes,
+                    ingredients: recipe.recipe_ingredients.map { |row|
+                      [ row.quantity, row.unit, row.ingredient.name ].compact_blank.join(" ")
+                    },
+                    steps: recipe.steps.map(&:body) }
+        avoided = recipe.avoided_items(@user.avoided_ingredients)
+        avoided.any? ? details.merge(avoided: avoided) : details
       end
     end
   end

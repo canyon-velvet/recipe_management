@@ -50,9 +50,11 @@ module Assistant
       end
 
       def summary(recipe, avoid_list)
-        { id: recipe.id, name: recipe.name, tags: recipe.tags.map(&:key), total_minutes: recipe.total_minutes,
-          servings: recipe.servings, ingredients: recipe.recipe_ingredients.map { _1.ingredient.name },
-          avoided: recipe.avoided_items(avoid_list).presence }.compact
+        summary = { id: recipe.id, name: recipe.name, tags: recipe.tags.map(&:key),
+                    total_minutes: recipe.total_minutes, servings: recipe.servings,
+                    ingredients: recipe.recipe_ingredients.map { _1.ingredient.name } }
+        avoided = recipe.avoided_items(avoid_list)
+        avoided.any? ? summary.merge(avoided: avoided) : summary
       end
     end
   end

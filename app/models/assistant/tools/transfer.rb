@@ -6,7 +6,7 @@ module Assistant
       attr_reader :specialist
 
       def initialize(specialist)
-        super(nil)
+        super(nil, nil)
         @specialist = specialist
       end
 
