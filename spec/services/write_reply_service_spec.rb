@@ -95,16 +95,17 @@ RSpec.describe WriteReplyService do
     expect(client.requests.sole[:messages].pluck(:content)).to eq [ "What can I make with eggs?", "Next?" ]
   end
 
-  it "does nothing when the job runs twice for the same reply" do
-    write(FakeClaude.new([ "First answer." ]))
-    reply.update!(status: :pending) # as if a second copy of the job picked it up mid-way
-    client = FakeClaude.new([ "Second answer." ])
+  it "ends an interrupted reply as failed when Sidekiq re-runs its job, instead of Thinking… forever" do
+    interrupted = Class.new(Interrupt) # like Sidekiq::Shutdown: not a StandardError, so no rescue catches it
+    expect { write(FakeClaude.new([ "Half an ans" ], error: interrupted.new)) }.to raise_error(interrupted)
+    expect(reply.reload).to have_attributes(status: "pending")
 
-    write(client)
+    client = FakeClaude.new([ "Second answer." ])
+    described_class.new(Message.find(reply.id), client: client).call # the re-queued copy
 
     expect(client.requests).to be_empty
-    expect(reply.reload.status).to eq "pending"
-    expect(Run.where(message: reply).count).to eq 1
+    expect(reply.reload.status).to eq "failed"
+    expect(reply.run).to have_attributes(status: "failed", error: "interrupted")
   end
 
   it "leaves a reply that's already written alone" do

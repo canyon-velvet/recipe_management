@@ -29,8 +29,10 @@ class WriteReplyService
   end
 
   def call
-    # A job delivered twice (e.g. re-queued on a Sidekiq restart) leaves a reply that's written or being written alone.
-    return unless @reply.pending? && @reply.run.nil?
+    return unless @reply.pending?
+    # A pending reply that already has a run was interrupted: Sidekiq re-queues a job it kills on shutdown, and the
+    # kill skips the rescues below. Ending it as failed beats "Thinking…" forever; the user can ask again.
+    return fail_reply(@reply.run, "interrupted") if @reply.run
 
     run = @reply.create_run!(model: MODEL)
     message = stream_reply
