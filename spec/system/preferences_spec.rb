@@ -13,6 +13,8 @@ RSpec.describe "Preferences", type: :system do
       click_button "Add"
       expect(page).to have_css(".preference-chip", text: "peanuts")
       expect(page).to have_field("Avoid", with: "")
+      # The keyboard stays in the box, ready for the next one
+      expect(page).to have_css("#avoid_preference_value:focus")
     end
 
     within("#preferences_household") do

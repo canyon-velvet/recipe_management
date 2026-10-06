@@ -2,7 +2,8 @@
 class CreatePreferences < ActiveRecord::Migration[8.1]
   def change
     create_table :preferences do |t|
-      t.references :user, null: false, foreign_key: true
+      # Indexed by the unique index below, which starts with user_id.
+      t.references :user, null: false, foreign_key: true, index: false
       t.string :category, null: false
       t.string :value, null: false
       t.timestamps

@@ -109,7 +109,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_023938) do
     t.datetime "updated_at", null: false
     t.index "user_id, category, lower((value)::text)", name: "index_preferences_on_user_category_and_value", unique: true
     t.index ["user_id"], name: "index_preferences_on_user_household", unique: true, where: "((category)::text = 'household'::text)"
-    t.index ["user_id"], name: "index_preferences_on_user_id"
     t.check_constraint "category::text = ANY (ARRAY['diet'::character varying, 'likes'::character varying, 'dislikes'::character varying, 'avoid'::character varying, 'household'::character varying]::text[])", name: "preferences_category_known"
   end
 

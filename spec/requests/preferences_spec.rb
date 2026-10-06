@@ -31,6 +31,35 @@ RSpec.describe "Preferences", type: :request do
     expect(response.body).to include("Preference is already listed")
   end
 
+  it "shows the household message when one is already set (e.g. from a stale tab)" do
+    create(:preference, user: user, category: "household", value: "4 people")
+
+    post preferences_path, params: { preference: { category: "household", value: "2 adults" } }
+
+    expect(response).to have_http_status(:unprocessable_content)
+    expect(response.body).to include("Household already has a value")
+  end
+
+  it "shows the usual error, not a crash, when another tab saved the same fact first" do
+    allow_any_instance_of(Preference).to receive(:save) do
+      create(:preference, user: user, category: "avoid", value: "peanuts") # the other tab wins the race
+      raise ActiveRecord::RecordNotUnique
+    end
+
+    post preferences_path, params: { preference: { category: "avoid", value: "Peanuts" } }
+
+    expect(response).to have_http_status(:unprocessable_content)
+    expect(response.body).to include("Preference is already listed")
+  end
+
+  it "gives each card's fields their own ids" do
+    get preferences_path
+
+    ids = Nokogiri::HTML(response.body).css("[id]").map { _1["id"] }
+    expect(ids).to eq ids.uniq
+    expect(ids).to include("diet_preference_value", "avoid_preference_value")
+  end
+
   it "rejects an unknown category" do
     post preferences_path, params: { preference: { category: "mood", value: "happy" } }
 

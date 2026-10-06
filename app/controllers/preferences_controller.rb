@@ -9,7 +9,7 @@ class PreferencesController < ApplicationController
     preference = current_user.preferences.build(preference_params)
     return head :unprocessable_entity unless Preference::CATEGORIES.include?(preference.category)
 
-    if preference.save
+    if save(preference)
       render_card(preference.category)
     else
       render_card(preference.category, new_preference: preference, status: :unprocessable_entity)
@@ -28,10 +28,20 @@ class PreferencesController < ApplicationController
     params.require(:preference).permit(:category, :value)
   end
 
+  # Two tabs adding the same fact at once can both pass validation; the unique index stops the second, and checking
+  # again gives it the usual error.
+  def save(preference)
+    preference.save
+  rescue ActiveRecord::RecordNotUnique
+    preference.valid?
+    false
+  end
+
+  # Keeps the keyboard in the card's box after the card is replaced.
   def render_card(category, new_preference: nil, status: :ok)
     render partial: "preferences/card", status: status, locals: {
       category: category, preferences: current_user.preferences.where(category: category).ordered,
-      new_preference: new_preference
+      new_preference: new_preference, focus: true
     }
   end
 end

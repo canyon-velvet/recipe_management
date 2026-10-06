@@ -1,6 +1,8 @@
-<%# locals: (category:, preferences:, new_preference: nil) %>
+<%# locals: (category:, preferences:, new_preference: nil, focus: false) %>
 <%# One category's facts as removable chips, plus a box to add one. Household holds a single fact, so its box hides
-    once it's set. %>
+    once it's set. focus: puts the keyboard back in the box after an add or a remove re-renders the card. %>
+<% errors = new_preference&.errors&.full_messages || [] %>
+<% errors_id = "#{category}_preference_errors" %>
 <%= turbo_frame_tag "preferences_#{category}", class: "block" do %>
   <div class="section-card">
     <h2 class="preference-title"><%= t("preferences.categories.#{category}.title") %></h2>
@@ -19,17 +21,24 @@
     <% end %>
 
     <% unless category == "household" && preferences.any? %>
+      <%# The namespace keeps each card's field ids unique on the page. %>
       <%= form_with model: new_preference || Preference.new(category: category), url: preferences_path,
-                    class: "preference-form" do |f| %>
+                    namespace: category, class: "preference-form" do |f| %>
         <%= f.hidden_field :category %>
-        <%= f.text_field :value, class: "form-input", maxlength: 100, autocomplete: "off",
+        <%= f.text_field :value, class: "form-input", maxlength: 100, autocomplete: "off", autofocus: focus,
                          placeholder: t("preferences.categories.#{category}.placeholder"),
-                         "aria-label": t("preferences.categories.#{category}.title") %>
+                         "aria-label": t("preferences.categories.#{category}.title"),
+                         "aria-invalid": (true if errors.any?), "aria-describedby": (errors_id if errors.any?) %>
         <%= f.submit t("preferences.add"), class: "btn-secondary" %>
       <% end %>
-      <% new_preference&.errors&.full_messages&.each do |message| %>
-        <p class="error-text mt-1"><%= message %></p>
-      <% end %>
+    <% end %>
+
+    <% if errors.any? %>
+      <div id="<%= errors_id %>">
+        <% errors.each do |message| %>
+          <p class="error-text mt-1"><%= message %></p>
+        <% end %>
+      </div>
     <% end %>
   </div>
 <% end %>
