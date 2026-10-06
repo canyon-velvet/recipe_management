@@ -1,12 +1,14 @@
 @layer components {
-  /* The width the open panel takes beside the page. Only wide screens (xl) have room to share; on narrower ones the
-     panel covers the page instead. Anything sized to the whole window (full-bleed banners, toasts) subtracts it. */
+  /* --assistant-panel-width: the panel's own width, from md up (on phones it's the whole screen).
+     --assistant-width: how much of that the page gives up beside the open panel. Only wide screens (xl) have room to
+     share; on narrower ones the panel covers the page instead. Full-bleed banners subtract it. */
   :root {
+    --assistant-panel-width: 400px;
     --assistant-width: 0px;
   }
   @media (width >= 80rem) {
     .assistant-open {
-      --assistant-width: 400px;
+      --assistant-width: var(--assistant-panel-width);
     }
   }
 
@@ -19,14 +21,17 @@
      on narrower ones it covers the page (all of it on phones). */
   .assistant-panel {
     @apply fixed inset-y-0 right-0 z-40 flex w-full flex-col border-l border-gray-200 bg-white shadow-xl
-           md:w-[400px] xl:shadow-none;
+           md:w-(--assistant-panel-width) xl:shadow-none;
   }
   .assistant-open {
     padding-right: var(--assistant-width);
   }
-  /* "Recipe ready" toasts stay beside the panel instead of covering its Send button */
-  .assistant-open .toast-stack {
-    right: calc(var(--assistant-width) + 1rem);
+  /* "Recipe ready" toasts sit beside the panel, whether it squeezes or covers the page, instead of over its Send
+     button. On phones the panel is the whole screen, so there's no beside. */
+  @media (width >= 48rem) {
+    .assistant-open .toast-stack {
+      right: calc(var(--assistant-panel-width) + 1rem);
+    }
   }
 
   .assistant-header {

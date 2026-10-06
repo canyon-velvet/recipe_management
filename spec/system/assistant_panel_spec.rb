@@ -69,6 +69,8 @@ RSpec.describe "Assistant panel", type: :system do
     expect(page).to have_css(".assistant-panel")
     expect(page.evaluate_script("getComputedStyle(document.body).paddingRight")).to eq "0px"
     expect(page.evaluate_script("document.documentElement.scrollWidth")).to be <= 1024
+    # "Recipe ready" toasts sit beside the panel, not over its Send button
+    expect(page.evaluate_script("document.getElementById('toasts').getBoundingClientRect().right")).to be <= 1024 - 400
   end
 
   it "sends on Enter but adds a line on Shift+Enter" do

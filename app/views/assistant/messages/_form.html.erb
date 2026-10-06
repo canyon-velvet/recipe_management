@@ -4,5 +4,5 @@
   <%= f.text_area :content, rows: 2, required: true, maxlength: Message::MAX_LENGTH, class: "form-textarea",
                   placeholder: t("assistant.placeholder"), "aria-label": t("assistant.placeholder"),
                   data: { assistant_panel_target: "input", action: "keydown->assistant-panel#send" } %>
-  <%= f.submit t("assistant.send"), class: "btn-primary" %>
+  <%= f.submit t("assistant.send"), class: "btn-primary", data: { assistant_panel_target: "submit" } %>
 <% end %>

@@ -3,7 +3,7 @@ import { Controller } from "@hotwired/stimulus"
 // Opens and closes the assistant side panel, remembers that choice in a cookie (so the next page arrives the same
 // way, without a flash), keeps the chat scrolled to the newest message, and sends on Enter.
 export default class extends Controller {
-  static targets = ["panel", "toggle", "messages", "message", "form", "input"]
+  static targets = ["panel", "toggle", "messages", "message", "form", "input", "submit"]
 
   // The panel is permanent but <body> isn't: a page restored from Turbo's cache (Back/Forward), or rendered while
   // another tab changed the cookie, follows the panel's own state. This runs when the panel arrives, because Turbo
@@ -40,7 +40,8 @@ export default class extends Controller {
 
     event.preventDefault()
     const busy = this.formTarget.getAttribute("aria-busy") === "true" // still sending the last one
-    if (!busy && this.inputTarget.value.trim()) this.formTarget.requestSubmit()
+    // Submitting through the Send button lets Turbo disable it until the reply to this one has been added.
+    if (!busy && this.inputTarget.value.trim()) this.formTarget.requestSubmit(this.submitTarget)
   }
 
   sent(event) {
