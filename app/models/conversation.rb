@@ -16,4 +16,8 @@ class Conversation < ApplicationRecord
       [ question, messages.create!(role: :assistant, status: :pending) ]
     end
   end
+
+  # The newest messages, oldest first: what the panel shows and what the assistant reads, so a long chat costs the
+  # same as a short one.
+  def recent_messages(limit) = messages.reorder(created_at: :desc, id: :desc).limit(limit).reverse
 end

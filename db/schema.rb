@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_06_032514) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_06_152054) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -184,6 +184,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_032514) do
     t.check_constraint "total_minutes > 0", name: "recipes_total_minutes_positive"
   end
 
+  create_table "runs", force: :cascade do |t|
+    t.bigint "message_id", null: false
+    t.string "model", null: false
+    t.string "status", default: "running", null: false
+    t.integer "input_tokens"
+    t.integer "output_tokens"
+    t.string "error"
+    t.datetime "finished_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_runs_on_message_id", unique: true
+    t.check_constraint "status::text = ANY (ARRAY['running'::character varying, 'succeeded'::character varying, 'failed'::character varying]::text[])", name: "runs_status_known"
+  end
+
   create_table "sources", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name", null: false
@@ -232,5 +246,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_032514) do
   add_foreign_key "recipe_tags", "tags"
   add_foreign_key "recipes", "sources"
   add_foreign_key "recipes", "users"
+  add_foreign_key "runs", "messages"
   add_foreign_key "sources", "users"
 end

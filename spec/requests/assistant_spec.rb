@@ -35,6 +35,14 @@ RSpec.describe "Assistant panel", type: :request do
                                        "message_#{messages.first.id}", "message_#{messages.last.id}")
     end
 
+    it "queues the reply to be written in the user's language" do
+      post assistant_messages_path, params: { message: { content: "Hi" } }, headers: turbo_stream
+
+      reply = user.current_conversation.messages.last
+      expect(reply).to have_attributes(role: "assistant", status: "pending")
+      expect(WriteReplyJob).to have_been_enqueued.with(reply, "en")
+    end
+
     it "rejects a blank message" do
       post assistant_messages_path, params: { message: { content: " " } }, headers: turbo_stream
 

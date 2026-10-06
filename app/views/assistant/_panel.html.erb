@@ -14,6 +14,8 @@
     </div>
   </div>
 
+  <%# Replies stream in over the user's own signed stream (WriteReplyService broadcasts to it). %>
+  <%= turbo_stream_from current_user, :assistant %>
   <%= render "assistant/conversations/messages", conversation: conversation %>
   <%= render "assistant/messages/form" %>
 </aside>

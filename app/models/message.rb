@@ -4,6 +4,7 @@ class Message < ApplicationRecord
   MAX_LENGTH = 4_000
 
   belongs_to :conversation
+  has_one :run, dependent: :destroy
 
   enum :role, { user: "user", assistant: "assistant" }, validate: true
   enum :status, { pending: "pending", done: "done", failed: "failed" }, validate: true
