@@ -6,10 +6,18 @@ module Assistant
   # - Only links in the user's message can be imported, so the agent never imports a link it made up or read
   #   somewhere else.
   class Turn
+    # The drafts the reply's imports started or found in the Draft box, shown as cards under the reply.
+    attr_reader :draft_ids
+
     # question: the text of the user's message the reply answers.
     def initialize(question = nil)
       @question = question.to_s
       @recipe_ids = Set.new
+      @draft_ids = []
+    end
+
+    def imported(draft)
+      @draft_ids |= [ draft.id ]
     end
 
     def found(recipes)

@@ -4,7 +4,7 @@
 <div id="assistant_messages" class="assistant-messages" data-assistant-panel-target="messages" aria-live="polite">
   <p class="assistant-empty"><%= t("assistant.empty") %></p>
   <% if conversation %>
-    <% messages = Message.load_recipes(conversation.recent_messages(50), conversation.user) %>
+    <% messages = Message.load_cards(conversation.recent_messages(50), conversation.user) %>
     <%= render partial: "assistant/messages/message", collection: messages, as: :message,
                locals: { avoided: conversation.user.avoided_ingredients } %>
   <% end %>

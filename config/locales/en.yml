@@ -288,6 +288,7 @@ en:
     checking_drafts: "Checking your Draft box…"
     close: "Close assistant"
     contains_avoided: "⚠️ Contains %{items}"
+    draft_ready: "Ready to review"
     declined: "Sorry, I can't help with that one."
     empty: "Ask me what to cook tonight, what you can make with what's in the fridge, or paste a recipe link to import."
     failed: "Sorry, something went wrong. Please try again."

@@ -65,6 +65,7 @@ class WriteReplyService
     else
       # Cards carry their own reasons, so a reply can be just its cards.
       @reply.cards = cards
+      @reply.draft_ids = agent.turn.draft_ids
       finish(text)
       @run.succeed!
     end

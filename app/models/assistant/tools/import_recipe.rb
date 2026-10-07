@@ -41,14 +41,19 @@ module Assistant
       end
 
       # Only imports that start count towards the limit: they're the ones that can cost a Claude call.
+      # Its card under the reply follows it as it's read.
       def started(draft)
         @imports += 1
+        @turn.imported(draft)
         { result: "started", draft: DraftSummary.of(draft) }
       end
 
       def already_in_draft_box(link)
         draft = @user.drafts.find_by(source_url: link)
-        { result: "already_in_draft_box", draft: (DraftSummary.of(draft) if draft) }.compact
+        return { result: "already_in_draft_box" } unless draft
+
+        @turn.imported(draft)
+        { result: "already_in_draft_box", draft: DraftSummary.of(draft) }
       end
 
       # The recipe can be shown as a card (see ShowRecipes).

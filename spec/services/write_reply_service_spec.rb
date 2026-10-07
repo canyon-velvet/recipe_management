@@ -189,6 +189,7 @@ RSpec.describe WriteReplyService do
       expect(reply.run.model).to eq "claude-haiku-4-5"
       expect(client.requests.second[:tools].pluck(:name)).to eq %w[import_recipe list_drafts show_recipes]
       expect(conversation.user.drafts.sole.source_url).to eq link
+      expect(reply.draft_ids).to eq [ conversation.user.drafts.sole.id ] # its card under the reply
     end
   end
 

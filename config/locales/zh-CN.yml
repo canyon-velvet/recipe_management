@@ -286,6 +286,7 @@ zh-CN:
     checking_drafts: "正在查看你的草稿箱…"
     close: "关闭助手"
     contains_avoided: "⚠️ 含有%{items}"
+    draft_ready: "可以查看了"
     declined: "抱歉，这个我帮不上忙。"
     empty: "问我今晚做什么、冰箱里的食材能做什么，或者贴一个菜谱链接来导入。"
     failed: "抱歉，出了点问题，请再试一次。"

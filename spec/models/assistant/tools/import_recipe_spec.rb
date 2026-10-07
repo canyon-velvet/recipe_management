@@ -12,6 +12,7 @@ RSpec.describe Assistant::Tools::ImportRecipe do
 
     expect(result).to include(result: "started", draft: include(status: "reading"))
     expect(user.drafts.sole).to have_attributes(source_url: link, status: "reading")
+    expect(turn.draft_ids).to eq [ user.drafts.sole.id ] # shown as a card under the reply
   end
 
   it "imports the link the user wrote, without the punctuation after it, even if Claude passes that along" do
@@ -39,10 +40,11 @@ RSpec.describe Assistant::Tools::ImportRecipe do
   end
 
   it "says when the link is already in the Draft box, and how it's going" do
-    user.drafts.create!(source_url: link, status: :ready, data: { "name" => "Mapo tofu" })
+    draft = user.drafts.create!(source_url: link, status: :ready, data: { "name" => "Mapo tofu" })
 
     expect(tool.call({ url: link }))
       .to include(result: "already_in_draft_box", draft: include(title: "Mapo tofu", status: "ready"))
+    expect(turn.draft_ids).to eq [ draft.id ]
   end
 
   it "reads a link that failed before again" do

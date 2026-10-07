@@ -69,8 +69,8 @@ RSpec.describe "Assistant panel", type: :system do
     expect(page).to have_css(".assistant-panel")
     expect(page.evaluate_script("getComputedStyle(document.body).paddingRight")).to eq "0px"
     expect(page.evaluate_script("document.documentElement.scrollWidth")).to be <= 1024
-    # "Recipe ready" toasts sit beside the panel, not over its Send button
-    expect(page.evaluate_script("document.getElementById('toasts').getBoundingClientRect().right")).to be <= 1024 - 400
+    # No "Recipe ready" toasts beside the chat: a draft's card in the chat shows it instead
+    expect(page).to have_css("#toasts", visible: :hidden)
   end
 
   context "with replies written in the background" do
@@ -125,6 +125,43 @@ RSpec.describe "Assistant panel", type: :system do
 
       expect(page).to have_current_path(recipe_path(tofu))
       expect(page).to have_css(".assistant-panel", text: "Try the Mapo tofu.")
+    end
+  end
+
+  context "importing a link from the chat" do
+    around do |example|
+      queue_adapter = ActiveJob::Base.queue_adapter
+      ActiveJob::Base.queue_adapter = :async
+      example.run
+    ensure
+      ActiveJob::Base.queue_adapter.shutdown
+      ActiveJob::Base.queue_adapter = queue_adapter
+    end
+
+    it "shows the draft under the reply, and follows it until it's ready to review" do
+      link = "https://example.com/mapo-tofu"
+      allow(ImportRecipeJob).to receive(:perform_later) # the import itself is read in the test below
+      claude = FakeClaude.new(tool_uses: [ { name: "transfer_to_import", input: {} } ])
+                         .and_then(tool_uses: [ { name: "import_recipe", input: { url: link } } ])
+                         .and_then([ "Importing it now." ])
+      allow(Anthropic::Client).to receive(:new).and_return(claude)
+
+      log_in_as user
+      click_button "Open assistant"
+      fill_in "Ask about recipes…", with: "Import #{link}"
+      find_field("Ask about recipes…").send_keys(:enter)
+
+      reply = ".assistant-message--assistant"
+      expect(page).to have_css("#{reply}[aria-busy='false']", text: "Importing it now.")
+      expect(page).to have_css("#{reply} .assistant-recipe", text: "Reading…")
+
+      # The import finishes in the background
+      user.drafts.sole.update!(status: :ready, data: { "name" => "Mapo tofu" })
+
+      expect(page).to have_css("#{reply} .assistant-recipe", text: /Mapo tofu\s+Ready to review/)
+      expect(page).to have_css("#toasts", visible: :hidden) # no toast beside the open chat
+      within(reply) { click_link "Mapo tofu Ready to review" }
+      expect(page).to have_current_path(new_recipe_path(draft_id: user.drafts.sole.id))
     end
   end
 

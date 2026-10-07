@@ -30,6 +30,21 @@ RSpec.describe Message do
     expect(reply.question).to eq question
   end
 
+  describe "#drafts" do
+    it "is the drafts a reply imported, in order, leaving out ones saved or discarded since and other users'" do
+      conversation = create(:conversation)
+      user = conversation.user
+      first, second, discarded = %w[a b c].map { |path| user.drafts.create!(source_url: "https://example.com/#{path}") }
+      someone_elses = create(:user).drafts.create!(source_url: "https://example.com/d")
+      reply = create(:message, conversation: conversation, role: "assistant",
+                               draft_ids: [ second.id, discarded.id, someone_elses.id, first.id ])
+      discarded.destroy!
+
+      expect(reply.drafts).to eq [ second, first ]
+      expect(Message.load_cards([ reply ], user).sole.drafts).to eq [ second, first ]
+    end
+  end
+
   describe "#recipes" do
     it "is the recipes shown under the reply, in the order shown, leaving out deleted ones and other users'" do
       conversation = create(:conversation)
@@ -45,7 +60,7 @@ RSpec.describe Message do
       # The panel loads every message's cards in one go
       question = create(:message, conversation: conversation)
       # recipes, tags, recipe_ingredients (and their ingredients, when there are any)
-      expect(count_queries { Message.load_recipes([ reply, question ], conversation.user) }).to eq 3
+      expect(count_queries { Message.load_cards([ reply, question ], conversation.user) }).to eq 3
       expect(count_queries { expect([ reply.recipes, question.recipes ]).to eq [ [ noodles, tofu ], [] ] }).to eq 0
     end
   end

@@ -27,5 +27,12 @@
         <% end %>
       </ul>
     <% end %>
+    <% if (drafts = message.drafts).any? %>
+      <ul class="assistant-recipes">
+        <% drafts.each do |draft| %>
+          <li><%= render "assistant/messages/draft_card", draft: draft %></li>
+        <% end %>
+      </ul>
+    <% end %>
   <% end %>
 </div>
