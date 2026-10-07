@@ -128,6 +128,31 @@ RSpec.describe "Assistant panel", type: :system do
     end
   end
 
+  it "saves a suggested preference only when the user clicks Save" do
+    conversation = user.current_conversation!
+    conversation.messages.create!(role: :user, content: "Something quick? My son is allergic to peanuts.")
+    conversation.messages.create!(role: :assistant, agent: :recommend, content: "Here are some ideas.",
+                                  preference_suggestions: [
+                                    { "category" => "avoid", "value" => "peanut", "state" => "pending" },
+                                    { "category" => "likes", "value" => "quick dinners", "state" => "pending" }
+                                  ])
+    log_in_as user
+    click_button "Open assistant"
+
+    within(".assistant-panel") do
+      expect(page).to have_css(".assistant-suggestion", text: "Avoid: peanut")
+      within(first(".assistant-suggestion")) { click_button "Save" }
+      expect(page).to have_link("✓ Saved to Preferences")
+
+      within(all(".assistant-suggestion").last) { click_button "Skip" }
+      expect(page).to have_text("Not saved")
+    end
+
+    visit preferences_path
+    expect(page).to have_css(".preference-chip", text: "peanut")
+    expect(page).to have_no_css(".preference-chip", text: "quick dinners")
+  end
+
   context "importing a link from the chat" do
     around do |example|
       queue_adapter = ActiveJob::Base.queue_adapter

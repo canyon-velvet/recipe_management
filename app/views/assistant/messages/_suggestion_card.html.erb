@@ -1,0 +1,31 @@
+<%# locals: (message:, index:, suggestion:) %>
+<%# A preference the assistant suggests saving. The user decides: Save adds it to their Preferences (a household one
+    replaces the household they have), Skip dismisses it. Once decided, the card says what happened. The fact
+    comes first, the buttons in a row under it. %>
+<% category = t("preferences.categories.#{suggestion["category"]}.title") %>
+<li class="assistant-suggestion">
+  <div class="assistant-suggestion-fact">
+    <span class="assistant-recipe-icon" aria-hidden="true">💡</span>
+    <span class="min-w-0">
+      <span class="assistant-recipe-name"><%= category %>: <%= suggestion["value"] %></span>
+      <% case suggestion["state"] %>
+      <% when "saved" %>
+        <%= link_to t("assistant.suggestion.saved"), preferences_path, class: "assistant-draft-ready" %>
+      <% when "dismissed" %>
+        <span class="assistant-recipe-facts"><%= t("assistant.suggestion.dismissed") %></span>
+      <% else %>
+        <% question = suggestion["replaces"] ? t("assistant.suggestion.replace", value: suggestion["replaces"])
+                                             : t("assistant.suggestion.save_question") %>
+        <span class="assistant-recipe-facts"><%= question %></span>
+      <% end %>
+    </span>
+  </div>
+  <% if suggestion["state"] == "pending" %>
+    <div class="assistant-suggestion-actions">
+      <%= button_to t("assistant.suggestion.save"), save_assistant_message_suggestion_path(message, index),
+                    class: "btn-primary btn-sm w-full" %>
+      <%= button_to t("assistant.suggestion.dismiss"), dismiss_assistant_message_suggestion_path(message, index),
+                    class: "btn-cancel btn-sm w-full" %>
+    </div>
+  <% end %>
+</li>

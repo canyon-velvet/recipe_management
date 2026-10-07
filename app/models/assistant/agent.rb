@@ -9,9 +9,12 @@ module Assistant
     MAX_TOKENS = 8_000
 
     # question: the text of the user's message the reply answers.
-    def initialize(user, question: nil)
+    # turn: the reply's Turn so far, when this agent takes over from another (see WriteReplyService), so what the
+    # first one did (such as suggesting a preference) isn't lost.
+    def initialize(user, question: nil, turn: nil)
       @user = user
       @question = question
+      @turn = turn
     end
 
     def model = self.class::MODEL

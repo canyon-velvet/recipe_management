@@ -30,7 +30,13 @@ class RunAgentService
       response = stream_step { @client.beta.messages.stream(**request, **options, messages: messages) }
       responses << response
       tool_uses = response.content.select { |block| block.type == :tool_use }
-      return responses if response.stop_reason != :tool_use || tool_uses.empty? || handoff?(tool_uses)
+      return responses if response.stop_reason != :tool_use || tool_uses.empty?
+      if tool_uses.any? { |tool_use| handoff?(tool_use) }
+        # The other tools it called alongside the hand-off still run, such as suggesting a preference it heard; the
+        # agent taking over doesn't need their results.
+        tool_uses.reject { |tool_use| handoff?(tool_use) }.each { |tool_use| run_tool(tool_use, over_limit: false) }
+        return responses
+      end
       # It was told it had reached the limit and still asks for more.
       raise "#{@agent.name} kept calling tools past the limit" if tool_calls > MAX_TOOL_CALLS
 
@@ -45,7 +51,7 @@ class RunAgentService
 
   private
 
-  def handoff?(tool_uses) = tool_uses.any? { |tool_use| @agent.tool(tool_use.name)&.handoff? }
+  def handoff?(tool_use) = @agent.tool(tool_use.name)&.handoff?
 
   # One model call, recorded as a step: streams its text into the panel after what the agent has written so far,
   # then returns the complete message (content, stop reason, token usage).

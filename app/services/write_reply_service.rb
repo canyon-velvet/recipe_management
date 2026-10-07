@@ -22,11 +22,13 @@ class WriteReplyService
     end
 
     conversation = @reply.conversation
-    agent = Assistant::Router.new(conversation.user, last_agent: conversation.last_agent)
+    question = @reply.question&.content
+    agent = Assistant::Router.new(conversation.user, last_agent: conversation.last_agent, question: question)
     @run = @reply.create_run!(model: agent.model)
     responses = run(agent)
     if (specialist = agent.handoff(responses.last))
-      agent = specialist.new(conversation.user, question: @reply.question&.content)
+      # The specialist carries on the router's Turn, keeping what the router did, such as suggesting a preference.
+      agent = specialist.new(conversation.user, question: question, turn: agent.turn)
       @run.update!(model: agent.model)
       # Anything the router wrote before handing over is dropped, and the panel goes back to "Thinking…".
       @reply.tap { _1.content = "" }.broadcast_to_panel
@@ -61,12 +63,14 @@ class WriteReplyService
     if responses.last.stop_reason == :refusal
       finish(I18n.t("assistant.declined"))
       @run.fail!("refusal: #{responses.last.stop_details&.category}")
-    elsif text.blank? && cards.empty? && @reply.draft_ids.empty?
+    elsif text.blank? && cards.empty? && @reply.draft_ids.empty? && agent.turn.suggestions.empty?
       # An empty reply would be sent back as history, which the API rejects, breaking the rest of the chat.
       fail_reply("empty reply")
     else
-      # Cards say enough on their own (a recipe's has its reason, a draft's its status), so a reply can be just them.
+      # Cards say enough on their own (a recipe's has its reason, a draft's its status, a suggestion its fact), so a
+      # reply can be just them.
       @reply.cards = cards
+      @reply.preference_suggestions = agent.turn.suggestions
       finish(text)
       @run.succeed!
     end

@@ -22,17 +22,14 @@ class Conversation < ApplicationRecord
   def recent_messages(limit) = messages.reorder(created_at: :desc, id: :desc).limit(limit).reverse
 
   # The recent finished messages as Claude reads them: oldest first, starting with one of the user's (the API
-  # requires that). Empty ones are left out: the API rejects empty text. A reply's recipe cards and their reasons are
-  # noted after its text, so follow-ups such as "why the second one?" make sense.
+  # requires that). Empty ones are left out: the API rejects empty text. A reply's recipe cards and their reasons, and
+  # the preferences it suggested and what the user decided, are noted after its text, so follow-ups such as "why the
+  # second one?" make sense and a dismissed fact isn't suggested again.
   def context(limit)
     finished = recent_messages(limit).select(&:done?)
     names = user.recipes.where(id: finished.flat_map(&:recipe_ids)).pluck(:id, :name).to_h
     turns = finished.filter_map do |message|
-      cards = message.recipe_ids.filter_map do |id|
-        [ "#{names[id]} (id #{id})", message.card_reasons[id.to_s] ].compact.join(": ") if names[id]
-      end
-      note = "(Recipe cards shown: #{cards.join('; ')})" if cards.any?
-      content = [ message.content.presence, note ].compact.join("\n\n")
+      content = [ message.content.presence, cards_note(message, names), suggestions_note(message) ].compact.join("\n\n")
       { role: message.role, content: content } if content.present?
     end
     turns.drop_while { |turn| turn[:role] == "assistant" }
@@ -40,4 +37,21 @@ class Conversation < ApplicationRecord
 
   # Who wrote the last finished reply, e.g. "recommend", so the router can keep follow-ups with it.
   def last_agent = messages.assistant.done.last&.agent
+
+  private
+
+  def cards_note(message, names)
+    cards = message.recipe_ids.filter_map do |id|
+      [ "#{names[id]} (id #{id})", message.card_reasons[id.to_s] ].compact.join(": ") if names[id]
+    end
+    "(Recipe cards shown: #{cards.join('; ')})" if cards.any?
+  end
+
+  # e.g. "(Suggested saving to preferences: avoid: peanut (saved); diet: vegetarian (dismissed))"
+  def suggestions_note(message)
+    suggestions = message.preference_suggestions.map do |suggestion|
+      "#{suggestion['category']}: #{suggestion['value']} (#{suggestion['state']})"
+    end
+    "(Suggested saving to preferences: #{suggestions.join('; ')})" if suggestions.any?
+  end
 end

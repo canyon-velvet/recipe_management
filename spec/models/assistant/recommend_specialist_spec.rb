@@ -7,7 +7,7 @@ RSpec.describe Assistant::RecommendSpecialist do
   it "runs on Sonnet at medium effort, with fallbacks, and the recipe tools" do
     expect(specialist.request).to include(model: "claude-sonnet-5-5", output_config: { effort: :medium },
                                           betas: [ "server-side-fallback-2026-07-01" ], fallbacks: :default)
-    expect(specialist.request[:tools].pluck(:name)).to eq %w[search_recipes get_recipe show_recipes]
+    expect(specialist.request[:tools].pluck(:name)).to eq %w[search_recipes get_recipe show_recipes suggest_preference]
   end
 
   it "tells Claude the user's preferences, the tags and their ingredients" do

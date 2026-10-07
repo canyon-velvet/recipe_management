@@ -37,6 +37,20 @@ class Message < ApplicationRecord
   # Why the assistant recommends the recipe, shown on its card. Nil for older replies.
   def card_reason(recipe) = card_reasons[recipe.id.to_s]
 
+  # Records the user's answer to a suggested preference: "saved" or "dismissed".
+  # Only a pending suggestion can be decided, once. Locked, so two clicks at once (on one card or two) don't overwrite
+  # each other's answer. Returns whether it was decided now.
+  def decide_suggestion!(index, state)
+    with_lock do
+      suggestions = preference_suggestions.deep_dup
+      next false unless suggestions.fetch(index)["state"] == "pending"
+
+      suggestions[index]["state"] = state
+      update!(preference_suggestions: suggestions)
+      true
+    end
+  end
+
   # For a reply: the user's message it answers, the one asked just before it.
   def question = conversation.messages.user.where(id: ...id).last
 
