@@ -14,6 +14,13 @@ RSpec.describe Assistant::Tools::ImportRecipe do
     expect(user.drafts.sole).to have_attributes(source_url: link, status: "reading")
   end
 
+  it "imports the link the user wrote, without the punctuation after it, even if Claude passes that along" do
+    tool = described_class.new(user, Assistant::Turn.new("Import #{link}. Thanks!"))
+
+    expect(tool.call({ url: "#{link}." })).to include(result: "started")
+    expect(user.drafts.sole.source_url).to eq link
+  end
+
   it "only imports links the user sent" do
     expect(tool.call({ url: "https://example.com/somewhere-else" }))
       .to eq(error: "Only links in the user's latest message can be imported.")
@@ -25,6 +32,10 @@ RSpec.describe Assistant::Tools::ImportRecipe do
 
     expect(tool.call({ url: link })).to eq(result: "already_saved", recipe: { id: recipe.id, name: "Mapo tofu" })
     expect(turn.found?(recipe.id)).to be true
+
+    # Also when the user's sentence ends right after the link
+    tool = described_class.new(user, Assistant::Turn.new("Again: #{link}."))
+    expect(tool.call({ url: "#{link}." })).to include(result: "already_saved")
   end
 
   it "says when the link is already in the Draft box, and how it's going" do
@@ -48,13 +59,15 @@ RSpec.describe Assistant::Tools::ImportRecipe do
       .to eq(result: "not_started", reason: "That doesn't look like a web link (http or https).")
   end
 
-  it "imports at most a few links per reply" do
-    links = (1..4).map { |i| "https://example.com/recipe-#{i}" }
+  it "starts at most a few imports per reply, not counting links it didn't need to import" do
+    saved = create(:recipe, user: user, source_url: "https://example.com/saved")
+    links = [ saved.source_url, *(1..4).map { |i| "https://example.com/recipe-#{i}" } ]
     tool = described_class.new(user, Assistant::Turn.new("Import these: #{links.join(' ')}"))
 
     results = links.map { |url| tool.call({ url: url }) }
 
-    expect(results.first(3)).to all(include(result: "started"))
+    expect(results.first).to include(result: "already_saved")
+    expect(results[1..3]).to all(include(result: "started"))
     expect(results.last).to eq(error: "You can import at most 3 links per reply.")
     expect(user.drafts.count).to eq 3
   end

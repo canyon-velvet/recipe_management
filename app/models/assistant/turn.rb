@@ -18,12 +18,20 @@ module Assistant
 
     def found?(recipe_id) = @recipe_ids.include?(recipe_id)
 
-    # Whether the user wrote this link in their message, compared in canonical form (see RecipeLink).
-    def asked_for?(url) = url.present? && links.include?(canonical(url))
+    # The link as the user wrote it in their message, in canonical form (see RecipeLink), or nil if they didn't.
+    # Importing this rather than Claude's copy keeps stray punctuation out of the link.
+    def link_for(url)
+      link = canonical(url.to_s)
+      link if links.include?(link)
+    end
+
+    def asked_for?(url) = link_for(url).present?
 
     private
 
-    def links = @links ||= URI::DEFAULT_PARSER.extract(@question, %w[http https]).map { canonical(_1) }
+    # The RFC 2396 parser is the one with #extract. It only reads ASCII, so a link with raw non-ASCII characters
+    # (rare for recipe sites) is cut short and won't match.
+    def links = @links ||= URI::RFC2396_PARSER.extract(@question, %w[http https]).map { canonical(_1) }
 
     # Punctuation after a link in a sentence ("…/mapo-tofu, and") isn't part of it.
     def canonical(url) = RecipeLink.normalize(url.sub(/[.,;:!?)\]'"]+\z/, ""))

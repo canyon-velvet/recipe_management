@@ -18,9 +18,8 @@ module Assistant
       end
 
       def description
-        "Show recipes as cards under your reply, in this order, so the user can open them. Use the ids " \
-          "search_recipes or get_recipe returned while you wrote this reply. Each card shows its why. Calling it " \
-          "again replaces the cards."
+        "Show recipes as cards under your reply, in this order, so the user can open them. Use the ids your other " \
+          "tools returned while you wrote this reply. Each card shows its why. Calling it again replaces the cards."
       end
 
       # One recipe to show, and why it fits.
@@ -48,8 +47,8 @@ module Assistant
         return { shown: @cards.keys } if @cards.size == ids.size
 
         { shown: @cards.keys, not_shown: ids - @cards.keys,
-          why: "Only recipes search_recipes or get_recipe returned during this reply can be shown. Look these up " \
-               "first if you still want to recommend them." }
+          why: "Only recipes your other tools returned during this reply can be shown. Look these up first if " \
+               "you still want to show them." }
       end
     end
   end

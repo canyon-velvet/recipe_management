@@ -27,22 +27,27 @@ module Assistant
       private
 
       def execute(input)
-        url = input[:url].to_s
-        return { error: "Only links in the user's latest message can be imported." } unless @turn.asked_for?(url)
+        link = @turn.link_for(input[:url])
+        return { error: "Only links in the user's latest message can be imported." } unless link
         return { error: "You can import at most #{MAX_PER_REPLY} links per reply." } if @imports >= MAX_PER_REPLY
 
-        @imports += 1
-        result = StartImportService.new(user: @user, url: url).call
+        result = StartImportService.new(user: @user, url: link).call
         case result.error
-        when nil then { result: "started", draft: DraftSummary.of(result.draft) }
+        when nil then started(result.draft)
         when :already_saved then already_saved(result.recipe)
-        when :already_in_draft_box then already_in_draft_box(url)
+        when :already_in_draft_box then already_in_draft_box(link)
         else { result: "not_started", reason: I18n.t(result.error, scope: "imports.errors") }
         end
       end
 
-      def already_in_draft_box(url)
-        draft = @user.drafts.find_by(source_url: RecipeLink.normalize(url))
+      # Only imports that start count towards the limit: they're the ones that can cost a Claude call.
+      def started(draft)
+        @imports += 1
+        { result: "started", draft: DraftSummary.of(draft) }
+      end
+
+      def already_in_draft_box(link)
+        draft = @user.drafts.find_by(source_url: link)
         { result: "already_in_draft_box", draft: (DraftSummary.of(draft) if draft) }.compact
       end
 
