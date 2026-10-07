@@ -1,4 +1,4 @@
-# 食谱管理 — Recipe Manager
+# Recipe Manager
 
 One place for all the recipes I've saved, and a weekly meal plan that writes my grocery list for me.
 
@@ -10,6 +10,12 @@ One place for all the recipes I've saved, and a weekly meal plan that writes my 
 **Import a recipe from a link**
 
 [import_recipe.webm](https://github.com/user-attachments/assets/4f91e8ca-434b-446f-8be3-c96b4ce65d06)
+
+
+**Ask the assistant**
+
+[ask_the_assistant.webm](https://github.com/user-attachments/assets/f5f040cc-9a88-4b27-b643-746247334c4e)
+
 
 
 ## The problem
