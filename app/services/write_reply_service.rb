@@ -61,12 +61,14 @@ class WriteReplyService
     if responses.last.stop_reason == :refusal
       finish(I18n.t("assistant.declined"))
       @run.fail!("refusal: #{responses.last.stop_details&.category}")
-    elsif text.blank? && cards.empty? && @reply.draft_ids.empty?
+    elsif text.blank? && cards.empty? && @reply.draft_ids.empty? && agent.turn.suggestions.empty?
       # An empty reply would be sent back as history, which the API rejects, breaking the rest of the chat.
       fail_reply("empty reply")
     else
-      # Cards say enough on their own (a recipe's has its reason, a draft's its status), so a reply can be just them.
+      # Cards say enough on their own (a recipe's has its reason, a draft's its status, a suggestion its fact), so a
+      # reply can be just them.
       @reply.cards = cards
+      @reply.preference_suggestions = agent.turn.suggestions
       finish(text)
       @run.succeed!
     end

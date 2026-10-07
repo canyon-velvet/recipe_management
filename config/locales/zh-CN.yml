@@ -298,6 +298,13 @@ zh-CN:
     searching: "正在查找你的菜谱…"
     send: "发送"
     servings: "%{count} 人份"
+    suggestion:
+      dismiss: "不用了"
+      dismissed: "未保存"
+      replace: "替换饮食偏好里的“%{value}”？"
+      save: "保存"
+      save_question: "保存到你的饮食偏好？"
+      saved: "✓ 已保存到饮食偏好"
     thinking: "思考中…"
     title: "助手"
 

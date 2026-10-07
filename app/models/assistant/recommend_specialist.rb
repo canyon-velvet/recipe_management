@@ -22,7 +22,9 @@ module Assistant
       Follow the user's preferences. Prefer recipes without any of their "avoid" items; the tools list the ones a
       recipe contains under "avoided". If such a recipe is the best or only fit, you may still recommend it, but say
       clearly which avoided item it contains (its card is marked too). The other preferences are soft: lean towards
-      their diet and likes, away from dislikes, and suit the household.
+      their diet and likes, away from dislikes, and suit the household. If the user mentions a lasting fact that
+      isn't among their preferences yet ("we're vegetarian", "my son is allergic to peanuts"), call
+      suggest_preference so they can save it with a click.
 
       Above the cards, write a sentence or two that answers the user, without repeating each card's why. Don't
       describe your searches.
@@ -48,7 +50,8 @@ module Assistant
     private
 
     def build_tools
-      [ Tools::SearchRecipes, Tools::GetRecipe, Tools::ShowRecipes ].map { |tool| tool.new(@user, turn) }
+      [ Tools::SearchRecipes, Tools::GetRecipe, Tools::ShowRecipes, Tools::SuggestPreference ]
+        .map { |tool| tool.new(@user, turn) }
     end
 
     def request_options

@@ -12,7 +12,7 @@ RSpec.describe Assistant::Router do
     router = described_class.new(user)
 
     expect(router.request).to include(model: "claude-haiku-4-5", max_tokens: 8_000)
-    expect(router.request[:tools].pluck(:name)).to eq %w[transfer_to_recommend transfer_to_import]
+    expect(router.request[:tools].pluck(:name)).to eq %w[transfer_to_recommend transfer_to_import suggest_preference]
     expect(router.request[:tools].first).to eq(
       name: "transfer_to_recommend",
       description: "Hand the conversation to the Recommend specialist, which searches the user's saved recipes " \

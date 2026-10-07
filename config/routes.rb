@@ -37,7 +37,15 @@ Rails.application.routes.draw do
   # The assistant side panel
   namespace :assistant do
     resources :conversations, only: [ :create ]
-    resources :messages, only: [ :create ]
+    resources :messages, only: [ :create ] do
+      # A reply's suggested preferences, by their position in it: Save or No thanks
+      resources :suggestions, only: [] do
+        member do
+          post :save
+          post :dismiss
+        end
+      end
+    end
   end
 
   # Meal Plans

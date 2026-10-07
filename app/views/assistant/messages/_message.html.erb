@@ -2,7 +2,8 @@
 <%# A reply is pending while it's written: "Thinking…" until the first words arrive, then the text so far, plus what
     the assistant is doing between words (activity, e.g. searching recipes). aria-busy keeps screen readers from
     announcing every streamed update. Recipes it recommends follow as cards, flagged when they contain something the
-    user avoids (avoided: their avoid list, passed in when many messages are rendered at once). %>
+    user avoids (avoided: their avoid list, passed in when many messages are rendered at once), then drafts it
+    imported, then preferences it suggests saving. %>
 <div id="<%= dom_id(message) %>" class="assistant-message assistant-message--<%= message.role %>"
      data-assistant-panel-target="message" aria-busy="<%= message.pending? %>">
   <% if message.failed? %>
@@ -33,6 +34,13 @@
     <ul class="assistant-recipes">
       <% drafts.each do |draft| %>
         <%= render "assistant/messages/draft_card", draft: draft %>
+      <% end %>
+    </ul>
+  <% end %>
+  <% if message.preference_suggestions.any? %>
+    <ul class="assistant-recipes">
+      <% message.preference_suggestions.each_with_index do |suggestion, index| %>
+        <%= render "assistant/messages/suggestion_card", message: message, index: index, suggestion: suggestion %>
       <% end %>
     </ul>
   <% end %>

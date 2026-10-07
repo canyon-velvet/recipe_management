@@ -37,6 +37,13 @@ class Message < ApplicationRecord
   # Why the assistant recommends the recipe, shown on its card. Nil for older replies.
   def card_reason(recipe) = card_reasons[recipe.id.to_s]
 
+  # Records the user's answer to a suggested preference: "saved" or "dismissed".
+  def decide_suggestion!(index, state)
+    suggestions = preference_suggestions.deep_dup
+    suggestions.fetch(index)["state"] = state
+    update!(preference_suggestions: suggestions)
+  end
+
   # For a reply: the user's message it answers, the one asked just before it.
   def question = conversation.messages.user.where(id: ...id).last
 

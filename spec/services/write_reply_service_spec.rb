@@ -134,6 +134,19 @@ RSpec.describe WriteReplyService do
       expect(reply.run.steps.third.output["recipes"].sole).to include("id" => tofu.id, "name" => "Mapo tofu")
     end
 
+    it "offers to save a preference the user mentions, without saving it" do
+      suggest = { name: "suggest_preference", input: { category: "avoid", value: "peanut" } }
+      client = FakeClaude.new(tool_uses: [ transfer ])
+                         .and_then(tool_uses: [ suggest ])
+                         .and_then([ "Here's a peanut-free idea." ])
+
+      write(client)
+
+      expect(reply.reload.preference_suggestions)
+        .to eq [ { "category" => "avoid", "value" => "peanut", "replaces" => nil, "state" => "pending" } ]
+      expect(user.preferences).to be_empty
+    end
+
     it "saves a reply that's only cards, as each card says why" do
       client = FakeClaude.new(tool_uses: [ transfer ])
                          .and_then(tool_uses: [ { name: "get_recipe", input: { id: tofu.id } } ])

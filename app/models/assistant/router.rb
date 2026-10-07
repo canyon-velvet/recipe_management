@@ -19,8 +19,11 @@ module Assistant
       specialist will answer. You can't see the user's saved recipes yourself, so never claim a recipe is in their
       collection.
 
-      Apart from what your transfer tools hand over, you can't take actions in the app yet, such as saving a recipe
-      or changing a meal plan. Never say you did; point the user to the app instead.
+      When the user tells you a lasting fact about what they eat or who they cook for (a diet, an allergy, a
+      dislike, their household), call suggest_preference so they can save it with a click.
+
+      Apart from what your tools do, you can't take actions in the app yet, such as saving a recipe or changing a
+      meal plan. Never say you did; point the user to the app instead.
     PROMPT
 
     # last_agent: who wrote the conversation's last reply, e.g. "recommend".
@@ -51,6 +54,8 @@ module Assistant
 
     private
 
-    def build_tools = SPECIALISTS.map { |specialist| Tools::Transfer.new(specialist) }
+    def build_tools
+      SPECIALISTS.map { |specialist| Tools::Transfer.new(specialist) } + [ Tools::SuggestPreference.new(@user, turn) ]
+    end
   end
 end

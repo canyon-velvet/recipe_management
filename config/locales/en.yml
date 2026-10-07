@@ -300,6 +300,13 @@ en:
     searching: "Searching your recipes…"
     send: "Send"
     servings: "Serves %{count}"
+    suggestion:
+      dismiss: "No thanks"
+      dismissed: "Not saved"
+      replace: "Replace “%{value}” in your preferences?"
+      save: "Save"
+      save_question: "Save to your preferences?"
+      saved: "✓ Saved to Preferences"
     thinking: "Thinking…"
     title: "Assistant"
 

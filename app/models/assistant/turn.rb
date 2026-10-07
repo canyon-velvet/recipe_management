@@ -8,12 +8,22 @@ module Assistant
   class Turn
     # The drafts the reply's imports started or found in the Draft box, shown as cards under the reply.
     attr_reader :draft_ids
+    # The preferences the reply suggests saving, shown as cards the user saves or dismisses (see Message).
+    attr_reader :suggestions
 
     # question: the text of the user's message the reply answers.
     def initialize(question = nil)
       @question = question.to_s
       @recipe_ids = Set.new
       @draft_ids = []
+      @suggestions = []
+    end
+
+    # A fact suggested twice in the reply gets one card.
+    def suggest(category:, value:, replaces: nil)
+      return if @suggestions.any? { |s| s["category"] == category && s["value"].casecmp?(value) }
+
+      @suggestions << { "category" => category, "value" => value, "replaces" => replaces, "state" => "pending" }
     end
 
     def imported(draft)

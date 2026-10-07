@@ -55,5 +55,5 @@ The part of the assistant that handles one kind of request, such as recommending
 _Avoid_: Sub-agent, bot
 
 **Preference**:
-A short fact about what a user eats, in one of five categories: diet, likes, dislikes, avoid, or household (who they cook for). The assistant follows preferences when it recommends recipes. A recipe containing something the user avoids can still be recommended, but always with a clear warning, so the user decides.
+A short fact about what a user eats, in one of five categories: diet, likes, dislikes, avoid, or household (who they cook for). The assistant follows preferences when it recommends recipes, and when it hears a new one in the chat it offers to save it; only the user can save it. A recipe containing something the user avoids can still be recommended, but always with a clear warning, so the user decides.
 _Avoid_: Profile, setting, restriction
