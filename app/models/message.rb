@@ -38,10 +38,13 @@ class Message < ApplicationRecord
   def card_reason(recipe) = card_reasons[recipe.id.to_s]
 
   # Records the user's answer to a suggested preference: "saved" or "dismissed".
+  # Locked, so two cards of the same reply decided at once don't overwrite each other's answer.
   def decide_suggestion!(index, state)
-    suggestions = preference_suggestions.deep_dup
-    suggestions.fetch(index)["state"] = state
-    update!(preference_suggestions: suggestions)
+    with_lock do
+      suggestions = preference_suggestions.deep_dup
+      suggestions.fetch(index)["state"] = state
+      update!(preference_suggestions: suggestions)
+    end
   end
 
   # For a reply: the user's message it answers, the one asked just before it.

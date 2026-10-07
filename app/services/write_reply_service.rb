@@ -22,11 +22,13 @@ class WriteReplyService
     end
 
     conversation = @reply.conversation
-    agent = Assistant::Router.new(conversation.user, last_agent: conversation.last_agent)
+    question = @reply.question&.content
+    agent = Assistant::Router.new(conversation.user, last_agent: conversation.last_agent, question: question)
     @run = @reply.create_run!(model: agent.model)
     responses = run(agent)
     if (specialist = agent.handoff(responses.last))
-      agent = specialist.new(conversation.user, question: @reply.question&.content)
+      # The specialist carries on the router's Turn, keeping what the router did, such as suggesting a preference.
+      agent = specialist.new(conversation.user, question: question, turn: agent.turn)
       @run.update!(model: agent.model)
       # Anything the router wrote before handing over is dropped, and the panel goes back to "Thinking…".
       @reply.tap { _1.content = "" }.broadcast_to_panel

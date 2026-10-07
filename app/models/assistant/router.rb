@@ -27,8 +27,8 @@ module Assistant
     PROMPT
 
     # last_agent: who wrote the conversation's last reply, e.g. "recommend".
-    def initialize(user, last_agent: nil)
-      super(user)
+    def initialize(user, last_agent: nil, question: nil)
+      super(user, question: question)
       @last_agent = last_agent
     end
 

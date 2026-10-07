@@ -79,6 +79,20 @@ RSpec.describe Conversation do
       expect(conversation.last_agent).to eq "recommend"
     end
 
+    it "notes the preferences a reply suggested and what the user decided" do
+      conversation.ask("We're vegetarian, and no peanuts").last.update!(
+        content: "", status: :done, preference_suggestions: [
+          { "category" => "diet", "value" => "vegetarian", "state" => "dismissed" },
+          { "category" => "avoid", "value" => "peanut", "state" => "saved" }
+        ]
+      )
+
+      expect(conversation.context(20).last).to eq(
+        role: "assistant",
+        content: "(Suggested saving to preferences: diet: vegetarian (dismissed); avoid: peanut (saved))"
+      )
+    end
+
     it "notes each card's reason, and keeps a reply that's only cards" do
       tofu, rice = create_list(:recipe, 2, user: user)
       reply = conversation.ask("Dinner?").last

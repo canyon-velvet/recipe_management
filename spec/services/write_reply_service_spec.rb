@@ -147,6 +147,16 @@ RSpec.describe WriteReplyService do
       expect(user.preferences).to be_empty
     end
 
+    it "keeps a preference the router suggested as it handed over" do
+      suggest = { name: "suggest_preference", input: { category: "diet", value: "vegetarian" } }
+      client = FakeClaude.new(tool_uses: [ suggest, transfer ]).and_then([ "Try the tofu." ])
+
+      write(client)
+
+      expect(reply.reload.preference_suggestions.pluck("value")).to eq [ "vegetarian" ]
+      expect(reply.run.steps.pluck(:name)).to eq %w[router suggest_preference recommend]
+    end
+
     it "saves a reply that's only cards, as each card says why" do
       client = FakeClaude.new(tool_uses: [ transfer ])
                          .and_then(tool_uses: [ { name: "get_recipe", input: { id: tofu.id } } ])
