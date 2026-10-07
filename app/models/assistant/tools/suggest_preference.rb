@@ -10,7 +10,8 @@ module Assistant
       class Input < Anthropic::BaseModel
         required :category, Anthropic::EnumOf[*Preference::CATEGORIES.map(&:to_sym)],
                  doc: "diet: how they eat (e.g. vegetarian). likes and dislikes: flavors, cuisines or ingredients. " \
-                      "avoid: what they must never eat, e.g. an allergy. household: who they cook for."
+                      "avoid: what they must never eat, e.g. an allergy (recipes with it are flagged with a " \
+                      "warning, not hidden). household: who they cook for."
         required :value, String,
                  doc: "The fact in a few words, in the language they used, as it would be listed on their " \
                       "Preferences page, e.g. \"vegetarian\", \"peanut\", \"2 adults and a toddler\"."
@@ -19,7 +20,8 @@ module Assistant
       def description
         "Offer to save a lasting fact the user just told you about what they eat or who they cook for, so you " \
           "remember it next time. They see it as a card with Save and No thanks buttons; you can't save it " \
-          "yourself, so don't ask them to confirm in your reply. Only for facts they stated, not guesses, and " \
+          "yourself, and it isn't saved until they click Save, so don't ask them to confirm in your reply or say " \
+          "you'll remember it. Only for facts they stated, not guesses, and " \
           "not for what's already in their preferences or what you suggested earlier in this chat (saved or " \
           "dismissed). At most #{MAX_PER_REPLY} per reply."
       end

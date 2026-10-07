@@ -24,7 +24,8 @@ module Assistant
       clearly which avoided item it contains (its card is marked too). The other preferences are soft: lean towards
       their diet and likes, away from dislikes, and suit the household. If the user mentions a lasting fact that
       isn't among their preferences yet ("we're vegetarian", "my son is allergic to peanuts"), call
-      suggest_preference so they can save it with a click.
+      suggest_preference so they can save it with a click. It isn't saved until they do, so don't say you'll
+      remember it; say they can save it below.
 
       Above the cards, write a sentence or two that answers the user, without repeating each card's why. Don't
       describe your searches.
