@@ -1,6 +1,7 @@
 # Recipe Manager
 
-One place for all the recipes I've saved, and a weekly meal plan that writes my grocery list for me.
+One place for all the recipes I've saved, an assistant that helps me pick what to cook from them, and a weekly
+meal plan that writes my grocery list for me.
 
 **Plan the week and get the grocery list**
 
@@ -12,10 +13,9 @@ One place for all the recipes I've saved, and a weekly meal plan that writes my 
 [import_recipe.webm](https://github.com/user-attachments/assets/4f91e8ca-434b-446f-8be3-c96b4ce65d06)
 
 
-**Ask the assistant**
+**Ask the assistant: cooking questions, recipe ideas, imports and preferences**
 
 [ask_the_assistant.webm](https://github.com/user-attachments/assets/f5f040cc-9a88-4b27-b643-746247334c4e)
-
 
 
 ## The problem
@@ -25,8 +25,8 @@ media, and several different recipe apps. When it was time to decide what to coo
 remember where each one lived. When it was time to shop, I had to open every recipe and copy the
 ingredients by hand.
 
-I wanted one website that collects every recipe I care about and turns a week of meals into a
-shopping list.
+I wanted one website that collects every recipe I care about, helps me decide what to cook, and
+turns a week of meals into a shopping list.
 
 ## What it does
 
@@ -41,11 +41,11 @@ shopping list.
   list, grouped by store aisle in shopping order. I can rename, reorder and add aisles.
 - **Skip what I already have.** Mark items I already have at home, and they stay marked
   even when the meal plan changes.
-
-## What's next
-
-Next, I plan to add an **AI chat assistant** that suggests recipes based on my preferences and
-requirements, so I can just ask for what I feel like cooking.
+- **Ask the assistant.** A chat panel (✦) beside any page. It answers cooking questions,
+  recommends recipes from my own collection with a reason for each, and imports a recipe from a
+  link I paste. When I mention something like "we're vegetarian", it offers to save it to my
+  preferences, which its recommendations follow from then on. Behind it, a router on Claude
+  Haiku answers itself or hands over to a Recommend or Import specialist.
 
 ## A note on language
 
