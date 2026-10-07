@@ -9,7 +9,9 @@ module Assistant
           "and steps, plus any items on the user's avoid list it contains, under \"avoided\"."
       end
 
-      def input_schema = { type: "object", properties: { id: { type: "integer" } }, required: [ "id" ] }
+      class Input < Anthropic::BaseModel
+        required :id, Integer
+      end
 
       def activity = I18n.t("assistant.searching")
 

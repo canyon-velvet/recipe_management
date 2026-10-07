@@ -17,7 +17,7 @@ RSpec.describe Assistant::Router do
         description: "Hand the conversation to the Recommend specialist, which searches the user's saved recipes " \
                      "and suggests some. Use it when they want recipes from their own collection: what to cook " \
                      "tonight, something with eggs, a quick dinner, a dish for guests.",
-        input_schema: { type: "object", properties: {} } }
+        input_schema: { type: "object", properties: {}, required: [], additionalProperties: false } }
     ]
     expect(router.system_prompt).to include(
       "language of the user's latest message", "can't take actions in the app yet",

@@ -14,7 +14,9 @@ module Assistant
 
       def description = "Hand the conversation to the #{specialist::TITLE} specialist, which #{specialist::HANDLES}."
 
-      def input_schema = { type: "object", properties: {} }
+      # A hand-off takes no input.
+      class Input < Anthropic::BaseModel
+      end
 
       def handoff? = true
 

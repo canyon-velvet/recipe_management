@@ -13,20 +13,15 @@ module Assistant
           "recipe with an ingredient on the user's avoid list lists those items under \"avoided\"."
       end
 
-      def input_schema
-        {
-          type: "object",
-          properties: {
-            tags: { type: "array", items: { type: "string", enum: Tag.ordered.pluck(:key) },
-                    description: "Tag keys the recipe must all have." },
-            ingredients: { type: "array", items: { type: "string" },
-                           description: "Words that must each be part of an ingredient's name, e.g. \"egg\"." },
-            max_total_minutes: { type: "integer",
-                                 description: "Longest total time. Recipes without a total time are left out." },
-            min_servings: { type: "integer", description: "Fewest servings. Recipes without servings are left out." },
-            name: { type: "string", description: "Text the recipe's name must contain." }
-          }
-        }
+      # The tag keys aren't listed as an enum: the specialist's prompt lists them with their names, and an unknown
+      # key simply finds nothing.
+      class Input < Anthropic::BaseModel
+        optional :tags, Anthropic::ArrayOf[String], doc: "Tag keys the recipe must all have."
+        optional :ingredients, Anthropic::ArrayOf[String],
+                 doc: "Words that must each be part of an ingredient's name, e.g. \"egg\"."
+        optional :max_total_minutes, Integer, doc: "Longest total time. Recipes without a total time are left out."
+        optional :min_servings, Integer, doc: "Fewest servings. Recipes without servings are left out."
+        optional :name, String, doc: "Text the recipe's name must contain."
       end
 
       def activity = I18n.t("assistant.searching")

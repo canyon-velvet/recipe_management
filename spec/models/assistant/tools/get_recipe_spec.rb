@@ -27,6 +27,10 @@ RSpec.describe Assistant::Tools::GetRecipe do
     expect(tool.call({ id: recipe.id })[:avoided]).to eq [ "peanut" ]
   end
 
+  it "takes a recipe id" do
+    expect(tool.definition[:input_schema]).to include(properties: { id: { type: "integer" } }, required: [ "id" ])
+  end
+
   it "can't read another user's recipe" do
     other = create(:recipe)
 
