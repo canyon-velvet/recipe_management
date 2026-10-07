@@ -1,0 +1,55 @@
+# Labelled messages for the live router eval (spec/evals/router_eval_spec.rb).
+#
+#   message:  what the user writes
+#   expect:   who should write the reply: router (answers itself), recommend or import
+#   suggests: preference categories that should be suggested (optional; the wording of the value can differ)
+#   history:  earlier messages in the chat, as [who, text] (optional; who is user or the agent that replied)
+
+# General and cooking questions: the router answers itself
+- message: How long should I boil an egg for a runny yolk?
+  expect: router
+- message: What can I use instead of buttermilk?
+  expect: router
+- message: 鸡蛋怎么煮才能溏心？
+  expect: router
+- message: How do I add a recipe to my meal plan?
+  expect: router
+
+# Recommendations from the user's recipes
+- message: What can I cook tonight with eggs and tomatoes?
+  expect: recommend
+- message: Something quick for dinner, under 30 minutes?
+  expect: recommend
+- message: 今晚吃什么？来点辣的
+  expect: recommend
+- message: Do I have any soup recipes?
+  expect: recommend
+
+# Imports
+- message: Can you import https://www.yummytoddlerfood.com/turkey-sweet-potato-meatballs/
+  expect: import
+- message: 帮我导入这个菜谱 https://www.xiachufang.com/recipe/106012343/
+  expect: import
+- message: Is my import done yet?
+  expect: import
+
+# Facts worth saving as preferences
+- message: I'm vegetarian.
+  expect: router
+  suggests: [diet]
+- message: My son is allergic to peanuts.
+  expect: router
+  suggests: [avoid]
+- message: There are 4 of us at home.
+  expect: router
+  suggests: [household]
+- message: We're vegetarian — what should I make for dinner?
+  expect: recommend
+  suggests: [diet]
+
+# A follow-up stays with the specialist that answered last
+- message: anything quicker?
+  history:
+    - [user, Something warm for dinner?]
+    - [recommend, How about the Chicken noodle soup? It's warming and takes about 45 minutes.]
+  expect: recommend
