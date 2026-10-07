@@ -1,6 +1,6 @@
 module Assistant
   # The buttons on a preference the assistant suggested (see Assistant::Tools::SuggestPreference): Save adds it to
-  # the user's preferences, No thanks dismisses it. Either way the reply is re-rendered with the card's new state.
+  # the user's preferences, Skip dismisses it. Either way the reply is re-rendered with the card's new state.
   class SuggestionsController < BaseController
     before_action :set_suggestion
 

@@ -2,7 +2,7 @@
 # Assistant::Tools::SuggestPreference). A household suggestion replaces the household the user has, as its card
 # said. Saving it twice (a double click, or the fact added on the Preferences page meanwhile) just marks it saved.
 #
-# The reply is locked throughout, so a Save and a No thanks on the same card at once can't both go through.
+# The reply is locked throughout, so a Save and a Skip on the same card at once can't both go through.
 #
 # Returns whether the suggestion is saved.
 class SaveSuggestedPreferenceService

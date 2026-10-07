@@ -86,16 +86,19 @@
   .assistant-recipe-facts {
     @apply block text-xs text-gray-500;
   }
-  /* A preference the assistant suggests saving, with Save / No thanks */
+  /* A preference the assistant suggests saving, with Save / Skip */
   .assistant-suggestion {
     @apply rounded-lg border border-dashed border-gray-300 px-3 py-2;
   }
   .assistant-suggestion-fact {
     @apply flex items-center gap-3;
   }
-  /* Save and No thanks side by side under the fact, half the card each */
+  /* Save and Skip side by side under the fact, half the card each */
   .assistant-suggestion-actions {
     @apply mt-3 grid grid-cols-2 gap-2;
+  }
+  .assistant-suggestion-actions button {
+    @apply whitespace-nowrap;
   }
   /* An imported draft that's ready to review */
   .assistant-draft-ready {

@@ -19,7 +19,7 @@ module Assistant
 
       def description
         "Offer to save a lasting fact the user just told you about what they eat or who they cook for, so you " \
-          "remember it next time. They see it as a card with Save and No thanks buttons; you can't save it " \
+          "remember it next time. They see it as a card with Save and Skip buttons; you can't save it " \
           "yourself, and it isn't saved until they click Save, so don't ask them to confirm in your reply or say " \
           "you'll remember it. Only for facts they stated, not guesses, and " \
           "not for what's already in their preferences or what you suggested earlier in this chat (saved or " \

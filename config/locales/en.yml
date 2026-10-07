@@ -301,7 +301,7 @@ en:
     send: "Send"
     servings: "Serves %{count}"
     suggestion:
-      dismiss: "No thanks"
+      dismiss: "Skip"
       dismissed: "Not saved"
       replace: "Replace “%{value}” in your preferences?"
       save: "Save"

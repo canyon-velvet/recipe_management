@@ -21,7 +21,7 @@ RSpec.describe "Suggested preferences in the assistant's replies", type: :reques
     expect(user.preferences.sole).to have_attributes(category: "avoid", value: "peanut")
   end
 
-  it "dismisses it on No thanks, saving nothing" do
+  it "dismisses it on Skip, saving nothing" do
     post dismiss_assistant_message_suggestion_path(reply, 0), headers: turbo_stream
 
     expect(response.body).to include("Not saved")

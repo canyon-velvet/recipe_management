@@ -38,7 +38,7 @@ Rails.application.routes.draw do
   namespace :assistant do
     resources :conversations, only: [ :create ]
     resources :messages, only: [ :create ] do
-      # A reply's suggested preferences, by their position in it: Save or No thanks
+      # A reply's suggested preferences, by their position in it: Save or Skip
       resources :suggestions, only: [] do
         member do
           post :save

@@ -1,6 +1,6 @@
 <%# locals: (message:, index:, suggestion:) %>
 <%# A preference the assistant suggests saving. The user decides: Save adds it to their Preferences (a household one
-    replaces the household they have), No thanks dismisses it. Once decided, the card says what happened. The fact
+    replaces the household they have), Skip dismisses it. Once decided, the card says what happened. The fact
     comes first, the buttons in a row under it. %>
 <% category = t("preferences.categories.#{suggestion["category"]}.title") %>
 <li class="assistant-suggestion">

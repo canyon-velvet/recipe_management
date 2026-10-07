@@ -144,7 +144,7 @@ RSpec.describe "Assistant panel", type: :system do
       within(first(".assistant-suggestion")) { click_button "Save" }
       expect(page).to have_link("✓ Saved to Preferences")
 
-      within(all(".assistant-suggestion").last) { click_button "No thanks" }
+      within(all(".assistant-suggestion").last) { click_button "Skip" }
       expect(page).to have_text("Not saved")
     end
 

@@ -299,7 +299,7 @@ zh-CN:
     send: "发送"
     servings: "%{count} 人份"
     suggestion:
-      dismiss: "不用了"
+      dismiss: "跳过"
       dismissed: "未保存"
       replace: "替换饮食偏好里的“%{value}”？"
       save: "保存"
