@@ -1,18 +1,19 @@
 <%# locals: (draft:) %>
 <%# A draft the assistant imported, under its reply. It follows the import as it's read (Draft broadcasts it to every
-    card with its class): Reading…, then ready to review (the card opens the review form), or why it failed (the card
-    opens the Draft box). %>
-<%= link_to draft.ready? ? new_recipe_path(draft_id: draft.id) : drafts_path,
-            class: "assistant-recipe assistant-draft-#{draft.id}" do %>
-  <span class="assistant-recipe-icon" aria-hidden="true">📥</span>
-  <span class="min-w-0">
-    <span class="assistant-recipe-name"><%= draft.title %></span>
-    <% if draft.ready? %>
-      <span class="assistant-draft-ready"><%= t("assistant.draft_ready") %></span>
-    <% elsif draft.failed? %>
-      <span class="assistant-recipe-warning"><%= t(draft.failure_reason_key, scope: "drafts.failures") %></span>
-    <% else %>
-      <span class="assistant-recipe-facts assistant-thinking"><%= t("drafts.statuses.reading") %></span>
-    <% end %>
-  </span>
-<% end %>
+    card with its class, and removes them once the draft is saved or discarded): Reading…, then ready to review (the
+    card opens the review form), or why it failed (the card opens the Draft box). %>
+<li class="assistant-draft-<%= draft.id %>">
+  <%= link_to draft.ready? ? new_recipe_path(draft_id: draft.id) : drafts_path, class: "assistant-recipe" do %>
+    <span class="assistant-recipe-icon" aria-hidden="true">📥</span>
+    <span class="min-w-0">
+      <span class="assistant-recipe-name"><%= draft.title %></span>
+      <% if draft.ready? %>
+        <span class="assistant-draft-ready"><%= t("assistant.draft_ready") %></span>
+      <% elsif draft.failed? %>
+        <span class="assistant-recipe-warning"><%= t(draft.failure_reason_key, scope: "drafts.failures") %></span>
+      <% else %>
+        <span class="assistant-recipe-facts assistant-thinking"><%= t("drafts.statuses.reading") %></span>
+      <% end %>
+    </span>
+  <% end %>
+</li>

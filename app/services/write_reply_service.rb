@@ -47,6 +47,7 @@ class WriteReplyService
 
   # Runs the agent's turn. The reply records who wrote it, even if it fails.
   def run(agent)
+    @agent = agent
     @reply.agent = agent.name
     context = @context ||= @reply.conversation.context(CONTEXT_MESSAGES + 1)
     RunAgentService.new(agent, reply: @reply, run: @run, context: context, client: client).call
@@ -55,17 +56,17 @@ class WriteReplyService
   def save(agent, responses)
     text = responses.map { |response| final_text(response) }.compact_blank.join("\n\n")
     cards = agent.shown_cards
+    @reply.draft_ids = agent.turn.draft_ids
 
     if responses.last.stop_reason == :refusal
       finish(I18n.t("assistant.declined"))
       @run.fail!("refusal: #{responses.last.stop_details&.category}")
-    elsif text.blank? && cards.empty?
+    elsif text.blank? && cards.empty? && @reply.draft_ids.empty?
       # An empty reply would be sent back as history, which the API rejects, breaking the rest of the chat.
       fail_reply("empty reply")
     else
-      # Cards carry their own reasons, so a reply can be just its cards.
+      # Cards say enough on their own (a recipe's has its reason, a draft's its status), so a reply can be just them.
       @reply.cards = cards
-      @reply.draft_ids = agent.turn.draft_ids
       finish(text)
       @run.succeed!
     end
@@ -86,6 +87,8 @@ class WriteReplyService
 
   def fail_reply(error)
     message = error.is_a?(Exception) ? "#{error.class}: #{error.message}" : error
+    # Imports the agent started go on, so their cards stay under the error.
+    @reply.draft_ids = @agent.turn.draft_ids if @agent
     @reply.update!(status: :failed)
     @run&.fail!(message)
     @reply.broadcast_to_panel

@@ -191,6 +191,26 @@ RSpec.describe WriteReplyService do
       expect(conversation.user.drafts.sole.source_url).to eq link
       expect(reply.draft_ids).to eq [ conversation.user.drafts.sole.id ] # its card under the reply
     end
+
+    it "keeps the draft's card when the reply fails after the import started, or says nothing more" do
+      error = Anthropic::Errors::APIConnectionError.new(url: URI("https://api.anthropic.com/v1/messages"))
+      client = FakeClaude.new(tool_uses: [ { name: "transfer_to_import", input: {} } ])
+                         .and_then(tool_uses: [ { name: "import_recipe", input: { url: link } } ])
+                         .and_then([], error: error)
+
+      write(client)
+
+      expect(reply.reload).to have_attributes(status: "failed", draft_ids: [ conversation.user.drafts.sole.id ])
+
+      quiet = conversation.ask("And https://example.com/stew").last
+      client = FakeClaude.new(tool_uses: [ { name: "transfer_to_import", input: {} } ])
+                         .and_then(tool_uses: [ { name: "import_recipe", input: { url: "https://example.com/stew" } } ])
+                         .and_then([])
+
+      described_class.new(quiet, client: client).call
+
+      expect(quiet.reload).to have_attributes(status: "done", content: "", draft_ids: [ be_a(Integer) ])
+    end
   end
 
   it "doesn't pin when the router wrote the last reply" do
