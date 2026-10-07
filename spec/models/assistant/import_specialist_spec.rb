@@ -16,7 +16,7 @@ RSpec.describe Assistant::ImportSpecialist do
   it "only imports links from the message it answers" do
     specialist = described_class.new(user, question: "Import https://example.com/mapo-tofu")
 
-    expect(specialist.turn.asked_for?("https://example.com/mapo-tofu")).to be true
-    expect(specialist.turn.asked_for?("https://example.com/other")).to be false
+    expect(specialist.turn.link_for("https://example.com/mapo-tofu")).to eq "https://example.com/mapo-tofu"
+    expect(specialist.turn.link_for("https://example.com/other")).to be_nil
   end
 end

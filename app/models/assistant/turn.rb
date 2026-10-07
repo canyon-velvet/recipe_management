@@ -22,10 +22,8 @@ module Assistant
     # Importing this rather than Claude's copy keeps stray punctuation out of the link.
     def link_for(url)
       link = canonical(url.to_s)
-      link if links.include?(link)
+      link if link && links.include?(link)
     end
-
-    def asked_for?(url) = link_for(url).present?
 
     private
 
@@ -33,7 +31,19 @@ module Assistant
     # (rare for recipe sites) is cut short and won't match.
     def links = @links ||= URI::RFC2396_PARSER.extract(@question, %w[http https]).map { canonical(_1) }
 
-    # Punctuation after a link in a sentence ("…/mapo-tofu, and") isn't part of it.
-    def canonical(url) = RecipeLink.normalize(url.sub(/[.,;:!?)\]'"]+\z/, ""))
+    # Punctuation after a link in a sentence ("…/mapo-tofu, and") isn't part of it. A closing bracket is, when the
+    # link opened it: ".../Mapo_tofu_(dish)" keeps its ")", but "(see https://…/mapo-tofu)." loses ")." .
+    def canonical(url)
+      url = url.strip
+      loop do
+        trimmed = url.sub(/[.,;:!?'"]+\z/, "")
+        trimmed = trimmed.chomp(")") if trimmed.count(")") > trimmed.count("(")
+        trimmed = trimmed.chomp("]") if trimmed.count("]") > trimmed.count("[")
+        break if trimmed == url
+
+        url = trimmed
+      end
+      RecipeLink.normalize(url)
+    end
   end
 end
