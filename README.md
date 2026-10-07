@@ -41,11 +41,11 @@ shopping list.
   list, grouped by store aisle in shopping order. I can rename, reorder and add aisles.
 - **Skip what I already have.** Mark items I already have at home, and they stay marked
   even when the meal plan changes.
-
-## What's next
-
-Next, I plan to add an **AI chat assistant** that suggests recipes based on my preferences and
-requirements, so I can just ask for what I feel like cooking.
+- **Ask the assistant.** A chat panel (✦) beside any page. It answers cooking questions,
+  recommends recipes from my own collection with a reason for each, and imports a recipe from a
+  link I paste. When I mention something like "we're vegetarian", it offers to save it to my
+  preferences, which it follows from then on. Behind it, a router on Claude Haiku answers itself
+  or hands over to a Recommend or Import specialist.
 
 ## A note on language
 

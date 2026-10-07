@@ -11,13 +11,13 @@ RSpec.describe "Planning the week", type: :system do
     breakfast = create(:tag, key: "breakfast", kind: "meal")
     quick = create(:tag, key: "quick", kind: "convenience")
 
-    create_recipe "Tomato and egg stir-fry", tags: [ chinese, dinner, quick ],
+    create_recipe user, "Tomato and egg stir-fry", tags: [ chinese, dinner, quick ],
                   ingredients: { "Tomatoes" => "produce", "Eggs" => "dairy_eggs", "Scallions" => "produce",
                                  "Soy sauce" => "spices_seasonings" }
-    create_recipe "Mapo tofu", tags: [ chinese, dinner ],
+    create_recipe user, "Mapo tofu", tags: [ chinese, dinner ],
                   ingredients: { "Tofu" => "produce", "Ground pork" => "meat_seafood", "Scallions" => "produce",
                                  "Doubanjiang" => "spices_seasonings" }
-    create_recipe "Overnight oats", tags: [ breakfast, quick ],
+    create_recipe user, "Overnight oats", tags: [ breakfast, quick ],
                   ingredients: { "Rolled oats" => "pantry", "Milk" => "dairy_eggs", "Blueberries" => "produce" }
   end
 
@@ -51,16 +51,6 @@ RSpec.describe "Planning the week", type: :system do
   end
 
   private
-
-  def create_recipe(name, tags:, ingredients:)
-    recipe = build(:recipe, user: user, name: name, tags: tags)
-    ingredients.each do |ingredient_name, aisle_key|
-      ingredient = user.ingredients.named(ingredient_name).first ||
-                   create(:ingredient, user: user, name: ingredient_name, aisle_key: aisle_key)
-      recipe.recipe_ingredients.build(ingredient: ingredient)
-    end
-    recipe.save!
-  end
 
   # Adds the recipe to that day's dinner through the search pop-up, then ticks it for the grocery list.
   def plan_dinner(meal_plan, day, recipe_name, search:)
