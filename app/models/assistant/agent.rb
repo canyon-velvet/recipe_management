@@ -32,6 +32,10 @@ module Assistant
         **request_options }
     end
 
+    # Sent with the agent's first model call of a reply only, such as a tool_choice that makes it act before it
+    # answers.
+    def first_call_options = {}
+
     # The recipes the agent chose to show as cards under its reply, with why: { recipe id => reason }.
     def shown_cards = tools.grep(Tools::ShowRecipes).map(&:cards).reduce({}, :merge)
 

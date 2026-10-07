@@ -14,8 +14,9 @@ module Assistant
       into their Draft box, and tell them how their imports are going.
 
       Call import_recipe for each recipe link in the user's latest message, at most
-      #{Tools::ImportRecipe::MAX_PER_REPLY}. An import is read in the background: say it has started and that
-      they'll get a notification when it's ready to review in their Draft box. If the link is already a saved
+      #{Tools::ImportRecipe::MAX_PER_REPLY}. An import is read in the background: when import_recipe says it
+      started, say so and that they'll get a notification when it's ready to review in their Draft box. Never say
+      an import started unless import_recipe said so. If the link is already a saved
       recipe, call show_recipes with it so it appears as a card. If it's already in the Draft box, or can't be
       imported, say so and why.
 
@@ -26,6 +27,11 @@ module Assistant
     PROMPT
 
     def system_prompt = "#{PROMPT}\n#{language_rule}\n"
+
+    # It must call a tool before it answers: left to choose, Haiku sometimes said an import had started without
+    # starting it. Only the first call: after the tools' results it writes its reply. (Haiku 4.5 has no thinking
+    # here, so the request may differ between calls.)
+    def first_call_options = { tool_choice: { type: :any } }
 
     private
 

@@ -64,6 +64,16 @@ RSpec.describe RunAgentService do
     expect(result).to include(is_error: true, content: { error: "There's no tool called delete_recipe." }.to_json)
   end
 
+  it "sends the agent's first-call options with its first model call only" do
+    agent = Assistant::ImportSpecialist.new(user, question: "Import https://example.com/mapo-tofu")
+    client = FakeClaude.new(tool_uses: [ { name: "list_drafts", input: {} } ]).and_then([ "Nothing yet." ])
+
+    run_agent(client, agent: agent)
+
+    expect(client.requests.first).to include(tool_choice: { type: :any })
+    expect(client.requests.second).not_to have_key(:tool_choice)
+  end
+
   it "stops when the model hands the conversation to another agent" do
     client = FakeClaude.new(tool_uses: [ { name: "transfer_to_recommend", input: {} } ])
 
