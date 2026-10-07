@@ -1,6 +1,7 @@
 # Recipe Manager
 
-One place for all the recipes I've saved, and a weekly meal plan that writes my grocery list for me.
+One place for all the recipes I've saved, an assistant that helps me pick what to cook from them, and a weekly
+meal plan that writes my grocery list for me.
 
 **Plan the week and get the grocery list**
 
@@ -12,10 +13,9 @@ One place for all the recipes I've saved, and a weekly meal plan that writes my 
 [import_recipe.webm](https://github.com/user-attachments/assets/4f91e8ca-434b-446f-8be3-c96b4ce65d06)
 
 
-**Ask the assistant**
+**Ask the assistant: cooking questions, recipe ideas, imports and preferences**
 
 [ask_the_assistant.webm](https://github.com/user-attachments/assets/f5f040cc-9a88-4b27-b643-746247334c4e)
-
 
 
 ## The problem
@@ -25,8 +25,8 @@ media, and several different recipe apps. When it was time to decide what to coo
 remember where each one lived. When it was time to shop, I had to open every recipe and copy the
 ingredients by hand.
 
-I wanted one website that collects every recipe I care about and turns a week of meals into a
-shopping list.
+I wanted one website that collects every recipe I care about, helps me decide what to cook, and
+turns a week of meals into a shopping list.
 
 ## What it does
 
