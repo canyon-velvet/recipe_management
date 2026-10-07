@@ -285,11 +285,13 @@ en:
     title: "Edit aisles"
 
   assistant:
+    checking_drafts: "Checking your Draft box…"
     close: "Close assistant"
     contains_avoided: "⚠️ Contains %{items}"
     declined: "Sorry, I can't help with that one."
     empty: "Ask me what to cook tonight, what you can make with what's in the fridge, or paste a recipe link to import."
     failed: "Sorry, something went wrong. Please try again."
+    importing: "Importing the recipe…"
     limit_reached: "You've sent today's %{count} messages. Please come back tomorrow."
     new_chat: "New chat"
     open: "Open assistant"

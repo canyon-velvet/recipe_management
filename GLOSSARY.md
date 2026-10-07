@@ -29,7 +29,7 @@ _Avoid_: Ingredient category, category, ingredient type
 ## Importing
 
 **Import**:
-Turning a recipe link or pasted recipe text into a draft. It runs in the background while the user does other things.
+Turning a recipe link or pasted recipe text into a draft, from the Import page or by sending a link to the assistant. It runs in the background while the user does other things.
 _Avoid_: Scrape, parse, fetch
 
 **Draft**:

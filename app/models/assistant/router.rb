@@ -6,7 +6,7 @@ module Assistant
     NAME = "router"
     # Adding a specialist here gives the router its transfer tool. A specialist sets TITLE and HANDLES (when to hand
     # over) for it, and its NAME must be one of Message's agents (with the messages_agent_known check constraint).
-    SPECIALISTS = [ RecommendSpecialist ].freeze
+    SPECIALISTS = [ RecommendSpecialist, ImportSpecialist ].freeze
 
     PROMPT = <<~PROMPT.freeze
       You are the assistant in a home recipe app. The user collects recipes, plans the week's meals, and gets a
@@ -19,9 +19,8 @@ module Assistant
       specialist will answer. You can't see the user's saved recipes yourself, so never claim a recipe is in their
       collection.
 
-      You can't take actions in the app yet, such as importing a recipe link, saving a recipe or changing a meal
-      plan. Never say you did; point the user to the app instead (for a link, the Import recipe button on All
-      Recipes).
+      Apart from what your transfer tools hand over, you can't take actions in the app yet, such as saving a recipe
+      or changing a meal plan. Never say you did; point the user to the app instead.
     PROMPT
 
     # last_agent: who wrote the conversation's last reply, e.g. "recommend".

@@ -173,6 +173,25 @@ RSpec.describe WriteReplyService do
     end
   end
 
+  describe "handing off to the Import specialist" do
+    let(:link) { "https://example.com/mapo-tofu" }
+    let(:reply) { conversation.ask("Can you import #{link}?").last }
+
+    it "imports the link from the user's message into their Draft box, on Haiku" do
+      client = FakeClaude.new(tool_uses: [ { name: "transfer_to_import", input: {} } ])
+                         .and_then(tool_uses: [ { name: "import_recipe", input: { url: link } } ])
+                         .and_then([ "Importing it now; you'll get a notification when it's ready." ])
+
+      expect { write(client) }.to have_enqueued_job(ImportRecipeJob)
+
+      expect(reply.reload).to have_attributes(status: "done", agent: "import",
+                                              content: "Importing it now; you'll get a notification when it's ready.")
+      expect(reply.run.model).to eq "claude-haiku-4-5"
+      expect(client.requests.second[:tools].pluck(:name)).to eq %w[import_recipe list_drafts show_recipes]
+      expect(conversation.user.drafts.sole.source_url).to eq link
+    end
+  end
+
   it "doesn't pin when the router wrote the last reply" do
     client = FakeClaude.new([ "Eggs!" ])
 
