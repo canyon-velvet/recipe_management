@@ -1,6 +1,12 @@
 require "rails_helper"
 
 RSpec.describe Assistant::Turn do
+  it "lists the links in the user's message" do
+    expect(described_class.new("Import https://example.com/a, and https://example.com/b.").links)
+      .to eq %w[https://example.com/a https://example.com/b]
+    expect(described_class.new("Is my import done?").links).to eq []
+  end
+
   describe "#link_for" do
     let(:turn) do
       described_class.new("Import https://Example.com/mapo-tofu?utm_source=feed, and 看看 " \

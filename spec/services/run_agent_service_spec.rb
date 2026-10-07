@@ -65,7 +65,7 @@ RSpec.describe RunAgentService do
   end
 
   it "sends the agent's first-call options with its first model call only" do
-    agent = Assistant::ImportSpecialist.new(user, question: "Import https://example.com/mapo-tofu")
+    agent = Assistant::ImportSpecialist.new(user, question: "Is my import done?")
     client = FakeClaude.new(tool_uses: [ { name: "list_drafts", input: {} } ]).and_then([ "Nothing yet." ])
 
     run_agent(client, agent: agent)

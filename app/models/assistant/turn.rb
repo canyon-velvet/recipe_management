@@ -25,11 +25,11 @@ module Assistant
       link if link && links.include?(link)
     end
 
-    private
+    # The links in the user's message, in canonical form. The RFC 2396 parser is the one with #extract. It only reads
+    # ASCII, so a link with raw non-ASCII characters (rare for recipe sites) is cut short and won't match.
+    def links = @links ||= URI::RFC2396_PARSER.extract(@question, %w[http https]).map { canonical(_1) }.compact
 
-    # The RFC 2396 parser is the one with #extract. It only reads ASCII, so a link with raw non-ASCII characters
-    # (rare for recipe sites) is cut short and won't match.
-    def links = @links ||= URI::RFC2396_PARSER.extract(@question, %w[http https]).map { canonical(_1) }
+    private
 
     # Punctuation after a link in a sentence ("…/mapo-tofu, and") isn't part of it. A closing bracket is, when the
     # link opened it: ".../Mapo_tofu_(dish)" keeps its ")", but "(see https://…/mapo-tofu)." loses ")." .

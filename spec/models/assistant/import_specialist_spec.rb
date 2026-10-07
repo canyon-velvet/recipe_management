@@ -13,8 +13,15 @@ RSpec.describe Assistant::ImportSpecialist do
     expect(specialist.system_prompt.strip).to end_with("use English, the app's language.")
   end
 
-  it "has to call a tool before it answers, so it never says it imported a link it didn't" do
-    expect(described_class.new(user).first_call_options).to eq(tool_choice: { type: :any })
+  it "has to import a link the user sent before it answers, so it never claims an import it didn't start" do
+    with_link = described_class.new(user, question: "Can you import https://example.com/mapo-tofu?")
+
+    expect(with_link.first_call_options).to eq(tool_choice: { type: :tool, name: "import_recipe" })
+  end
+
+  it "has to call some tool before answering a message without a link, such as \"is my import done?\"" do
+    expect(described_class.new(user, question: "Is my import done?").first_call_options)
+      .to eq(tool_choice: { type: :any })
     expect(Assistant::RecommendSpecialist.new(user).first_call_options).to eq({})
   end
 

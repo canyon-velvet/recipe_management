@@ -28,10 +28,18 @@ module Assistant
 
     def system_prompt = "#{PROMPT}\n#{language_rule}\n"
 
-    # It must call a tool before it answers: left to choose, Haiku sometimes said an import had started without
-    # starting it. Only the first call: after the tools' results it writes its reply. (Haiku 4.5 has no thinking
-    # here, so the request may differ between calls.)
-    def first_call_options = { tool_choice: { type: :any } }
+    # It must act before it answers. Left to choose, Haiku said an import had started without starting it, and when
+    # made to call some tool it checked the Draft box instead and claimed the recipe was saved. So a message with a
+    # link always gets import_recipe; any other ("is it done?") gets a tool of its choice, in practice list_drafts.
+    # Only the first call: after the tools' results it writes its reply. (Haiku 4.5 has no thinking here, so the
+    # request may differ between calls.)
+    def first_call_options
+      if turn.links.any?
+        { tool_choice: { type: :tool, name: Tools::ImportRecipe::NAME } }
+      else
+        { tool_choice: { type: :any } }
+      end
+    end
 
     private
 
