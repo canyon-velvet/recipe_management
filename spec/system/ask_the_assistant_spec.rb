@@ -66,7 +66,7 @@ RSpec.describe "Asking the assistant", type: :system do
     reply = ask("We're vegetarian — what can I cook tonight with eggs and tomatoes?", agent: "recommend")
     within(reply) do
       expect(page).to have_css(".assistant-recipe-why")
-      within(".assistant-suggestion", text: "Diet") { click_button "Save" }
+      within(first(".assistant-suggestion", text: /Diet: .*vegetarian/im)) { click_button "Save" }
       expect(page).to have_link("✓ Saved to Preferences")
     end
 
@@ -75,6 +75,7 @@ RSpec.describe "Asking the assistant", type: :system do
     # (Fetching the page and Claude's cleanup take a while. Stop waiting as soon as it's done either way, so a failed
     # import shows its reason right away.)
     within(reply) do
+      expect(page).to have_css("[class^='assistant-draft-']"), -> { "No import started: #{text}" }
       using_wait_time(120) { expect(page).to have_css(".assistant-draft-ready, .assistant-recipe-warning") }
       expect(page).to have_css(".assistant-draft-ready"), -> { "Import failed: #{text}" }
     end
@@ -82,7 +83,7 @@ RSpec.describe "Asking the assistant", type: :system do
     # The router hears a new household size and offers to replace the one saved
     reply = ask("There are 4 of us at home now.", agent: "router")
     within(reply) do
-      within(".assistant-suggestion", text: "Replace “2 people”") { click_button "Save" }
+      within(first(".assistant-suggestion", text: /Household: .*4.*Replace “2 people”/m)) { click_button "Save" }
       click_link "✓ Saved to Preferences"
     end
 

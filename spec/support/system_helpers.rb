@@ -15,7 +15,7 @@ module SystemHelpers
                    create(:ingredient, user: user, name: ingredient_name, aisle_key: aisle_key)
       recipe.recipe_ingredients.build(ingredient: ingredient)
     end
-    recipe.save!
+    recipe.tap(&:save!)
   end
 end
 

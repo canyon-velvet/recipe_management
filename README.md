@@ -44,8 +44,8 @@ turns a week of meals into a shopping list.
 - **Ask the assistant.** A chat panel (✦) beside any page. It answers cooking questions,
   recommends recipes from my own collection with a reason for each, and imports a recipe from a
   link I paste. When I mention something like "we're vegetarian", it offers to save it to my
-  preferences, which it follows from then on. Behind it, a router on Claude Haiku answers itself
-  or hands over to a Recommend or Import specialist.
+  preferences, which its recommendations follow from then on. Behind it, a router on Claude
+  Haiku answers itself or hands over to a Recommend or Import specialist.
 
 ## A note on language
 
