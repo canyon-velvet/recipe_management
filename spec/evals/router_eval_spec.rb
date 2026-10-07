@@ -14,8 +14,6 @@ require_relative "reply_transcript"
 # Imports it starts are only queued, so no pages are fetched. Everything it saves is rolled back with the test
 # database.
 RSpec.describe "Assistant router eval", if: ENV["LIVE_ASSISTANT"].present? do
-  Result = Data.define(:number, :message, :passed, :routed, :notes, :transcript)
-
   cases = YAML.load_file(Rails.root.join("spec/evals/router_cases.yml"))
   results = []
 
@@ -36,7 +34,7 @@ RSpec.describe "Assistant router eval", if: ENV["LIVE_ASSISTANT"].present? do
     ActiveJob::Base.queue_adapter = queue_adapter
   end
 
-  after(:all) { report(results.sort_by(&:number)) if results.any? }
+  after(:all) { report(results.sort_by { _1[:number] }) if results.any? }
 
   cases.each.with_index(1) do |eval_case, number|
     it "#{number}. #{eval_case['message']}" do
@@ -78,28 +76,29 @@ RSpec.describe "Assistant router eval", if: ENV["LIVE_ASSISTANT"].present? do
     misses = []
     misses << "expected #{eval_case['expect']}" if reply.agent != eval_case["expect"]
     misses << "didn't suggest #{missing.join(', ')}" if missing.any?
-    # Not a routing miss, but worth knowing.
-    failure = "the reply failed: #{reply.run&.error}" if reply.failed?
-    Result.new(number: number, message: eval_case["message"], passed: misses.empty?, routed: reply.agent,
-               notes: [ *misses, failure ].compact, transcript: ReplyTranscript.new(reply).to_s)
+    # The reply records the router as its writer before the first call, so an outage would otherwise pass as routed.
+    misses << "the reply failed: #{reply.run&.error}" if reply.failed?
+    { number: number, message: eval_case["message"], routed: reply.agent, misses: misses,
+      transcript: ReplyTranscript.new(reply).to_s }
   end
 
   def report(results)
-    passed = results.count(&:passed)
+    score = "#{results.count { _1[:misses].empty? }}/#{results.size} passed"
     log = Rails.root.join("log/evals/router-#{Time.current.strftime('%Y%m%d-%H%M%S')}.md")
     FileUtils.mkdir_p(log.dirname)
-    File.write(log, [ "# Router eval: #{passed}/#{results.size} passed", *results.map { log_entry(_1) } ].join("\n\n") + "\n")
+    File.write(log, [ "# Router eval: #{score}", *results.map { log_entry(_1) } ].join("\n\n") + "\n")
 
-    puts "\nRouter eval: #{passed}/#{results.size} passed"
+    puts "\nRouter eval: #{score}"
     results.each { |result| puts "  #{summary(result)}" }
     puts "Log: #{log.relative_path_from(Rails.root)}"
   end
 
   # e.g. "FAIL 11. Is my import done yet? → router (expected import)"
   def summary(result)
-    notes = " (#{result.notes.join('; ')})" if result.notes.any?
-    "#{result.passed ? 'PASS' : 'FAIL'} #{result.number}. #{result.message.truncate(60)} → #{result.routed}#{notes}"
+    number, message, routed, misses = result.values_at(:number, :message, :routed, :misses)
+    line = "#{misses.empty? ? 'PASS' : 'FAIL'} #{number}. #{message.truncate(60)} → #{routed}"
+    misses.empty? ? line : "#{line} (#{misses.join('; ')})"
   end
 
-  def log_entry(result) = "## #{summary(result)}\n\n#{result.transcript}"
+  def log_entry(result) = "## #{summary(result)}\n\n#{result[:transcript]}"
 end

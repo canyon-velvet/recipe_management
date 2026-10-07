@@ -19,9 +19,10 @@ class ReplyTranscript
     end
   end
 
+  # A reply that failed before its run started has none.
   def steps
     agent = nil
-    @reply.run.steps.flat_map do |step|
+    Array(@reply.run&.steps).flat_map do |step|
       next tool_call(step) unless step.model
 
       handoff = "→ handed over to **#{step.name}**" if agent && step.name != agent
@@ -30,8 +31,11 @@ class ReplyTranscript
     end
   end
 
+  # A call that failed has no tokens or output, only its error.
   def model_call(step)
-    output = step.output || {}
+    output = step.output
+    return "- **#{step.name}** (#{step.model})#{error(step)}" unless output
+
     line = "- **#{step.name}** (#{step.model}, #{step.input_tokens} in / #{step.output_tokens} out): " \
            "#{Array(output['blocks']).join(', ')}; stopped: #{output['stop_reason']}#{error(step)}"
     [ line, quote(output["text"]) ].compact.join("\n")
@@ -45,7 +49,7 @@ class ReplyTranscript
     reply = [ "**Reply** (#{@reply.status}, by #{@reply.agent}):", quote(@reply.content) ].compact.join("\n")
     extras = @reply.recipes.map { |recipe| "- Card: #{recipe.name} — #{@reply.card_reason(recipe)}" }
     extras += @reply.preference_suggestions.map { |s| "- Suggested: #{s['category']}: #{s['value']}" }
-    extras << "- Run error: #{@reply.run.error}" if @reply.run.error
+    extras << "- Run error: #{@reply.run.error}" if @reply.run&.error
     [ reply, extras.join("\n").presence ]
   end
 
