@@ -1,0 +1,28 @@
+require "rails_helper"
+
+RSpec.describe Draft do
+  describe "its cards in the assistant's chat" do
+    let(:user) { create(:user) }
+    let(:draft) { user.drafts.create!(source_url: "https://example.com/mapo-tofu") }
+
+    before { allow(Turbo::StreamsChannel).to receive(:broadcast_replace_to) }
+
+    it "follows the import as it's read" do
+      draft.update!(status: :ready, data: { "name" => "Mapo tofu" })
+
+      expect(Turbo::StreamsChannel).to have_received(:broadcast_replace_to).with(
+        [ user, :assistant ], targets: ".assistant-draft-#{draft.id}",
+                              partial: "assistant/messages/draft_card", locals: { draft: draft }
+      )
+    end
+
+    it "goes once the draft is saved or discarded" do
+      allow(Turbo::StreamsChannel).to receive(:broadcast_remove_to)
+
+      draft.destroy!
+
+      expect(Turbo::StreamsChannel).to have_received(:broadcast_remove_to)
+        .with([ user, :assistant ], targets: ".assistant-draft-#{draft.id}")
+    end
+  end
+end

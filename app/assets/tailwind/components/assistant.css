@@ -26,12 +26,10 @@
   .assistant-open {
     padding-right: var(--assistant-width);
   }
-  /* "Recipe ready" toasts sit beside the panel, whether it squeezes or covers the page, instead of over its Send
-     button. On phones the panel is the whole screen, so there's no beside. */
-  @media (width >= 48rem) {
-    .assistant-open .toast-stack {
-      right: calc(var(--assistant-panel-width) + 1rem);
-    }
+  /* No "Recipe ready" toasts while the chat is open: a draft imported from the chat shows it on its card there, and
+     the account menu's dot shows the rest. */
+  .assistant-open .toast-stack {
+    @apply hidden;
   }
 
   .assistant-header {
@@ -87,6 +85,10 @@
   }
   .assistant-recipe-facts {
     @apply block text-xs text-gray-500;
+  }
+  /* An imported draft that's ready to review */
+  .assistant-draft-ready {
+    @apply block text-xs font-semibold text-green-700;
   }
   /* Why the assistant recommends it */
   .assistant-recipe-why {

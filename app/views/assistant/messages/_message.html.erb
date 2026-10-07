@@ -28,4 +28,12 @@
       </ul>
     <% end %>
   <% end %>
+  <%# Even under a failed reply: the imports it started go on. %>
+  <% if (drafts = message.drafts).any? %>
+    <ul class="assistant-recipes">
+      <% drafts.each do |draft| %>
+        <%= render "assistant/messages/draft_card", draft: draft %>
+      <% end %>
+    </ul>
+  <% end %>
 </div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_07_090000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_07_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -118,6 +118,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_07_090000) do
     t.string "agent"
     t.bigint "recipe_ids", default: [], null: false, array: true
     t.jsonb "card_reasons", default: {}, null: false
+    t.bigint "draft_ids", default: [], null: false, array: true
     t.index ["conversation_id", "created_at"], name: "index_messages_on_conversation_id_and_created_at"
     t.check_constraint "agent::text = ANY (ARRAY['router'::character varying, 'recommend'::character varying, 'import'::character varying]::text[])", name: "messages_agent_known"
     t.check_constraint "role::text = ANY (ARRAY['user'::character varying, 'assistant'::character varying]::text[])", name: "messages_role_known"
