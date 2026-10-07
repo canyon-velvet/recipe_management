@@ -157,6 +157,17 @@ RSpec.describe WriteReplyService do
       expect(reply.run.steps.pluck(:name)).to eq %w[router suggest_preference recommend]
     end
 
+    it "suggests at most 3 facts per reply, counting the router's and the specialist's together" do
+      suggest = ->(value) { { name: "suggest_preference", input: { category: "likes", value: value } } }
+      client = FakeClaude.new(tool_uses: [ suggest.("tofu"), suggest.("rice"), transfer ])
+                         .and_then(tool_uses: [ suggest.("noodles"), suggest.("eggs") ])
+                         .and_then([ "Noted." ])
+
+      write(client)
+
+      expect(reply.reload.preference_suggestions.pluck("value")).to eq %w[tofu rice noodles]
+    end
+
     it "saves a reply that's only cards, as each card says why" do
       client = FakeClaude.new(tool_uses: [ transfer ])
                          .and_then(tool_uses: [ { name: "get_recipe", input: { id: tofu.id } } ])

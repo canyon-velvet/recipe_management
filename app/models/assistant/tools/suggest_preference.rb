@@ -16,11 +16,6 @@ module Assistant
                       "Preferences page, e.g. \"vegetarian\", \"peanut\", \"2 adults and a toddler\"."
       end
 
-      def initialize(user, turn)
-        super
-        @suggested = 0
-      end
-
       def description
         "Offer to save a lasting fact the user just told you about what they eat or who they cook for, so you " \
           "remember it next time. They see it as a card with Save and No thanks buttons; you can't save it " \
@@ -36,12 +31,14 @@ module Assistant
         value = input[:value].to_s.squish
         return { error: "Unknown category #{category}." } unless Preference::CATEGORIES.include?(category)
         return { error: "Give the fact in at most 100 characters." } if value.empty? || value.length > 100
-        return { error: "You can suggest at most #{MAX_PER_REPLY} facts per reply." } if @suggested >= MAX_PER_REPLY
+        # Counted on the reply's Turn, which the router and the specialist it hands over to share.
+        if @turn.suggestions.size >= MAX_PER_REPLY
+          return { error: "You can suggest at most #{MAX_PER_REPLY} facts per reply." }
+        end
 
         preferences = @user.preferences.where(category: category)
         return { result: "already_saved" } if preferences.any? { |preference| preference.value.casecmp?(value) }
 
-        @suggested += 1
         replaces = preferences.first&.value if category == "household"
         @turn.suggest(category: category, value: value, replaces: replaces)
         { result: "suggested", replaces: replaces }.compact

@@ -38,11 +38,15 @@ RSpec.describe SaveSuggestedPreferenceService do
     expect(user.preferences.count).to eq 1
   end
 
-  it "doesn't save a suggestion the user dismissed" do
-    reply = reply_suggesting([ "likes", "tofu" ])
+  it "doesn't save a suggestion the user dismissed, and a later No thanks doesn't undo a Save" do
+    reply = reply_suggesting([ "likes", "tofu" ], [ "likes", "rice" ])
     reply.decide_suggestion!(0, "dismissed")
 
     expect(described_class.new(reply, 0).call).to be false
     expect(user.preferences).to be_empty
+
+    described_class.new(reply, 1).call
+    expect(reply.decide_suggestion!(1, "dismissed")).to be false
+    expect(reply.reload.preference_suggestions.pluck("state")).to eq %w[dismissed saved]
   end
 end

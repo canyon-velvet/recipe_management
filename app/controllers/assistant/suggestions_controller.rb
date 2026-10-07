@@ -11,7 +11,7 @@ module Assistant
     end
 
     def dismiss
-      @message.decide_suggestion!(@index, "dismissed") if @message.preference_suggestions[@index]["state"] == "pending"
+      @message.decide_suggestion!(@index, "dismissed") # only if it's still pending
       render_reply
     end
 
