@@ -26,7 +26,8 @@ class RunAgentService
     responses = []
 
     loop do
-      response = stream_step { @client.beta.messages.stream(**request, messages: messages) }
+      options = responses.empty? ? @agent.first_call_options : {}
+      response = stream_step { @client.beta.messages.stream(**request, **options, messages: messages) }
       responses << response
       tool_uses = response.content.select { |block| block.type == :tool_use }
       return responses if response.stop_reason != :tool_use || tool_uses.empty? || handoff?(tool_uses)

@@ -8,8 +8,10 @@ module Assistant
     # Plenty for a chat answer; a reply that hits it is cut off rather than failing.
     MAX_TOKENS = 8_000
 
-    def initialize(user)
+    # question: the text of the user's message the reply answers.
+    def initialize(user, question: nil)
       @user = user
+      @question = question
     end
 
     def model = self.class::MODEL
@@ -20,7 +22,7 @@ module Assistant
     def tools = @tools ||= build_tools
 
     # What the tools have found during this reply, shared between them.
-    def turn = @turn ||= Turn.new
+    def turn = @turn ||= Turn.new(@question)
 
     def tool(name) = tools.find { |tool| tool.name == name }
 
@@ -29,6 +31,10 @@ module Assistant
       { model: model, max_tokens: MAX_TOKENS, system_: system_prompt, tools: tools.map(&:definition),
         **request_options }
     end
+
+    # Sent with the agent's first model call of a reply only, such as a tool_choice that makes it act before it
+    # answers.
+    def first_call_options = {}
 
     # The recipes the agent chose to show as cards under its reply, with why: { recipe id => reason }.
     def shown_cards = tools.grep(Tools::ShowRecipes).map(&:cards).reduce({}, :merge)

@@ -21,6 +21,15 @@ RSpec.describe Message do
     expect(build(:message, role: "assistant", agent: "recommend")).to be_valid
   end
 
+  it "knows the user's message a reply answers" do
+    conversation = create(:conversation)
+    conversation.ask("First?").last.update!(status: :done, content: "One.")
+    question, reply = conversation.ask("Second?")
+    conversation.ask("Third?")
+
+    expect(reply.question).to eq question
+  end
+
   describe "#recipes" do
     it "is the recipes shown under the reply, in the order shown, leaving out deleted ones and other users'" do
       conversation = create(:conversation)

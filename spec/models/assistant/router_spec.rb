@@ -12,16 +12,18 @@ RSpec.describe Assistant::Router do
     router = described_class.new(user)
 
     expect(router.request).to include(model: "claude-haiku-4-5", max_tokens: 8_000)
-    expect(router.request[:tools]).to eq [
-      { name: "transfer_to_recommend",
-        description: "Hand the conversation to the Recommend specialist, which searches the user's saved recipes " \
-                     "and suggests some. Use it when they want recipes from their own collection: what to cook " \
-                     "tonight, something with eggs, a quick dinner, a dish for guests.",
-        input_schema: { type: "object", properties: {}, required: [], additionalProperties: false } }
-    ]
+    expect(router.request[:tools].pluck(:name)).to eq %w[transfer_to_recommend transfer_to_import]
+    expect(router.request[:tools].first).to eq(
+      name: "transfer_to_recommend",
+      description: "Hand the conversation to the Recommend specialist, which searches the user's saved recipes " \
+                   "and suggests some. Use it when they want recipes from their own collection: what to cook " \
+                   "tonight, something with eggs, a quick dinner, a dish for guests.",
+      input_schema: { type: "object", properties: {}, required: [], additionalProperties: false }
+    )
     expect(router.system_prompt).to include(
       "language of the user's latest message", "can't take actions in the app yet",
-      "- transfer_to_recommend: the Recommend specialist searches the user's saved recipes"
+      "- transfer_to_recommend: the Recommend specialist searches the user's saved recipes",
+      "- transfer_to_import: the Import specialist imports recipe links into the user's Draft box"
     )
   end
 

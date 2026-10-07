@@ -26,7 +26,7 @@ class WriteReplyService
     @run = @reply.create_run!(model: agent.model)
     responses = run(agent)
     if (specialist = agent.handoff(responses.last))
-      agent = specialist.new(conversation.user)
+      agent = specialist.new(conversation.user, question: @reply.question&.content)
       @run.update!(model: agent.model)
       # Anything the router wrote before handing over is dropped, and the panel goes back to "Thinking…".
       @reply.tap { _1.content = "" }.broadcast_to_panel

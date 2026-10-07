@@ -11,7 +11,7 @@ class Message < ApplicationRecord
   enum :role, { user: "user", assistant: "assistant" }, validate: true
   enum :status, { pending: "pending", done: "done", failed: "failed" }, validate: true
   # Who wrote a reply: the router, or the specialist it handed the message to.
-  enum :agent, { router: "router", recommend: "recommend" }, validate: { allow_nil: true }
+  enum :agent, { router: "router", recommend: "recommend", import: "import" }, validate: { allow_nil: true }
 
   validates :content, presence: true, length: { maximum: MAX_LENGTH }, if: :user?
 
@@ -31,6 +31,9 @@ class Message < ApplicationRecord
 
   # Why the assistant recommends the recipe, shown on its card. Nil for older replies.
   def card_reason(recipe) = card_reasons[recipe.id.to_s]
+
+  # For a reply: the user's message it answers, the one asked just before it.
+  def question = conversation.messages.user.where(id: ...id).last
 
   # The recipes shown as cards under a reply, in the order shown. Ones deleted since are left out.
   def recipes
